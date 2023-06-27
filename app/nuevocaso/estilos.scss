@@ -46,3 +46,24 @@ h2 {
     color: black;
   }
 }
+
+//animaciones y transiciones
+
+.ocultar {
+  display: none;
+}
+.mostrar {
+  animation: muestra 1s;
+}
+
+@keyframes muestra {
+  0% {
+    display: block;
+    scale: 0;
+    opacity: 0;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
