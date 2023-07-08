@@ -1,5 +1,5 @@
 "use client";
-import { Affix, Breadcrumb, Layout, Menu, MenuProps, Tabs } from "antd";
+import { Affix, Breadcrumb, Button, Layout, Menu, MenuProps, Tabs } from "antd";
 import "moment/locale/es";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,9 @@ import Formulario from "./components/formulario";
 import Detalles from "./components/detalles";
 import { useState } from "react";
 import Sider from "antd/es/layout/Sider";
-
+//env
+import dotenv from "dotenv";
+dotenv.config();
 import React from "react";
 import {
   AdultoMayor,
@@ -21,6 +23,17 @@ import {
   dataDatosGenerales,
   dataDatosUbicacion,
 } from "./data";
+type MenuItem = Required<MenuProps>["items"][number];
+import MenuItem from "antd/es/menu/MenuItem";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 export default function NuevoCaso() {
   const [datos, setDatos] = useState<{
     datosGenerales: AdultoMayor;
@@ -28,13 +41,13 @@ export default function NuevoCaso() {
     datosDenunciado: DatosDenunciado;
     descripcionHechos: string;
     descripcionPeticion: string;
-    accionesRealizadas: string;
+    accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   }>({
     datosGenerales: dataDatosGenerales,
     datosDenunciado: dataDatosDenunciado,
     datosUbicacion: dataDatosUbicacion,
-    accionesRealizadas: "",
+    accionRealizada: "Apertura",
     descripcionHechos: "",
     descripcionPeticion: "",
     datosDenuncia: dataDatosDenuncia,
@@ -46,17 +59,43 @@ export default function NuevoCaso() {
     datosDenunciado: DatosDenunciado;
     descripcionHechos: string;
     descripcionPeticion: string;
-    accionesRealizadas: string;
+    accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   }) => {
-    console.log(data);
     setDatos(data);
   };
   const getPosicion = (posicion: number) => {
     setPosicion(posicion);
   };
   const router = useRouter();
-
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    } as MenuItem;
+  }
+  const items: MenuItem[] = [
+    getItem("Option 1", "1", <PieChartOutlined />),
+    getItem("Option 2", "2", <DesktopOutlined />),
+    getItem("User", "sub1", <UserOutlined />, [
+      getItem("Tom", "3"),
+      getItem("Bill", "4"),
+      getItem("Alex", "5"),
+    ]),
+    getItem("Team", "sub2", <TeamOutlined />, [
+      getItem("Team 1", "6"),
+      getItem("Team 2", "8"),
+    ]),
+    getItem("Files", "9", <FileOutlined />),
+  ];
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <main>
       <Layout>
@@ -84,6 +123,11 @@ export default function NuevoCaso() {
         <Layout hasSider>
           <Affix offsetTop={64}>
             <Sider
+              breakpoint="md"
+              collapsible
+              collapsed={collapsed}
+              onCollapse={(value) => setCollapsed(value)}
+              defaultCollapsed={true}
               style={{
                 overflow: "auto",
                 height: "100vh",
@@ -95,20 +139,31 @@ export default function NuevoCaso() {
             >
               <div className="demo-logo-vertical" />
               <Menu
-                theme="light"
+                theme="dark"
+                defaultSelectedKeys={["1"]}
                 mode="inline"
-                items={[{ key: 1, title: "mike" }]}
+                items={items}
+              />
+              <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setCollapsed(!collapsed)}
+                style={{
+                  fontSize: "16px",
+                  width: 64,
+                  height: 64,
+                  color: "white",
+                  position: "absolute",
+
+                  right: 0,
+                  bottom: "4em",
+                }}
               />
             </Sider>
           </Affix>
           <Content>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Breadcrumb style={{ margin: "16px 0" }}>
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item>List</Breadcrumb.Item>
-                  <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
                 <Content>
                   <div className={posicion == 0 ? "mostrar" : "ocultar"}>
                     <Formulario
@@ -121,6 +176,7 @@ export default function NuevoCaso() {
                     <Detalles
                       getPosicion={getPosicion}
                       datos={datos}
+                      router={router}
                     ></Detalles>
                   </div>
                 </Content>

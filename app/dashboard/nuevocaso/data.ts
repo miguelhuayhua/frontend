@@ -49,10 +49,10 @@ export interface AdultoMayor {
 export interface DatosUbicacion {
 
     tipo_domicilio: string;
-    distrito: string;
+    distrito: number;
     zona: string;
     calle: string;
-    n_vivienda: string;
+    n_vivienda: number;
     area: string;
     otro_domicilio: string;
     otra_area: string;
@@ -62,7 +62,7 @@ export interface DatosDenunciado {
     nombres: string;
     paterno: string;
     materno: string;
-    parentezo: string;
+    parentezco: string;
 };
 export interface DatosDenuncia {
     fecha: string,
@@ -91,8 +91,8 @@ export let dataDatosUbicacion = {
     area: "",
     otra_area: "",
     calle: "",
-    distrito: "",
-    n_vivienda: "",
+    distrito: 1,
+    n_vivienda: 0,
     tipo_domicilio: "",
     zona: "",
     otro_domicilio: "",
@@ -100,7 +100,7 @@ export let dataDatosUbicacion = {
 
 export let dataDatosDenunciado = {
     nombres: "",
-    parentezo: "",
+    parentezco: "Hijo(a)",
     paterno: "",
     materno: "",
 

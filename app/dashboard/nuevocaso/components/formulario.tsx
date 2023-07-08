@@ -1,6 +1,6 @@
 "use client";
-
 import {
+  AutoComplete,
   Button,
   Col,
   DatePicker,
@@ -9,7 +9,6 @@ import {
   InputNumber,
   InputRef,
   Modal,
-  Popconfirm,
   Radio,
   Row,
   Select,
@@ -33,15 +32,12 @@ import {
 } from "../data";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
-import {
-  PlusOutlined,
-  QuestionCircleOutlined,
-  QuestionOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import locale from "antd/es/date-picker/locale/es_ES";
 import moment, { now } from "moment";
 import FormItem from "antd/es/form/FormItem";
 import { NextPage } from "next";
+import axios from "axios";
 
 interface Props {
   getDatos: any;
@@ -49,6 +45,11 @@ interface Props {
 }
 
 const Formulario: NextPage<Props> = (props) => {
+  //cargado de datos
+  const [nombres, setNombres] = useState<{
+    nombres: { value: string }[];
+    apellidos: { value: string }[];
+  }>({ nombres: [], apellidos: [] });
   //manejo de confirmacion
   const [open, setOpen] = useState(false);
   const handleOpenChange = () => {
@@ -65,7 +66,7 @@ const Formulario: NextPage<Props> = (props) => {
       datosDenunciado,
       descripcionHechos,
       descripcionPeticion,
-      accionesRealizadas,
+      accionRealizada,
       datosDenuncia,
     });
     props.getPosicion(1);
@@ -85,7 +86,7 @@ const Formulario: NextPage<Props> = (props) => {
   const [descripcionPeticion, setPeticion] = useState("");
   const [datosDenunciado, setDatosDenunciado] =
     useState<DatosDenunciado>(dataDatosDenunciado);
-  const [accionesRealizadas, setAccionesRealizadas] = useState("");
+  const [accionRealizada, setAccionRealizada] = useState("Apertura");
   //DATOS EXTRAS Y REFERENCIAS
   const inputRef = useRef<InputRef>(null);
   const [hijosValue, setHijosValue] = useState("");
@@ -97,10 +98,46 @@ const Formulario: NextPage<Props> = (props) => {
   };
 
   useEffect(() => {
+    axios.get("http://localhost:8000/adulto/npmunicos").then((res) => {
+      let data = res.data as {
+        nombres: string[];
+        apellidos: string[];
+      };
+      let nombres = data.nombres.map((value) => {
+        return { value };
+      });
+      let apellidos = data.apellidos.map((value) => {
+        return { value };
+      });
+      setNombres({ nombres, apellidos });
+    });
+    axios.get("http://localhost:8000/caso/getultimo").then((res) => {
+      let caso = res.data;
+      if (caso) {
+        let [nro, gestion] = caso.nro_caso.split("/");
+        console.log(nro);
+        if (gestion == dayjs().year()) {
+          setDatosDenuncia({
+            ...datosDenuncia,
+            nro_caso: (Number.parseInt(nro) + 1).toString(),
+          });
+        } else {
+          setDatosDenuncia({
+            ...datosDenuncia,
+            nro_caso: "1",
+          });
+        }
+      } else {
+        setDatosDenuncia({
+          ...datosDenuncia,
+          nro_caso: "1",
+        });
+      }
+    });
     if (inputVisible) {
       inputRef.current?.focus();
     }
-  }, [inputVisible]);
+  }, []);
   const handleHijosConfirm = () => {
     if (hijosValue && itemHijos.indexOf(hijosValue) === -1) {
       setItemHijos([...itemHijos, hijosValue]);
@@ -157,15 +194,15 @@ const Formulario: NextPage<Props> = (props) => {
 
   //DATOS DE LOS FORMULARIOS
   const handleNombre = (value: any) => {
-    setDatosGenerales({ ...datosGenerales, nombre: value.target.value });
+    setDatosGenerales({ ...datosGenerales, nombre: value });
   };
 
   const handlePaterno = (value: any) => {
-    setDatosGenerales({ ...datosGenerales, paterno: value.target.value });
+    setDatosGenerales({ ...datosGenerales, paterno: value });
   };
 
   const handleMaterno = (value: any) => {
-    setDatosGenerales({ ...datosGenerales, materno: value.target.value });
+    setDatosGenerales({ ...datosGenerales, materno: value });
   };
 
   const handleCI = (value: any) => {
@@ -234,10 +271,10 @@ const Formulario: NextPage<Props> = (props) => {
   };
 
   const handleDescripcion = (value: any) => {
-    setDescripcionHechos(value);
+    setDescripcionHechos(value.target.value);
   };
   const handlePeticion = (value: any) => {
-    setPeticion(value);
+    setPeticion(value.target.value);
   };
   const handleNombreDenunciado = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, nombres: value.target.value });
@@ -251,11 +288,11 @@ const Formulario: NextPage<Props> = (props) => {
     setDatosDenunciado({ ...datosDenunciado, materno: value.target.value });
   };
   const handleParentezo = (value: any) => {
-    setDatosDenunciado({ ...datosDenunciado, parentezo: value });
+    setDatosDenunciado({ ...datosDenunciado, parentezco: value });
   };
 
   const handleAcciones = (value: any) => {
-    setAccionesRealizadas(value);
+    setAccionRealizada(value);
   };
   const handleTipologia = (value: any) => {
     setDatosDenuncia({
@@ -310,9 +347,10 @@ const Formulario: NextPage<Props> = (props) => {
               <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
                 <Form.Item label="N° de Caso:">
                   <Input
-                    onChange={handleNroCaso}
                     className="small-input"
                     suffix={"/2023"}
+                    disabled
+                    value={datosDenuncia.nro_caso}
                   />
                 </Form.Item>
               </Col>
@@ -324,17 +362,44 @@ const Formulario: NextPage<Props> = (props) => {
               <Row>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                   <Form.Item label="Nombres:">
-                    <Input className="normal-input" onChange={handleNombre} />
+                    <AutoComplete
+                      options={nombres.nombres}
+                      onChange={handleNombre}
+                      placeholder="Introduzca el nombre..."
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                   <Form.Item label="Apellido Paterno:">
-                    <Input className="normal-input" onChange={handlePaterno} />
+                    <AutoComplete
+                      options={nombres.apellidos}
+                      onChange={handlePaterno}
+                      placeholder="Introduzca su apellido paterno..."
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
+                    />{" "}
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                   <Form.Item label="Apellido Materno:">
-                    <Input className="normal-input" onChange={handleMaterno} />
+                    <AutoComplete
+                      onChange={handleMaterno}
+                      options={nombres.apellidos}
+                      placeholder="Introduzca su apellido materno..."
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
+                    />{" "}
                   </Form.Item>
                 </Col>
                 <Col span={14} md={{ span: 14 }} lg={{ span: 8 }}>
@@ -617,7 +682,10 @@ const Formulario: NextPage<Props> = (props) => {
                     className="normal-input"
                     label="Parentezco con la persona adulta mayor:"
                   >
-                    <Select defaultValue={"Hijo(a)"} onChange={handleParentezo}>
+                    <Select
+                      defaultValue={dataDatosDenunciado.parentezco}
+                      onChange={handleParentezo}
+                    >
                       <Select.Option value="Hijo(a)">Hijo(a)</Select.Option>
                       <Select.Option value="Familiar">
                         Familiar Cercano
@@ -638,7 +706,10 @@ const Formulario: NextPage<Props> = (props) => {
               <Row>
                 <Col offset={4} span={16} md={{ span: 16 }}>
                   <Form.Item className="normal-input">
-                    <Select defaultValue={"Apertura"} onChange={handleAcciones}>
+                    <Select
+                      defaultValue={accionRealizada}
+                      onChange={handleAcciones}
+                    >
                       <Select.Option value="Apertura">
                         Apertura de Caso
                       </Select.Option>
@@ -681,7 +752,9 @@ const Formulario: NextPage<Props> = (props) => {
           <QuestionCircleOutlined
             style={{ fontSize: "4em", color: "#555", marginBottom: ".5em" }}
           />
-          <p className="h5 text-center">¿Está seguro de pasar a la verificación de datos?</p>
+          <p className="h5 text-center">
+            ¿Está seguro de pasar a la verificación de datos?
+          </p>
         </div>
       </Modal>
     </>
