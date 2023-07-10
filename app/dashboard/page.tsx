@@ -1,41 +1,56 @@
 "use client";
-import { Affix, Button, Layout, MenuProps } from "antd";
+import {
+  Affix,
+  Breadcrumb,
+  Button,
+  Col,
+  Layout,
+  Menu,
+  MenuProps,
+  Row,
+  Tabs,
+} from "antd";
 import "moment/locale/es";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
 //estilos
 import "./estilos.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sider from "antd/es/layout/Sider";
-//env
-import dotenv from "dotenv";
-dotenv.config();
 import React from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 type MenuItem = Required<MenuProps>["items"][number];
 import MenuItem from "antd/es/menu/MenuItem";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PieChartOutlined,
-  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { ColumnsType } from "antd/es/table";
-import Informacion from "./components/informacion";
-import { Caso } from "./data";
-import axios from "axios";
-import MenuSider from "../components/MenuSider";
-import Navbar from "../components/Navbar";
-export default function NuevoCaso() {
+import MenuSider from "./components/MenuSider";
+import Navbar from "./components/Navbar";
+export default function Dashboard() {
   const router = useRouter();
   function getItem(
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
+    url?: string,
     children?: MenuItem[]
   ): MenuItem {
     return {
+      onClick: () => {
+        router.push(url!);
+      },
       key,
       icon,
       children,
@@ -66,9 +81,53 @@ export default function NuevoCaso() {
       ],
     },
   ];
+
   const [collapsed, setCollapsed] = useState(false);
 
-  //cargado de casos desde la API
+  const data = [
+    {
+      name: "Page A",
+      uv: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+    {
+      name: "Page B",
+      uv: 3000,
+      pv: 1398,
+      amt: 2210,
+    },
+    {
+      name: "Page C",
+      uv: 2000,
+      pv: 9800,
+      amt: 2290,
+    },
+    {
+      name: "Page D",
+      uv: 2780,
+      pv: 3908,
+      amt: 2000,
+    },
+    {
+      name: "Page E",
+      uv: 1890,
+      pv: 4800,
+      amt: 2181,
+    },
+    {
+      name: "Page F",
+      uv: 2390,
+      pv: 3800,
+      amt: 2500,
+    },
+    {
+      name: "Page G",
+      uv: 3490,
+      pv: 4300,
+      amt: 2100,
+    },
+  ];
 
   return (
     <main>
@@ -93,10 +152,9 @@ export default function NuevoCaso() {
             >
               <div className="demo-logo-vertical" />
               <MenuSider
-                defaultOpenKeys="caso1"
-                defaultSelectedKey="caso1.2"
+                defaultOpenKeys="null"
+                defaultSelectedKey="dashboard"
               ></MenuSider>
-
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -118,7 +176,35 @@ export default function NuevoCaso() {
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>
-                  <Informacion></Informacion>
+                  <Row>
+                    <Col span={24} md={{ span: 12 }}>
+                      <ResponsiveContainer width={"100%"} height={500}>
+                        <LineChart
+                          className="w-100"
+                          data={data}
+                          margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                          }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Line
+                            type="monotone"
+                            dataKey="pv"
+                            stroke="#8884d8"
+                            activeDot={{ r: 8 }}
+                          />
+                          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </Col>
+                  </Row>
                 </Content>
               </Content>
             </Layout>

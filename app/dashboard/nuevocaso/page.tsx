@@ -23,17 +23,8 @@ import {
   dataDatosGenerales,
   dataDatosUbicacion,
 } from "./data";
-type MenuItem = Required<MenuProps>["items"][number];
-import MenuItem from "antd/es/menu/MenuItem";
-import {
-  DesktopOutlined,
-  FileOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import Navbar from "../components/Navbar";
+import MenuSider from "../components/MenuSider";
 export default function NuevoCaso() {
   const [datos, setDatos] = useState<{
     datosGenerales: AdultoMayor;
@@ -68,58 +59,12 @@ export default function NuevoCaso() {
     setPosicion(posicion);
   };
   const router = useRouter();
-  function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[]
-  ): MenuItem {
-    return {
-      key,
-      icon,
-      children,
-      label,
-    } as MenuItem;
-  }
-  const items: MenuItem[] = [
-    getItem("Option 1", "1", <PieChartOutlined />),
-    getItem("Option 2", "2", <DesktopOutlined />),
-    getItem("User", "sub1", <UserOutlined />, [
-      getItem("Tom", "3"),
-      getItem("Bill", "4"),
-      getItem("Alex", "5"),
-    ]),
-    getItem("Team", "sub2", <TeamOutlined />, [
-      getItem("Team 1", "6"),
-      getItem("Team 2", "8"),
-    ]),
-    getItem("Files", "9", <FileOutlined />),
-  ];
+
   const [collapsed, setCollapsed] = useState(false);
   return (
     <main>
       <Layout>
-        <Header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div className="demo-logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["2"]}
-            items={new Array(3).fill(null).map((_, index) => ({
-              key: String(index + 1),
-              label: `nav ${index + 1}`,
-            }))}
-          />
-        </Header>
+        <Navbar></Navbar>
         <Layout hasSider>
           <Affix offsetTop={64}>
             <Sider
@@ -138,27 +83,10 @@ export default function NuevoCaso() {
               }}
             >
               <div className="demo-logo-vertical" />
-              <Menu
-                theme="dark"
-                defaultSelectedKeys={["1"]}
-                mode="inline"
-                items={items}
-              />
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: "16px",
-                  width: 64,
-                  height: 64,
-                  color: "white",
-                  position: "absolute",
-
-                  right: 0,
-                  bottom: "4em",
-                }}
-              />
+              <MenuSider
+                defaultOpenKeys="caso1"
+                defaultSelectedKey="caso1.1"
+              ></MenuSider>
             </Sider>
           </Affix>
           <Content>

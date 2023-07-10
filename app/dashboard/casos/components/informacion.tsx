@@ -1,44 +1,42 @@
 "use client";
 import {
-  AutoComplete,
-  Badge,
   Button,
-  Col,
-  Descriptions,
+  DatePicker,
+  Form,
   Input,
-  Modal,
-  Progress,
-  Row,
-  Space,
-  Spin,
+  Select,
   Switch,
   Tag,
   message,
-  notification,
 } from "antd";
-import { NextPage } from "next";
+import locale from "antd/es/date-picker/locale/es_ES";
 
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { NextRouter, useRouter } from "next/router";
 import Table, { ColumnsType } from "antd/es/table";
-import { EditOutlined, UserOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
-import { SwitchChangeEventHandler } from "antd/es/switch";
 import CasoModal from "./caso";
-import { AdultoMayor, dataDatosGenerales } from "../../nuevocaso/data";
+import {
+  AdultoMayor,
+  AdultoMayor2,
+  dataDatosGenerales,
+  dias,
+  meses,
+} from "../../nuevocaso/data";
 export const DataContext = createContext({});
 //ROUTING
 
-//PDF
-
 const Informacion = () => {
-  let refs = useRef(null);
   //estados
   const [open, setOpen] = useState(false);
   const [caso, setCaso] = useState<Caso>(datosCaso);
   const [adultoMayor, setAdultoMayor] =
-    useState<AdultoMayor>(dataDatosGenerales);
+    useState<AdultoMayor2>(dataDatosGenerales);
+
+  const [filtroCaso, setFiltroCaso] = useState("");
+  const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
+  const [filtroRangoFecha, setFiltroRangoFecha] = useState("");
   const [denunciado, setDenunciado] = useState<Denunciado>(DatosDenunciado);
   const columns: ColumnsType<Caso> = [
     {
@@ -46,6 +44,7 @@ const Informacion = () => {
       dataIndex: "nro_caso",
       key: "nro_caso",
       className: "text-center",
+      fixed: "left",
     },
     {
       title: "Acción Realizada",
@@ -85,7 +84,7 @@ const Informacion = () => {
       title: "Acción",
       key: "accion",
       className: "text-center",
-
+      fixed: "right",
       render: (_, caso) => (
         <div
           key={caso.id_caso + "d"}
@@ -121,15 +120,66 @@ const Informacion = () => {
     });
   }, []);
 
+  const { RangePicker } = DatePicker;
+
+  //cambios en los filtros
+  const handleFiltroCaso = (ev: any) => {
+    setFiltroCaso(ev.target.value);
+  };
+  const handleFiltroAccion = (ev: any) => {
+    setFiltroAccionCaso(ev);
+  };
+
+  const handleFiltroRange = (ev: any) => {
+    console.log(ev);
+  };
   return (
     <>
-      <AutoComplete
-        popupClassName="certain-category-search-dropdown"
-        style={{ width: 250 }}
+      <Form
+        layout={"horizontal"}
+        style={{ display: "flex", marginTop: 10, flexWrap: "wrap" }}
       >
-        <Input.Search size="large" placeholder="input here" />
-      </AutoComplete>
+        <Form.Item label="Nro. de Caso: ">
+          <Input
+            placeholder="Introduzca el número de caso..."
+            value={filtroCaso}
+            onChange={handleFiltroCaso}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Tipo de acción realizada: "
+          style={{ marginLeft: 10 }}
+        >
+          <Select
+            value={filtroAccionCaso}
+            style={{ width: 120 }}
+            onChange={handleFiltroAccion}
+          >
+            <Select.Option value="Apertura">Apertura de Caso</Select.Option>
+            <Select.Option value="Orientacion">Orientación</Select.Option>
+            <Select.Option value="Citacion">Citación</Select.Option>
+            <Select.Option value="Derivacion">Derivación</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="Filtrar por rango de fechas:">
+          <RangePicker
+            locale={{
+              ...locale,
+              lang: {
+                ...locale.lang,
+                shortWeekDays: dias,
+                shortMonths: meses,
+              },
+            }}
+            onChange={handleFiltroRange}
+          />
+        </Form.Item>
+      </Form>
+      <hr />
       <Table
+        scroll={{ x: 800, y: 600 }}
+        rowKey={(caso) => caso.id_caso}
+        key="table"
         pagination={{ pageSize: 20 }}
         columns={columns}
         dataSource={displayCasos}
@@ -156,41 +206,62 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setCaso(value);
                   axios
-                    .post<{ adulto: AdultoMayor; hijos: string[] }>(
-                      "http://localhost:8000/adulto/obtener",
-                      {
-                        id_adulto: value.id_adulto,
-                      }
-                    )
+                    .post<{
+                      adulto: AdultoMayor2;
+                      hijos: {
+                        ult_modificacion: string;
+                        id_hijo: string;
+                        estado: number;
+                        nombres_apellidos: string;
+                      }[];
+                    }>("http://localhost:8000/adulto/obtener", {
+                      id_adulto: value.id_adulto,
+                    })
                     .then((res) => {
                       setAdultoMayor({
                         ...res.data.adulto,
                         hijos: res.data.hijos,
                       });
                     });
-                  axios.post("http://localhost:8000/adulto/obtener", {
-                    id_caso: value.id_caso,
-                  });
+                  axios
+                    .post("http://localhost:8000/denunciado/obtener", {
+                      id_caso: value.id_caso,
+                    })
+                    .then((res) => {
+                      setDenunciado(res.data);
+                    });
                   setOpen(true);
                 }
               } catch (error) {
                 setCaso(value);
                 axios
-                  .post<{ adulto: AdultoMayor; hijos: string[] }>(
-                    "http://localhost:8000/denunciado/obtener",
-                    {
-                      id_adulto: value.id_adulto,
-                    }
-                  )
+                  .post<{
+                    adulto: AdultoMayor2;
+                    hijos: {
+                      ult_modificacion: string;
+                      id_hijo: string;
+                      estado: number;
+                      nombres_apellidos: string;
+                    }[];
+                  }>("http://localhost:8000/adulto/obtener", {
+                    id_adulto: value.id_adulto,
+                  })
                   .then((res) => {
                     setAdultoMayor({
                       ...res.data.adulto,
                       hijos: res.data.hijos,
                     });
                   });
-                axios.post("http://localhost:8000/denunciado/obtener", {
-                  id_caso: value.id_caso,
-                });
+                axios
+                  .post<Denunciado>(
+                    "http://localhost:8000/denunciado/obtener",
+                    {
+                      id_caso: value.id_caso,
+                    }
+                  )
+                  .then((res) => {
+                    setDenunciado(res.data);
+                  });
                 setOpen(true);
               }
             },
@@ -198,10 +269,12 @@ const Informacion = () => {
         }}
       />
       <CasoModal
+        key="casomodal"
         adultoMayor={adultoMayor}
         caso={caso!}
         setOpen={setOpen}
         open={open}
+        denunciado={denunciado}
       ></CasoModal>
       ;
     </>

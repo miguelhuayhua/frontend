@@ -1,45 +1,29 @@
 "use client";
 import {
-  AutoComplete,
   Avatar,
-  Badge,
   Button,
-  Cascader,
-  Checkbox,
   Col,
   DatePicker,
-  Descriptions,
   Form,
-  Input,
-  InputNumber,
   Modal,
-  Progress,
-  Radio,
+  Popconfirm,
   Row,
   Segmented,
   Select,
   Slider,
   Space,
-  Spin,
   Switch,
-  Tag,
-  TreeSelect,
   Upload,
-  message,
-  notification,
 } from "antd";
 import { NextPage } from "next";
 
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { NextRouter, useRouter } from "next/router";
-import Table, { ColumnsType } from "antd/es/table";
 import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
-import { Caso } from "../data";
-import { SwitchChangeEventHandler } from "antd/es/switch";
+import { Caso, Denunciado, datosCaso } from "../data";
 import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
-import { AdultoMayor } from "../../nuevocaso/data";
+import { AdultoMayor, AdultoMayor2 } from "../../nuevocaso/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -48,29 +32,63 @@ interface Props {
   open: boolean;
   setOpen: any;
   caso: Caso;
-  adultoMayor: AdultoMayor;
+  adultoMayor: AdultoMayor2;
+  denunciado: Denunciado;
 }
 const CasoModal: NextPage<Props> = (props) => {
-  const { RangePicker } = DatePicker;
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
+  const [caso, setCaso] = useState<Caso>({ ...props.caso });
+
   const handleChangeHijo = (ev: any) => {
     console.log(ev);
   };
+  //control del modal
+  const handleConfirm = () => {
+    props.setOpen(false);
+  };
+
+  const handleHideModal = () => {
+    props.setOpen(false);
+  };
+
+  //cambio del estado de caso
+  const handleDescripcion = (value: any) => {
+    setCaso({ ...caso, descripcion_hechos: value.target.value });
+  };
+  const handlePeticion = (value: any) => {
+    setCaso({ ...caso, peticion: value.target.value });
+  };
+  const handleAcciones = (value: any) => {
+    setCaso({ ...caso, accion_realizada: value });
+  };
+
   return (
     <>
       <Modal
+        key="modal"
         title={"EDITE LOS VALORES PARA EL CASO " + props.caso.nro_caso}
         centered
         style={{ textAlign: "center" }}
         open={props.open}
-        onOk={() => props.setOpen(false)}
-        onCancel={() => props.setOpen(false)}
+        onCancel={() => {
+          props.setOpen(false);
+        }}
         width={"90%"}
+        footer={[
+          <Popconfirm
+            key="popconfirm"
+            title="¿Estás seguro de continuar?"
+            onConfirm={handleConfirm}
+            okText="Sí"
+            cancelText="No"
+          >
+            <Button key="ok" type="primary">
+              Aceptar y Modificar
+            </Button>
+          </Popconfirm>,
+          <Button key="cancel" onClick={handleHideModal}>
+            Cancelar
+          </Button>,
+        ]}
       >
         <Row>
           <Col span={24}>
@@ -98,44 +116,44 @@ const CasoModal: NextPage<Props> = (props) => {
             </Row>
           </Col>
           <Col span={12}>
-            <Form
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 18 }}
-              layout="horizontal"
-            >
-              <Form.Item label="Select">
-                <Select>
-                  <Select.Option value="demo">Demo</Select.Option>
-                </Select>
+            <Form layout="horizontal">
+              <Form.Item label="Descripción de los Hechos">
+                <TextArea
+                  style={{ maxHeight: 200, width: "90%" }}
+                  value={caso.descripcion_hechos}
+                  onChange={handleDescripcion}
+                />
               </Form.Item>
-
-              <Form.Item label="TextArea">
-                <TextArea rows={4} />
-              </Form.Item>
-              <Form.Item label="Switch" valuePropName="checked">
-                <Switch />
+              <Form.Item label="Petición del adulto">
+                <TextArea
+                  style={{ maxHeight: 200, width: "90%" }}
+                  value={caso.peticion}
+                  onChange={handlePeticion}
+                />
               </Form.Item>
               <Form.Item
-                label="Upload"
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
+                className="normal-input"
+                label="Acciones realizadas con el caso:"
               >
-                <Upload action="/upload.do" listType="picture-card">
-                  <div>
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
-                  </div>
-                </Upload>
-              </Form.Item>
-              <Form.Item label="Button">
-                <Button>Button</Button>
-              </Form.Item>
-              <Form.Item label="Slider">
-                <Slider />
+                <Select
+                  value={caso.accion_realizada}
+                  onChange={handleAcciones}
+                  style={{ width: "90%" }}
+                >
+                  <Select.Option value="Apertura">
+                    Apertura de Caso
+                  </Select.Option>
+                  <Select.Option value="Orientacion">Orientación</Select.Option>
+                  <Select.Option value="Citacion">Citación</Select.Option>
+                  <Select.Option value="Derivacion">Derivación</Select.Option>
+                </Select>
               </Form.Item>
             </Form>
           </Col>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{ border: "1px solid #CCC", padding: 10, borderRadius: 10 }}
+          >
             <h5 className="text-center">Personas Involucradas</h5>
             <Row>
               <hr />
@@ -195,12 +213,15 @@ const CasoModal: NextPage<Props> = (props) => {
                       options={props.adultoMayor.hijos.map((hijo) => {
                         return {
                           label: (
-                            <div style={{ padding: 4 }}>
+                            <div
+                              key={hijo.nombres_apellidos}
+                              style={{ padding: 4 }}
+                            >
                               <Avatar icon={<UserOutlined />}></Avatar>
-                              <div>{hijo}</div>
+                              <div>{hijo.nombres_apellidos}</div>
                             </div>
                           ),
-                          value: hijo,
+                          value: hijo.nombres_apellidos,
                         };
                       })}
                     />
@@ -209,6 +230,31 @@ const CasoModal: NextPage<Props> = (props) => {
               </Col>
               <Col style={{ borderLeft: "1px solid #AAA" }} span={12}>
                 <h6>Denunciado</h6>
+                <Row>
+                  <Col span={24}>
+                    <p>
+                      <span>
+                        <b>Nombres y Apellidos del Denunciado:</b>
+                      </span>
+                      <br />
+                      {props.denunciado.nombres +
+                        " " +
+                        props.denunciado.paterno +
+                        " " +
+                        props.denunciado.materno}
+                    </p>
+                  </Col>
+
+                  <Col span={24}>
+                    <p>
+                      <span>
+                        <b>Parentezco con la persona adulta mayor: </b>
+                      </span>
+                      <br />
+                      {props.denunciado.parentezco}
+                    </p>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Col>

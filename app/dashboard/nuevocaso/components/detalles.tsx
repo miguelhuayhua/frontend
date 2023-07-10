@@ -63,6 +63,27 @@ const Detalles: NextPage<Props> = (props) => {
       250,
       ["counter"]
     );
+    pdf(
+      <DataContext.Provider value={props.datos}>
+        <MyDocument />
+      </DataContext.Provider>
+    )
+      .toBlob()
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        let { nombre, paterno, materno } = dataDatosGenerales;
+
+        link.setAttribute(
+          "download",
+          nombre + paterno + materno + dataDatosDenuncia.fecha + ".pdf"
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        props.router.push("/dashboard/casos");
+      });
     axios
       .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos })
       .then((res) => {
@@ -72,27 +93,6 @@ const Detalles: NextPage<Props> = (props) => {
 
         if (res.data.status == 1) {
           notification.success({ message: res.data.response });
-          pdf(
-            <DataContext.Provider value={props.datos}>
-              <MyDocument />
-            </DataContext.Provider>
-          )
-            .toBlob()
-            .then((blob) => {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement("a");
-              link.href = url;
-              let { nombre, paterno, materno } = dataDatosGenerales;
-
-              link.setAttribute(
-                "download",
-                nombre + paterno + materno + dataDatosDenuncia.fecha + ".pdf"
-              );
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              props.router.push("/dashboard/casos");
-            });
         } else {
           notification.error({ message: res.data.response });
         }

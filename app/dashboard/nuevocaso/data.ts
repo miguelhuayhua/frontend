@@ -45,7 +45,23 @@ export interface AdultoMayor {
     beneficios: string;
 
 }
+export interface AdultoMayor2 {
 
+    nombre: string;
+    paterno: string;
+    materno: string;
+    sexo: string;
+    edad: number;
+    ci: number;
+    fecha_nac: string;
+    referencia: number;
+    estado_civil: string;
+    hijos: { ult_modificacion: string, id_hijo: string, estado: number, nombres_apellidos: string }[];
+    grado: string;
+    ocupacion: string;
+    beneficios: string;
+
+}
 export interface DatosUbicacion {
 
     tipo_domicilio: string;
@@ -74,7 +90,7 @@ export interface DatosDenuncia {
 export let dataDatosGenerales = {
     ci: 0,
     edad: -dayjs("1960-01-01").diff(moment.now(), "years"),
-    estado_civil: "Viudo",
+    estado_civil: "Viudo(a)",
     fecha_nac: "1960-01-01",
     materno: "",
     nombre: "",
@@ -82,8 +98,8 @@ export let dataDatosGenerales = {
     referencia: 0,
     sexo: "Femenino",
     hijos: [],
-    grado: "",
-    beneficios: "",
+    grado: "Primaria",
+    beneficios: "Ninguno",
     ocupacion: "",
 };
 
@@ -93,7 +109,7 @@ export let dataDatosUbicacion = {
     calle: "",
     distrito: 1,
     n_vivienda: 0,
-    tipo_domicilio: "",
+    tipo_domicilio: "Propio",
     zona: "",
     otro_domicilio: "",
 };

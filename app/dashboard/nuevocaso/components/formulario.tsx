@@ -115,7 +115,6 @@ const Formulario: NextPage<Props> = (props) => {
       let caso = res.data;
       if (caso) {
         let [nro, gestion] = caso.nro_caso.split("/");
-        console.log(nro);
         if (gestion == dayjs().year()) {
           setDatosDenuncia({
             ...datosDenuncia,
@@ -287,7 +286,7 @@ const Formulario: NextPage<Props> = (props) => {
   const handleMaternoDenunciado = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, materno: value.target.value });
   };
-  const handleParentezo = (value: any) => {
+  const handleParentezco = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, parentezco: value });
   };
 
@@ -385,7 +384,7 @@ const Formulario: NextPage<Props> = (props) => {
                           .toUpperCase()
                           .indexOf(inputValue.toUpperCase()) !== -1
                       }
-                    />{" "}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
@@ -684,7 +683,7 @@ const Formulario: NextPage<Props> = (props) => {
                   >
                     <Select
                       defaultValue={dataDatosDenunciado.parentezco}
-                      onChange={handleParentezo}
+                      onChange={handleParentezco}
                     >
                       <Select.Option value="Hijo(a)">Hijo(a)</Select.Option>
                       <Select.Option value="Familiar">
