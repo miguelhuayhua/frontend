@@ -1,5 +1,5 @@
 "use client";
-import { Affix, Button, Layout, MenuProps } from "antd";
+import { Affix, Button, Col, Layout, MenuProps, Row } from "antd";
 import "moment/locale/es";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
@@ -73,53 +73,28 @@ export default function NuevoCaso() {
   return (
     <main>
       <Layout>
-        <Navbar></Navbar>
         <Layout hasSider>
-          <Affix offsetTop={64}>
-            <Sider
-              breakpoint="md"
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
-              defaultCollapsed={true}
-              style={{
-                overflow: "auto",
-                height: "100vh",
-                width: 200,
-                position: "sticky",
-                left: 0,
-                top: 65,
-              }}
-            >
-              <div className="demo-logo-vertical" />
-              <MenuSider
-                defaultOpenKeys="caso1"
-                defaultSelectedKey="caso1.2"
-              ></MenuSider>
-
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: "16px",
-                  width: 64,
-                  height: 64,
-                  color: "white",
-                  position: "absolute",
-
-                  right: 0,
-                  bottom: "4em",
-                }}
-              />
-            </Sider>
+          <Affix>
+            <MenuSider
+              defaultOpenKeys="caso1"
+              defaultSelectedKey="caso1.2"
+            ></MenuSider>
           </Affix>
           <Content>
+            <Row>
+              <Col
+                span={23}
+                style={{
+                  margin: "7.5px auto",
+                  borderRadius: 10,
+                }}
+              >
+                <Navbar></Navbar>
+              </Col>
+            </Row>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Content>
-                  <Informacion></Informacion>
-                </Content>
+                <Informacion></Informacion>
               </Content>
             </Layout>
           </Content>

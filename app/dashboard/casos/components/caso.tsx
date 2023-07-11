@@ -32,12 +32,11 @@ interface Props {
   open: boolean;
   setOpen: any;
   caso: Caso;
+  setCaso: any;
   adultoMayor: AdultoMayor2;
   denunciado: Denunciado;
 }
 const CasoModal: NextPage<Props> = (props) => {
-  const [caso, setCaso] = useState<Caso>({ ...props.caso });
-
   const handleChangeHijo = (ev: any) => {
     console.log(ev);
   };
@@ -52,13 +51,13 @@ const CasoModal: NextPage<Props> = (props) => {
 
   //cambio del estado de caso
   const handleDescripcion = (value: any) => {
-    setCaso({ ...caso, descripcion_hechos: value.target.value });
+    props.setCaso({ ...props.caso, descripcion_hechos: value.target.value });
   };
   const handlePeticion = (value: any) => {
-    setCaso({ ...caso, peticion: value.target.value });
+    props.setCaso({ ...props.caso, peticion: value.target.value });
   };
   const handleAcciones = (value: any) => {
-    setCaso({ ...caso, accion_realizada: value });
+    props.setCaso({ ...props.caso, accion_realizada: value });
   };
 
   return (
@@ -120,14 +119,14 @@ const CasoModal: NextPage<Props> = (props) => {
               <Form.Item label="Descripción de los Hechos">
                 <TextArea
                   style={{ maxHeight: 200, width: "90%" }}
-                  value={caso.descripcion_hechos}
+                  value={props.caso.descripcion_hechos}
                   onChange={handleDescripcion}
                 />
               </Form.Item>
               <Form.Item label="Petición del adulto">
                 <TextArea
                   style={{ maxHeight: 200, width: "90%" }}
-                  value={caso.peticion}
+                  value={props.caso.peticion}
                   onChange={handlePeticion}
                 />
               </Form.Item>
@@ -136,7 +135,7 @@ const CasoModal: NextPage<Props> = (props) => {
                 label="Acciones realizadas con el caso:"
               >
                 <Select
-                  value={caso.accion_realizada}
+                  value={props.caso.accion_realizada}
                   onChange={handleAcciones}
                   style={{ width: "90%" }}
                 >

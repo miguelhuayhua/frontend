@@ -2,9 +2,11 @@
 import {
   Button,
   DatePicker,
+  Empty,
   Form,
   Input,
   Select,
+  Space,
   Switch,
   Tag,
   message,
@@ -14,7 +16,7 @@ import locale from "antd/es/date-picker/locale/es_ES";
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
 import {
@@ -24,10 +26,13 @@ import {
   dias,
   meses,
 } from "../../nuevocaso/data";
+import dayjs from "dayjs";
+import isBeetwen from "dayjs/plugin/isBetween";
 export const DataContext = createContext({});
 //ROUTING
 
 const Informacion = () => {
+  dayjs.extend(isBeetwen);
   //estados
   const [open, setOpen] = useState(false);
   const [caso, setCaso] = useState<Caso>(datosCaso);
@@ -125,21 +130,44 @@ const Informacion = () => {
   //cambios en los filtros
   const handleFiltroCaso = (ev: any) => {
     setFiltroCaso(ev.target.value);
+    setDisplayCasos(
+      casos.filter((caso) => {
+        return caso.nro_caso.includes(ev.target.value);
+      })
+    );
   };
   const handleFiltroAccion = (ev: any) => {
     setFiltroAccionCaso(ev);
+    setDisplayCasos(
+      casos.filter((caso) => {
+        return caso.accion_realizada == ev;
+      })
+    );
   };
 
   const handleFiltroRange = (ev: any) => {
-    console.log(ev);
+    let [inicio, final] = ev;
+    let fechaInicio = dayjs(inicio.$d);
+    let fechaFinal = dayjs(final.$d);
+    console.log(fechaInicio, fechaFinal);
+    setDisplayCasos(
+      casos.filter((caso) => {
+        dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
+        return dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
+      })
+    );
   };
   return (
     <>
+      <h5 className="mt-4">Filtros para "Casos"</h5>
+      <small style={{ color: "#999" }}>
+        Cada filtro realiza búsquedas por separado...
+      </small>
       <Form
         layout={"horizontal"}
         style={{ display: "flex", marginTop: 10, flexWrap: "wrap" }}
       >
-        <Form.Item label="Nro. de Caso: ">
+        <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
           <Input
             placeholder="Introduzca el número de caso..."
             value={filtroCaso}
@@ -161,7 +189,10 @@ const Informacion = () => {
             <Select.Option value="Derivacion">Derivación</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Filtrar por rango de fechas:">
+        <Form.Item
+          style={{ marginLeft: 10 }}
+          label="Filtrar por rango de fechas:"
+        >
           <RangePicker
             locale={{
               ...locale,
@@ -182,6 +213,13 @@ const Informacion = () => {
         key="table"
         pagination={{ pageSize: 20 }}
         columns={columns}
+        locale={{
+          emptyText: (
+            <Space direction="vertical" align="center">
+              <Empty description="No existen datos a mostrar..." />
+            </Space>
+          ),
+        }}
         dataSource={displayCasos}
         onRow={(value, index) => {
           return {
@@ -275,6 +313,7 @@ const Informacion = () => {
         setOpen={setOpen}
         open={open}
         denunciado={denunciado}
+        setCaso={setCaso}
       ></CasoModal>
       ;
     </>

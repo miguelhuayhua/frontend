@@ -1,22 +1,10 @@
 "use client";
-import {
-  Affix,
-  Breadcrumb,
-  Button,
-  Col,
-  Layout,
-  Menu,
-  MenuProps,
-  Row,
-  Tabs,
-} from "antd";
+import { Affix, Col, Layout, Menu, MenuProps, Row } from "antd";
 import "moment/locale/es";
-import { Content, Footer, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
 //estilos
 import "./estilos.scss";
-import { useState } from "react";
-import Sider from "antd/es/layout/Sider";
 import React from "react";
 import {
   LineChart,
@@ -29,60 +17,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-type MenuItem = Required<MenuProps>["items"][number];
-import MenuItem from "antd/es/menu/MenuItem";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 import MenuSider from "./components/MenuSider";
 import Navbar from "./components/Navbar";
 export default function Dashboard() {
   const router = useRouter();
-  function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    url?: string,
-    children?: MenuItem[]
-  ): MenuItem {
-    return {
-      onClick: () => {
-        router.push(url!);
-      },
-      key,
-      icon,
-      children,
-      label,
-    } as MenuItem;
-  }
-  const items: MenuItem[] = [
-    {
-      key: 1,
-      label: "Casos",
-      children: [
-        {
-          label: "Agregar Caso",
-          key: 1.1,
-          icon: <UserOutlined />,
-          onClick: () => {
-            router.push("/dashboard/nuevocaso");
-          },
-        },
-        {
-          label: "Ver Casos",
-          key: 1.2,
-          icon: <UserOutlined />,
-          onClick: () => {
-            router.push("/dashboard/casos");
-          },
-        },
-      ],
-    },
-  ];
-
-  const [collapsed, setCollapsed] = useState(false);
 
   const data = [
     {
@@ -132,47 +70,25 @@ export default function Dashboard() {
   return (
     <main>
       <Layout>
-        <Navbar></Navbar>
         <Layout hasSider>
-          <Affix offsetTop={64}>
-            <Sider
-              breakpoint="md"
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
-              defaultCollapsed={true}
-              style={{
-                overflow: "auto",
-                height: "100vh",
-                width: 200,
-                position: "sticky",
-                left: 0,
-                top: 65,
-              }}
-            >
-              <div className="demo-logo-vertical" />
-              <MenuSider
-                defaultOpenKeys="null"
-                defaultSelectedKey="dashboard"
-              ></MenuSider>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: "16px",
-                  width: 64,
-                  height: 64,
-                  color: "white",
-                  position: "absolute",
-
-                  right: 0,
-                  bottom: "4em",
-                }}
-              />
-            </Sider>
+          <Affix>
+            <MenuSider
+              defaultSelectedKey="dashboard"
+              defaultOpenKeys="null"
+            ></MenuSider>
           </Affix>
           <Content>
+            <Row>
+              <Col
+                span={23}
+                style={{
+                  margin: "7.5px auto",
+                  borderRadius: 10,
+                }}
+              >
+                <Navbar></Navbar>
+              </Col>
+            </Row>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>

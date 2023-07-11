@@ -1,5 +1,15 @@
 "use client";
-import { Affix, Breadcrumb, Button, Layout, Menu, MenuProps, Tabs } from "antd";
+import {
+  Affix,
+  Breadcrumb,
+  Button,
+  Col,
+  Layout,
+  Menu,
+  MenuProps,
+  Row,
+  Tabs,
+} from "antd";
 import "moment/locale/es";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
@@ -60,54 +70,44 @@ export default function NuevoCaso() {
   };
   const router = useRouter();
 
-  const [collapsed, setCollapsed] = useState(false);
   return (
     <main>
       <Layout>
-        <Navbar></Navbar>
         <Layout hasSider>
-          <Affix offsetTop={64}>
-            <Sider
-              breakpoint="md"
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
-              defaultCollapsed={true}
-              style={{
-                overflow: "auto",
-                height: "100vh",
-                width: 200,
-                position: "sticky",
-                left: 0,
-                top: 65,
-              }}
-            >
-              <div className="demo-logo-vertical" />
-              <MenuSider
-                defaultOpenKeys="caso1"
-                defaultSelectedKey="caso1.1"
-              ></MenuSider>
-            </Sider>
+          <Affix>
+            <MenuSider
+              defaultOpenKeys="caso1"
+              defaultSelectedKey="caso1.1"
+            ></MenuSider>
           </Affix>
           <Content>
+            <Row>
+              <Col
+                span={23}
+                style={{
+                  margin: "7.5px auto",
+                  borderRadius: 10,
+                }}
+              >
+                <Navbar></Navbar>
+              </Col>
+            </Row>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Content>
-                  <div className={posicion == 0 ? "mostrar" : "ocultar"}>
-                    <Formulario
-                      getPosicion={getPosicion}
-                      getDatos={getDatos}
-                    ></Formulario>
-                  </div>
+                <div className={posicion == 0 ? "mostrar" : "ocultar"}>
+                  <Formulario
+                    getPosicion={getPosicion}
+                    getDatos={getDatos}
+                  ></Formulario>
+                </div>
 
-                  <div className={posicion == 1 ? "mostrar" : "ocultar"}>
-                    <Detalles
-                      getPosicion={getPosicion}
-                      datos={datos}
-                      router={router}
-                    ></Detalles>
-                  </div>
-                </Content>
+                <div className={posicion == 1 ? "mostrar" : "ocultar"}>
+                  <Detalles
+                    getPosicion={getPosicion}
+                    datos={datos}
+                    router={router}
+                  ></Detalles>
+                </div>
               </Content>
             </Layout>
           </Content>
