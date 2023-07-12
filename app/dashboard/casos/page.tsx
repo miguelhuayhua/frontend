@@ -81,17 +81,8 @@ export default function NuevoCaso() {
             ></MenuSider>
           </Affix>
           <Content>
-            <Row>
-              <Col
-                span={23}
-                style={{
-                  margin: "7.5px auto",
-                  borderRadius: 10,
-                }}
-              >
-                <Navbar></Navbar>
-              </Col>
-            </Row>
+            <Navbar></Navbar>
+
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Informacion></Informacion>

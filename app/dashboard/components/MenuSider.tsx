@@ -10,11 +10,6 @@ interface Props {
   defaultSelectedKey: string;
 }
 
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 type MenuItem = Required<MenuProps>["items"][number];
 import MenuItem from "antd/es/menu/MenuItem";
 import {
@@ -22,6 +17,10 @@ import {
   EyeOutlined,
   PlusOutlined,
   BarChartOutlined,
+  UsergroupAddOutlined,
+  UserAddOutlined,
+  UserOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import "./estilos.scss";
 import { NextPage } from "next";
@@ -58,6 +57,62 @@ const MenuSider: NextPage<Props> = (props) => {
             router.push("/dashboard/casos");
           },
         },
+        {
+          label: "Ver Personas Adultas",
+          key: "caso1.3",
+          icon: <EyeOutlined />,
+        },
+        {
+          label: "Ver Denunciados",
+          key: "caso1.4",
+          icon: <EyeOutlined />,
+        },
+      ],
+    },
+    {
+      key: "personal",
+      label: "Personal",
+      icon: <TeamOutlined />,
+      children: [
+        {
+          label: "Registrar Personal",
+          key: "personal1.1",
+          icon: <UsergroupAddOutlined />,
+          onClick: () => {
+            router.push("/dashboard/agregarpersonal");
+          },
+        },
+        {
+          label: "Ver Personal",
+          key: "personal1.2",
+          icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/personal");
+          },
+        },
+        {
+          label: "Usuarios",
+          key: "usuarios",
+          icon: <UserOutlined />,
+          children: [
+            {
+              label: "Registrar Usuario",
+              key: "usuario1.1",
+              icon: <UserAddOutlined />,
+              onClick: () => {
+                router.push("/dashboard/agregarusuario");
+              },
+            },
+            {
+              label: "Ver Usuarios",
+              key: "usuario1.2",
+              icon: <EyeOutlined />,
+              onClick: () => {
+                router.push("/dashboard/usuarios");
+              },
+            },
+          ],
+        },
       ],
     },
   ];
@@ -69,6 +124,7 @@ const MenuSider: NextPage<Props> = (props) => {
       <Sider
         breakpoint="md"
         collapsible
+        width={250}
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         defaultCollapsed={true}

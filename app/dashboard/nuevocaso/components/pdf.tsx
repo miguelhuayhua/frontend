@@ -195,7 +195,8 @@ const MyDocument = () => {
             </View>
           </View>
           <View style={{ width: "100%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>ESTADO CIVIL: SOLTERO(A)</Text>
+            <Text style={{ fontWeight: "bold" }}>ESTADO CIVIL:</Text>
+            <Text style={{ fontSize: 10 }}>SOLTERO(A)</Text>
             <View
               style={
                 datosGenerales.estado_civil == "Soltero(a)"

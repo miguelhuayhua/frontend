@@ -276,15 +276,15 @@ const Formulario: NextPage<Props> = (props) => {
     setPeticion(value.target.value);
   };
   const handleNombreDenunciado = (value: any) => {
-    setDatosDenunciado({ ...datosDenunciado, nombres: value.target.value });
+    setDatosDenunciado({ ...datosDenunciado, nombres: value });
   };
 
   const handlePaternoDenunciado = (value: any) => {
-    setDatosDenunciado({ ...datosDenunciado, paterno: value.target.value });
+    setDatosDenunciado({ ...datosDenunciado, paterno: value });
   };
 
   const handleMaternoDenunciado = (value: any) => {
-    setDatosDenunciado({ ...datosDenunciado, materno: value.target.value });
+    setDatosDenunciado({ ...datosDenunciado, materno: value });
   };
   const handleParentezco = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, parentezco: value });
@@ -299,20 +299,15 @@ const Formulario: NextPage<Props> = (props) => {
       tipologia: value.target.value,
     });
   };
-  const handleNroCaso = (value: any) => {
-    setDatosDenuncia({
-      ...datosDenuncia,
-      nro_caso: value.target.value,
-    });
-  };
+
   return (
     <>
       <h2>FORMULARIO DE REGISTRO DE ATENCIÓN</h2>
       <Row>
-        <Col span={20} offset={2}>
-          <Form layout="horizontal">
+        <Col span={24} offset={0} md={{ span: 20, offset: 2 }}>
+          <Form onFinish={handleOpenChange} layout="horizontal">
             <Row>
-              <Col span={24} md={{ span: 12 }} lg={{ span: 6 }}>
+              <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
                 <Form.Item label={"Fecha de Registro"}>
                   <DatePicker
                     className="normal-input"
@@ -329,7 +324,7 @@ const Formulario: NextPage<Props> = (props) => {
                   ></DatePicker>
                 </Form.Item>
               </Col>
-              <Col span={24} md={{ span: 12 }} lg={{ span: 6 }}>
+              <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
                 <FormItem label="Hora de registro:">
                   <TimePicker
                     className="normal-input"
@@ -338,13 +333,13 @@ const Formulario: NextPage<Props> = (props) => {
                   />
                 </FormItem>
               </Col>
-              <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+              <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
                 <Form.Item label="Tipología:">
                   <Input onChange={handleTipologia} className="small-input" />
                 </Form.Item>
               </Col>
-              <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
-                <Form.Item label="N° de Caso:">
+              <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
+                <Form.Item label="N° de Caso:" style={{ paddingLeft: 5 }}>
                   <Input
                     className="small-input"
                     suffix={"/2023"}
@@ -359,12 +354,22 @@ const Formulario: NextPage<Props> = (props) => {
                 1. Datos Generales de la persona adulta mayor
               </p>
               <Row>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item label="Nombres:">
+                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+                  <Form.Item
+                    name={"nombres"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Por favor introduzca el nombre del adulto ",
+                      },
+                    ]}
+                    label="Nombres:"
+                  >
                     <AutoComplete
                       options={nombres.nombres}
                       onChange={handleNombre}
                       placeholder="Introduzca el nombre..."
+                      className="normal-input"
                       filterOption={(inputValue, option) =>
                         option!.value
                           .toUpperCase()
@@ -373,8 +378,11 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item label="Apellido Paterno:">
+                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+                  <Form.Item
+                    label="Apellido Paterno:"
+                    style={{ paddingLeft: 5 }}
+                  >
                     <AutoComplete
                       options={nombres.apellidos}
                       onChange={handlePaterno}
@@ -387,8 +395,11 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item label="Apellido Materno:">
+                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+                  <Form.Item
+                    label="Apellido Materno:"
+                    style={{ paddingLeft: 5 }}
+                  >
                     <AutoComplete
                       onChange={handleMaterno}
                       options={nombres.apellidos}
@@ -401,7 +412,7 @@ const Formulario: NextPage<Props> = (props) => {
                     />{" "}
                   </Form.Item>
                 </Col>
-                <Col span={14} md={{ span: 14 }} lg={{ span: 8 }}>
+                <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
                       defaultValue={dayjs(datosGenerales.fecha_nac)}
@@ -419,7 +430,7 @@ const Formulario: NextPage<Props> = (props) => {
                     ></DatePicker>
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 4 }}>
+                <Col span={6} md={{ span: 12 }} lg={{ span: 4 }}>
                   <Form.Item label="Edad">
                     <InputNumber
                       className="normal-input"
@@ -436,11 +447,21 @@ const Formulario: NextPage<Props> = (props) => {
                 </Col>
 
                 <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
-                  <Form.Item label="N° de C.I.">
+                  <Form.Item
+                    label="N° de C.I."
+                    name={"ci"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte el carnet de identidad",
+                      },
+                    ]}
+                  >
                     <InputNumber
                       minLength={7}
                       className="normal-input"
                       onChange={handleCI}
+                      name={"ci"}
                     />
                   </Form.Item>
                 </Col>
@@ -474,8 +495,17 @@ const Formulario: NextPage<Props> = (props) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
-                  <Form.Item label="N° de Referencia:">
+                <Col span={18} md={{ span: 15 }} lg={{ span: 6 }}>
+                  <Form.Item
+                    label="N° de Referencia:"
+                    name={"referencia"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte un número de referencia",
+                      },
+                    ]}
+                  >
                     <InputNumber
                       onChange={handleReferencia}
                       minLength={8}
@@ -484,9 +514,10 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24}>
+                  <hr />
                   <Form.Item
                     className="normal-input"
-                    label="Hijos que tiene la persona adulta mayor"
+                    label="Hijos del adulto mayor"
                   >
                     {itemHijos.map(forMap)}
 
@@ -503,8 +534,8 @@ const Formulario: NextPage<Props> = (props) => {
                       onPressEnter={handleHijosConfirm}
                     />
                   </Form.Item>
+                  <hr />
                 </Col>
-
                 <Col span={12} md={{ span: 12 }} lg={{ span: 10 }}>
                   <Form.Item
                     className="normal-input"
@@ -529,7 +560,17 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item className="normal-input" label="Ocupación:">
+                  <Form.Item
+                    className="normal-input"
+                    label="Ocupación:"
+                    name={"ocupacion"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte la ocupacion...",
+                      },
+                    ]}
+                  >
                     <Input onChange={handleOcupacion} />
                   </Form.Item>
                 </Col>
@@ -586,21 +627,48 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 12 }}>
-                  <Form.Item label="Zona:">
+                  <Form.Item
+                    label="Zona:"
+                    name={"zona"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte el nombre de la zona...",
+                      },
+                    ]}
+                  >
                     <Input className="normal-input" onChange={handleZona} />
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 12 }}>
-                  <Form.Item label="Calle o Av.:">
+                  <Form.Item
+                    label="Calle o Av.:"
+                    name={"calle"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte el nombre de la calle...",
+                      },
+                    ]}
+                  >
                     <Input className="normal-input" onChange={handleCalle} />
                   </Form.Item>
                 </Col>
                 <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
-                  <Form.Item label="N° de vivienda:">
+                  <Form.Item
+                    label="N° de vivienda:"
+                    name={"vivienda"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte el número de la vivienda...",
+                      },
+                    ]}
+                  >
                     <InputNumber
                       onChange={handleNroVivienda}
-                      minLength={8}
                       className="normal-input"
+                      min={1}
                     />
                   </Form.Item>
                 </Col>
@@ -653,30 +721,58 @@ const Formulario: NextPage<Props> = (props) => {
               <p className="titulo-form">4. Datos personales del denunciado</p>
               <Row>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item label="Nombres:">
-                    <Input
-                      className="normal-input"
+                  <Form.Item
+                    label="Nombres:"
+                    name={"nombred"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Inserte el nombre del denunciado...",
+                      },
+                    ]}
+                  >
+                    <AutoComplete
+                      options={nombres.nombres}
                       onChange={handleNombreDenunciado}
+                      placeholder="Introduzca el nombre..."
+                      className="normal-input"
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
                     />
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                   <Form.Item label="Apellido Paterno:">
-                    <Input
-                      className="normal-input"
+                    <AutoComplete
+                      options={nombres.apellidos}
                       onChange={handlePaternoDenunciado}
+                      placeholder="Introduzca su apellido paterno..."
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
                     />
                   </Form.Item>
                 </Col>
                 <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                   <Form.Item label="Apellido Materno:">
-                    <Input
-                      className="normal-input"
+                    <AutoComplete
+                      options={nombres.apellidos}
                       onChange={handleMaternoDenunciado}
+                      placeholder="Introduzca su apellido materno..."
+                      filterOption={(inputValue, option) =>
+                        option!.value
+                          .toUpperCase()
+                          .indexOf(inputValue.toUpperCase()) !== -1
+                      }
                     />
                   </Form.Item>
                 </Col>
-                <Col offset={4} span={16} md={{ span: 16 }}>
+                <Col offset={2} span={20}>
                   <Form.Item
                     className="normal-input"
                     label="Parentezco con la persona adulta mayor:"
@@ -724,12 +820,12 @@ const Formulario: NextPage<Props> = (props) => {
                 </Col>
               </Row>
             </div>
+            <Form.Item>
+              <Button htmlType="submit" className="w-100 my-3">
+                Continuar
+              </Button>
+            </Form.Item>
           </Form>
-        </Col>
-        <Col span={4} offset={10}>
-          <Button className="w-100 my-3" onClick={handleOpenChange}>
-            Continuar
-          </Button>
         </Col>
       </Row>
       <Modal

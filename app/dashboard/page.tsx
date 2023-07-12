@@ -78,23 +78,13 @@ export default function Dashboard() {
             ></MenuSider>
           </Affix>
           <Content>
-            <Row>
-              <Col
-                span={23}
-                style={{
-                  margin: "7.5px auto",
-                  borderRadius: 10,
-                }}
-              >
-                <Navbar></Navbar>
-              </Col>
-            </Row>
+            <Navbar></Navbar>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>
                   <Row>
-                    <Col span={24} md={{ span: 12 }}>
-                      <ResponsiveContainer width={"100%"} height={500}>
+                    <Col span={24} lg={{ span: 12 }}>
+                      <ResponsiveContainer width={"100%"} height={350}>
                         <LineChart
                           className="w-100"
                           data={data}

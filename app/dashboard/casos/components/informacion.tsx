@@ -1,10 +1,12 @@
 "use client";
 import {
   Button,
+  Col,
   DatePicker,
   Empty,
   Form,
   Input,
+  Row,
   Select,
   Space,
   Switch,
@@ -135,9 +137,12 @@ const Informacion = () => {
         return caso.nro_caso.includes(ev.target.value);
       })
     );
+    setFiltroAccionCaso("");
   };
   const handleFiltroAccion = (ev: any) => {
     setFiltroAccionCaso(ev);
+    setFiltroCaso("");
+
     setDisplayCasos(
       casos.filter((caso) => {
         return caso.accion_realizada == ev;
@@ -149,13 +154,14 @@ const Informacion = () => {
     let [inicio, final] = ev;
     let fechaInicio = dayjs(inicio.$d);
     let fechaFinal = dayjs(final.$d);
-    console.log(fechaInicio, fechaFinal);
     setDisplayCasos(
       casos.filter((caso) => {
         dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
         return dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
       })
     );
+    setFiltroAccionCaso("");
+    setFiltroCaso("");
   };
   return (
     <>
@@ -163,48 +169,50 @@ const Informacion = () => {
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
       </small>
-      <Form
-        layout={"horizontal"}
-        style={{ display: "flex", marginTop: 10, flexWrap: "wrap" }}
-      >
-        <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-          <Input
-            placeholder="Introduzca el número de caso..."
-            value={filtroCaso}
-            onChange={handleFiltroCaso}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Tipo de acción realizada: "
-          style={{ marginLeft: 10 }}
-        >
-          <Select
-            value={filtroAccionCaso}
-            style={{ width: 120 }}
-            onChange={handleFiltroAccion}
-          >
-            <Select.Option value="Apertura">Apertura de Caso</Select.Option>
-            <Select.Option value="Orientacion">Orientación</Select.Option>
-            <Select.Option value="Citacion">Citación</Select.Option>
-            <Select.Option value="Derivacion">Derivación</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          style={{ marginLeft: 10 }}
-          label="Filtrar por rango de fechas:"
-        >
-          <RangePicker
-            locale={{
-              ...locale,
-              lang: {
-                ...locale.lang,
-                shortWeekDays: dias,
-                shortMonths: meses,
-              },
-            }}
-            onChange={handleFiltroRange}
-          />
-        </Form.Item>
+      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
+        <Row>
+          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
+              <Input
+                placeholder="Introduzca el número de caso..."
+                value={filtroCaso}
+                onChange={handleFiltroCaso}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={{ span: 8 }}>
+            <Form.Item
+              label="Tipo de acción realizada: "
+              style={{ marginLeft: 10 }}
+            >
+              <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
+                <Select.Option value="Apertura">Apertura de Caso</Select.Option>
+                <Select.Option value="Orientacion">Orientación</Select.Option>
+                <Select.Option value="Citacion">Citación</Select.Option>
+                <Select.Option value="Derivacion">Derivación</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={{ span: 8 }}>
+            <Form.Item
+              style={{ marginLeft: 10, width: "100%" }}
+              label="Filtrar por rango de fechas:"
+            >
+              <RangePicker
+                style={{ width: "100%" }}
+                locale={{
+                  ...locale,
+                  lang: {
+                    ...locale.lang,
+                    shortWeekDays: dias,
+                    shortMonths: meses,
+                  },
+                }}
+                onChange={handleFiltroRange}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
       <hr />
       <Table
@@ -314,6 +322,8 @@ const Informacion = () => {
         open={open}
         denunciado={denunciado}
         setCaso={setCaso}
+        setCasos={setCasos}
+        setDisplayCasos={setDisplayCasos}
       ></CasoModal>
       ;
     </>

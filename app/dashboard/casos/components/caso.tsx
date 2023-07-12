@@ -14,6 +14,7 @@ import {
   Space,
   Switch,
   Upload,
+  notification,
 } from "antd";
 import { NextPage } from "next";
 
@@ -35,16 +36,27 @@ interface Props {
   setCaso: any;
   adultoMayor: AdultoMayor2;
   denunciado: Denunciado;
+  setCasos: any;
+  setDisplayCasos: any;
 }
 const CasoModal: NextPage<Props> = (props) => {
-  const handleChangeHijo = (ev: any) => {
-    console.log(ev);
-  };
   //control del modal
   const handleConfirm = () => {
     props.setOpen(false);
+    axios
+      .post("http://localhost:8000/caso/update", { ...props.caso })
+      .then((res) => {
+        if (res.data.status == 1) {
+          notification.success({ message: "¡El caso se  modificó con éxito!" });
+          axios.get<Caso[]>("http://localhost:8000/caso/all").then((res) => {
+            props.setCasos(res.data);
+            props.setDisplayCasos(res.data);
+          });
+        } else {
+          notification.error({ message: "No se pudo modificar el caso..." });
+        }
+      });
   };
-
   const handleHideModal = () => {
     props.setOpen(false);
   };
@@ -208,7 +220,6 @@ const CasoModal: NextPage<Props> = (props) => {
                     </>
                   ) : (
                     <Segmented
-                      onChange={handleChangeHijo}
                       options={props.adultoMayor.hijos.map((hijo) => {
                         return {
                           label: (
