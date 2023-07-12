@@ -15,6 +15,7 @@ import {
   Button,
   Col,
   Descriptions,
+  FloatButton,
   Modal,
   Progress,
   Row,
@@ -40,6 +41,7 @@ export const DataContext = createContext({});
 //PDF
 
 const Detalles: NextPage<Props> = (props) => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
   //estados
   const [open, setOpen] = useState(false);
   const [counter, setCounter] = useState(0);
@@ -120,13 +122,16 @@ const Detalles: NextPage<Props> = (props) => {
             <Col span={24}>
               <b>Datos Generales</b>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24}>
+              <Badge status="processing" text="Datos Validados" />
+            </Col>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Nombres </p>
                 <p className="contenido">{props.datos.datosGenerales.nombre}</p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Paterno: </p>
                 <p className="contenido">
@@ -134,7 +139,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Materno: </p>
                 <p className="contenido">
@@ -142,112 +147,222 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
+            <Col span={24} md={{ span: 6 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Fecha de nacimiento: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.fecha_nac}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 6 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Edad: </p>
+                <p className="contenido">{props.datos.datosGenerales.edad}</p>
+              </div>
+            </Col>
+
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">C.I.: </p>
+                <p className="contenido"> {props.datos.datosGenerales.ci}</p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Estado Civil: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.estado_civil}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Género: </p>
+                <p className="contenido"> {props.datos.datosGenerales.sexo}</p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Nivel de Estudios: </p>
+                <p className="contenido"> {props.datos.datosGenerales.grado}</p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Ocupación: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.ocupacion}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo"> Nro. de referencia: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.referencia}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo"> Beneficios: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.beneficios}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo"> Hijos: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.hijos.map((value, _i) => {
+                    return (
+                      <div key={_i}>
+                        {value} <br></br>
+                      </div>
+                    );
+                  })}
+                </p>
+              </div>
+            </Col>
           </Row>
-          <Descriptions.Item label="Estado " span={3}>
-            <Badge status="processing" text="Datos Validados" />
-          </Descriptions.Item>
-          <Descriptions.Item span={3} label="Apellido Paterno ">
-            {props.datos.datosGenerales.paterno}
-          </Descriptions.Item>
-          <Descriptions.Item label="Apellido Materno ">
-            {props.datos.datosGenerales.materno}
-          </Descriptions.Item>
-          <Descriptions.Item label="Fecha de Nacimiento">
-            {props.datos.datosGenerales.fecha_nac}
-          </Descriptions.Item>
-          <Descriptions.Item label="Edad ">
-            {props.datos.datosGenerales.edad}
-          </Descriptions.Item>
-          <Descriptions.Item label="C.I.">
-            {props.datos.datosGenerales.ci}
-          </Descriptions.Item>
-          <Descriptions.Item label="Estado Civil ">
-            {props.datos.datosGenerales.estado_civil}
-          </Descriptions.Item>
-          <Descriptions.Item label="Género ">
-            {props.datos.datosGenerales.sexo}
-          </Descriptions.Item>
-          <Descriptions.Item label="Nivel de Estudios ">
-            {props.datos.datosGenerales.grado}
-          </Descriptions.Item>
-          <Descriptions.Item label="Ocupación ">
-            {props.datos.datosGenerales.ocupacion}
-          </Descriptions.Item>
-          <Descriptions.Item label="Nro. de referencia ">
-            {props.datos.datosGenerales.referencia}
-          </Descriptions.Item>
-          <Descriptions.Item label="Beneficios ">
-            {props.datos.datosGenerales.beneficios}
-          </Descriptions.Item>
-          <Descriptions.Item label="Hijos ">
-            {props.datos.datosGenerales.hijos.map((value, _i) => {
-              return (
-                <div key={_i}>
-                  {value} <br></br>
-                </div>
-              );
-            })}
-          </Descriptions.Item>
         </Col>
 
-        <Col span={20} offset={2} className="mt-3">
-          <Descriptions size="small" title="Datos de ubicación" bordered>
-            <Descriptions.Item label="Estado " span={3}>
+        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+          <Row>
+            <Col span={24}>
+              <b>Datos de Ubicación</b>
+            </Col>
+            <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
-            </Descriptions.Item>
-            <Descriptions.Item label="Distrito ">
-              {props.datos.datosUbicacion.distrito}
-            </Descriptions.Item>
-            <Descriptions.Item label="Zona de Domicilio ">
-              {props.datos.datosUbicacion.zona}
-            </Descriptions.Item>
-            <Descriptions.Item label="Calle o Avenida ">
-              {props.datos.datosUbicacion.calle}
-            </Descriptions.Item>
-            <Descriptions.Item label="Área ">
-              {props.datos.datosUbicacion.area == "Otro"
-                ? props.datos.datosUbicacion.area +
-                  " (" +
-                  props.datos.datosUbicacion.otra_area +
-                  ")"
-                : props.datos.datosUbicacion.area}
-            </Descriptions.Item>
-            <Descriptions.Item label="Tipo de Domicilio ">
-              {props.datos.datosUbicacion.tipo_domicilio}
-            </Descriptions.Item>
-            <Descriptions.Item label="Nro. de vivienda ">
-              {props.datos.datosUbicacion.n_vivienda}
-            </Descriptions.Item>
-          </Descriptions>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Distrito: </p>
+                <p className="contenido">
+                  {" "}
+                  {props.datos.datosUbicacion.distrito}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Zona: </p>
+                <p className="contenido">{props.datos.datosUbicacion.zona}</p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Calle o avenida: </p>
+                <p className="contenido">{props.datos.datosUbicacion.calle}</p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Área: </p>
+                <p className="contenido">
+                  {props.datos.datosUbicacion.area == "Otro"
+                    ? props.datos.datosUbicacion.area +
+                      " (" +
+                      props.datos.datosUbicacion.otra_area +
+                      ")"
+                    : props.datos.datosUbicacion.area}{" "}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Tipo de domicilio: </p>
+                <p className="contenido">
+                  {props.datos.datosUbicacion.tipo_domicilio}
+                </p>
+              </div>
+            </Col>
+
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">N° de vivienda: </p>
+                <p className="contenido">
+                  {props.datos.datosUbicacion.n_vivienda}
+                </p>
+              </div>
+            </Col>
+          </Row>
         </Col>
-        <Col span={20} offset={2} className="mt-3">
-          <Descriptions size="small" title="Datos del denunciado " bordered>
-            <Descriptions.Item label="Estado " span={3}>
+        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+          <Row>
+            <Col span={24}>
+              <b>Datos del denunciado</b>
+            </Col>
+            <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
-            </Descriptions.Item>
-            <Descriptions.Item label="Nombre de denunciado ">
-              {props.datos.datosDenunciado.nombres}
-            </Descriptions.Item>
-            <Descriptions.Item label="Apellido Paterno ">
-              {props.datos.datosDenunciado.paterno}
-            </Descriptions.Item>
-            <Descriptions.Item label="Apellido Materno ">
-              {props.datos.datosDenunciado.materno}
-            </Descriptions.Item>
-            <Descriptions.Item label="Parentezco con la persona mayor ">
-              {props.datos.datosDenunciado.parentezco}
-            </Descriptions.Item>
-          </Descriptions>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Nombre del denunciado: </p>
+                <p className="contenido">
+                  {props.datos.datosDenunciado.nombres}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Apellido paterno: </p>
+                <p className="contenido">
+                  {" "}
+                  {props.datos.datosDenunciado.paterno}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Apellido materno: </p>
+                <p className="contenido">
+                  {props.datos.datosDenunciado.materno}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Parentezco: </p>
+                <p className="contenido">
+                  {props.datos.datosDenunciado.parentezco}
+                </p>
+              </div>
+            </Col>
+          </Row>
         </Col>
-        <Col span={20} offset={2} className="mt-3">
-          <Descriptions size="small" title="Descripciones " bordered>
-            <Descriptions.Item span={3} label="Descripción de Hechos ">
-              {props.datos.descripcionHechos}
-            </Descriptions.Item>
-            <Descriptions.Item span={3} label="Descripción de Petición ">
-              {props.datos.descripcionPeticion}
-            </Descriptions.Item>
-          </Descriptions>
+        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+          <Row>
+            <Col span={24}>
+              <b>Descripciones</b>
+            </Col>
+            <Col span={24}>
+              <Badge status="processing" text="Datos Validados" />
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Descripción de los hechos: </p>
+                <p className="contenido">
+                  {" "}
+                  {props.datos.descripcionHechos.length == 0
+                    ? "No existe descripción"
+                    : props.datos.descripcionHechos}
+                </p>
+              </div>
+            </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Descripción de petición: </p>
+                <p className="contenido">
+                  {props.datos.descripcionPeticion.length == 0
+                    ? "No existe descripción"
+                    : props.datos.descripcionPeticion}
+                </p>
+              </div>
+            </Col>
+          </Row>
         </Col>
 
         <Col sm={{ span: 12, offset: 0 }} md={{ offset: 4, span: 8 }}>
@@ -294,6 +409,7 @@ const Detalles: NextPage<Props> = (props) => {
           />
         </div>
       </Modal>
+      <FloatButton.BackTop />
     </>
   );
 };

@@ -4,6 +4,7 @@ import {
   Button,
   Col,
   DatePicker,
+  FloatButton,
   Form,
   Input,
   InputNumber,
@@ -430,26 +431,31 @@ const Formulario: NextPage<Props> = (props) => {
                     ></DatePicker>
                   </Form.Item>
                 </Col>
-                <Col span={6} md={{ span: 12 }} lg={{ span: 4 }}>
-                  <Form.Item label="Edad">
+                <Col span={6}>
+                  <Form.Item
+                    label="Edad"
+                    rules={[
+                      {
+                        min: 60,
+                        message: "No puede tener una edad menor a 60...",
+                      },
+                    ]}
+                  >
                     <InputNumber
                       className="normal-input"
                       min={60}
                       disabled
                       value={datosGenerales.edad}
-                      style={
-                        datosGenerales.edad < 60
-                          ? { border: "1px solid red" }
-                          : {}
-                      }
+                      name="Edad"
                     />
                   </Form.Item>
                 </Col>
 
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={18} md={{ span: 12 }} xl={{ span: 6 }}>
                   <Form.Item
                     label="N° de C.I."
                     name={"ci"}
+                    style={{ marginLeft: 5 }}
                     rules={[
                       {
                         required: true,
@@ -465,7 +471,7 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={10} md={{ span: 10 }} lg={{ span: 6 }}>
+                <Col span={10} md={{ span: 12 }} xl={{ span: 6 }}>
                   <Form.Item label="Sexo:">
                     <Radio.Group
                       defaultValue={"Femenino"}
@@ -478,7 +484,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
 
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={12} xl={{ span: 6 }}>
                   <Form.Item className="normal-input" label="Estado Civil:">
                     <Select defaultValue={"Viudo"} onChange={handleEstadoCivil}>
                       <Select.Option value="Soltero(a)">
@@ -495,7 +501,7 @@ const Formulario: NextPage<Props> = (props) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={18} md={{ span: 15 }} lg={{ span: 6 }}>
+                <Col span={24} lg={{ span: 12 }}>
                   <Form.Item
                     label="N° de Referencia:"
                     name={"referencia"}
@@ -536,7 +542,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                   <hr />
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 10 }}>
+                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item
                     className="normal-input"
                     label="Grado de Instrucción:"
@@ -559,7 +565,7 @@ const Formulario: NextPage<Props> = (props) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item
                     className="normal-input"
                     label="Ocupación:"
@@ -574,7 +580,7 @@ const Formulario: NextPage<Props> = (props) => {
                     <Input onChange={handleOcupacion} />
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item className="normal-input" label="Beneficios:">
                     <Select
                       onChange={handleBeneficios}
@@ -588,7 +594,7 @@ const Formulario: NextPage<Props> = (props) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 10 }}>
+                <Col span={24} md={{ span: 14 }} xl={{ span: 8 }}>
                   <Form.Item
                     className="normal-input"
                     label="Tipo de domicilio:"
@@ -613,7 +619,7 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={24} md={{ span: 10 }} xl={{ span: 4 }}>
                   <Form.Item className="normal-input" label="Distrito:">
                     <Select defaultValue={1} onChange={handleDistrito}>
                       {Array.from({ length: 14 }, (_, i) => i + 1).map(
@@ -626,7 +632,7 @@ const Formulario: NextPage<Props> = (props) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 12 }}>
+                <Col span={24} xl={{ span: 12 }}>
                   <Form.Item
                     label="Zona:"
                     name={"zona"}
@@ -640,7 +646,7 @@ const Formulario: NextPage<Props> = (props) => {
                     <Input className="normal-input" onChange={handleZona} />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 12 }}>
+                <Col span={24} xl={{ span: 12 }}>
                   <Form.Item
                     label="Calle o Av.:"
                     name={"calle"}
@@ -654,7 +660,7 @@ const Formulario: NextPage<Props> = (props) => {
                     <Input className="normal-input" onChange={handleCalle} />
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={24} md={{ span: 10 }} xl={{ span: 6 }}>
                   <Form.Item
                     label="N° de vivienda:"
                     name={"vivienda"}
@@ -672,7 +678,7 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={12} md={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={24} md={{ span: 14 }} xl={{ span: 6 }}>
                   <Form.Item className="normal-input" label="Área:">
                     <Select defaultValue={"Urbano"} onChange={handleArea}>
                       <Select.Option value="Urbano">Urbano</Select.Option>
@@ -720,7 +726,7 @@ const Formulario: NextPage<Props> = (props) => {
             <div className="border position-relative rounded p-4 mt-4">
               <p className="titulo-form">4. Datos personales del denunciado</p>
               <Row>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+                <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
                   <Form.Item
                     label="Nombres:"
                     name={"nombred"}
@@ -744,8 +750,11 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-                  <Form.Item label="Apellido Paterno:">
+                <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
+                  <Form.Item
+                    label="Apellido Paterno:"
+                    style={{ marginLeft: 5 }}
+                  >
                     <AutoComplete
                       options={nombres.apellidos}
                       onChange={handlePaternoDenunciado}
@@ -758,9 +767,10 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item label="Apellido Materno:">
                     <AutoComplete
+                      style={{ marginLeft: 5 }}
                       options={nombres.apellidos}
                       onChange={handleMaternoDenunciado}
                       placeholder="Introduzca su apellido materno..."
@@ -772,10 +782,11 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col offset={2} span={20}>
+                <Col span={24} lg={{ span: 12 }}>
                   <Form.Item
                     className="normal-input"
-                    label="Parentezco con la persona adulta mayor:"
+                    label="Parentezco con el adulto mayor:"
+                    style={{ marginLeft: 10 }}
                   >
                     <Select
                       defaultValue={dataDatosDenunciado.parentezco}
@@ -852,6 +863,7 @@ const Formulario: NextPage<Props> = (props) => {
           </p>
         </div>
       </Modal>
+      <FloatButton.BackTop />
     </>
   );
 };
