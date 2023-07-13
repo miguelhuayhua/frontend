@@ -24,7 +24,6 @@ h2 {
   margin-bottom: 1em;
   vertical-align: middle;
   cursor: pointer;
-  margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,13 +54,13 @@ h2 {
 .titulo {
   background-color: rgb(235, 235, 235);
   padding: 0.5em 1em;
-  width: 30%;
+  width: 40%;
   border: 0.5px solid rgb(219, 219, 219);
 }
 
 .contenido {
   padding: 0.5em 1em;
-  width: 70%;
+  width: 60%;
   border: 0.5px solid rgb(235, 235, 235);
 }
 p {

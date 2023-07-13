@@ -74,17 +74,18 @@ export default function NuevoCaso() {
     <main>
       <Layout>
         <Layout hasSider>
-          <Affix>
-            <MenuSider
-              defaultOpenKeys="caso1"
-              defaultSelectedKey="caso1.2"
-            ></MenuSider>
-          </Affix>
+          <MenuSider
+            defaultOpenKeys="caso1"
+            defaultSelectedKey="caso1.2"
+          ></MenuSider>
           <Content>
             <Navbar></Navbar>
 
             <Layout>
-              <Content className="site-layout" style={{ padding: "0 50px" }}>
+              <Content
+                className="site-layout"
+                style={{ padding: "0 50px", position: "relative" }}
+              >
                 <Informacion></Informacion>
               </Content>
             </Layout>

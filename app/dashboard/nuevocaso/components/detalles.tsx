@@ -7,14 +7,17 @@ interface Props {
     descripcionPeticion: string;
     datosDenunciado: DatosDenunciado;
     accionRealizada: string;
+    datosDenuncia: DatosDenuncia;
   };
   router: any;
 }
 import {
+  Affix,
   Badge,
   Button,
   Col,
   Descriptions,
+  Dropdown,
   FloatButton,
   Modal,
   Progress,
@@ -25,16 +28,18 @@ import {
 import { NextPage } from "next";
 import {
   AdultoMayor,
+  DatosDenuncia,
   DatosDenunciado,
   DatosUbicacion,
   dataDatosDenuncia,
   dataDatosGenerales,
 } from "../data";
-import { createContext, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
-import { NextRouter, useRouter } from "next/router";
+import { InfoCircleFilled } from "@ant-design/icons";
+import dayjs from "dayjs";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -42,6 +47,7 @@ export const DataContext = createContext({});
 
 const Detalles: NextPage<Props> = (props) => {
   window.scrollTo({ top: 0, behavior: "smooth" });
+
   //estados
   const [open, setOpen] = useState(false);
   const [counter, setCounter] = useState(0);
@@ -117,21 +123,93 @@ const Detalles: NextPage<Props> = (props) => {
   return (
     <>
       <Row className="my-4">
-        <Col span={20} offset={2}>
-          <Row>
-            <Col span={24}>
+        <Col span={24} md={{ span: 22, offset: 1 }}>
+          <Affix offsetTop={100}>
+            <Dropdown
+              trigger={["click"]}
+              menu={{
+                items: [
+                  {
+                    key: "1",
+                    label: (
+                      <div style={{ width: 300 }}>
+                        <h6 style={{ textAlign: "center" }}>
+                          Detalles del caso nro:
+                          <b>
+                            {" " +
+                              props.datos.datosDenuncia.nro_caso +
+                              "/" +
+                              dayjs().year()}
+                          </b>
+                        </h6>
+
+                        <hr />
+                        <Row>
+                          <Col span={24}>
+                            <p className="info">
+                              <span>
+                                <b>Fecha de Registro del caso: </b>
+                              </span>
+                              {props.datos.datosDenuncia.fecha}
+                            </p>
+                          </Col>
+                          <Col span={24}>
+                            <p className="info">
+                              <b>Hora de registro del caso: </b>
+                              {props.datos.datosDenuncia.hora}
+                            </p>
+                          </Col>
+                          <Col span={24}>
+                            <p className="info">
+                              <b>Tipología: </b>
+                              {props.datos.datosDenuncia.tipologia}
+                            </p>
+                          </Col>
+                          <Col span={24}>
+                            <p className="info">
+                              <b>Acción realizada: </b>
+                              {props.datos.accionRealizada}
+                            </p>
+                          </Col>
+                        </Row>
+                      </div>
+                    ),
+                  },
+                ],
+              }}
+              placement="bottomRight"
+              arrow={{ pointAtCenter: true }}
+            >
+              <Button
+                style={{
+                  border: "none",
+                  width: 60,
+                  height: 60,
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  zIndex: 10,
+                }}
+              >
+                <InfoCircleFilled style={{ fontSize: "2em" }} />
+              </Button>
+            </Dropdown>
+          </Affix>
+          <Row className="mt-4">
+            <Col span={12}>
               <b>Datos Generales</b>
             </Col>
+
             <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
               <div className="d-flex w-100">
-                <p className="titulo">Nombres </p>
+                <p className="titulo">Nombres: </p>
                 <p className="contenido">{props.datos.datosGenerales.nombre}</p>
               </div>
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Paterno: </p>
                 <p className="contenido">
@@ -139,7 +217,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 6 }}>
+            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Materno: </p>
                 <p className="contenido">
@@ -147,7 +225,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 6 }}>
+            <Col span={24} md={{ span: 14 }} lg={{ span: 8 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Fecha de nacimiento: </p>
                 <p className="contenido">
@@ -155,20 +233,20 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 6 }}>
+            <Col span={24} md={{ span: 10 }} lg={{ span: 8 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Edad: </p>
                 <p className="contenido">{props.datos.datosGenerales.edad}</p>
               </div>
             </Col>
 
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} md={{ span: 8 }}>
               <div className="d-flex w-100">
                 <p className="titulo">C.I.: </p>
                 <p className="contenido"> {props.datos.datosGenerales.ci}</p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} md={{ span: 16 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Estado Civil: </p>
                 <p className="contenido">
@@ -184,16 +262,16 @@ const Detalles: NextPage<Props> = (props) => {
             </Col>
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
-                <p className="titulo">Nivel de Estudios: </p>
-                <p className="contenido"> {props.datos.datosGenerales.grado}</p>
+                <p className="titulo"> Beneficios: </p>
+                <p className="contenido">
+                  {props.datos.datosGenerales.beneficios}
+                </p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
-                <p className="titulo">Ocupación: </p>
-                <p className="contenido">
-                  {props.datos.datosGenerales.ocupacion}
-                </p>
+                <p className="titulo">Nivel de Estudios: </p>
+                <p className="contenido"> {props.datos.datosGenerales.grado}</p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>
@@ -206,12 +284,13 @@ const Detalles: NextPage<Props> = (props) => {
             </Col>
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
-                <p className="titulo"> Beneficios: </p>
+                <p className="titulo">Ocupación: </p>
                 <p className="contenido">
-                  {props.datos.datosGenerales.beneficios}
+                  {props.datos.datosGenerales.ocupacion}
                 </p>
               </div>
             </Col>
+
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
                 <p className="titulo"> Hijos: </p>
@@ -229,7 +308,11 @@ const Detalles: NextPage<Props> = (props) => {
           </Row>
         </Col>
 
-        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+        <Col
+          style={{ marginTop: "2em" }}
+          span={24}
+          md={{ span: 22, offset: 1 }}
+        >
           <Row>
             <Col span={24}>
               <b>Datos de Ubicación</b>
@@ -241,21 +324,8 @@ const Detalles: NextPage<Props> = (props) => {
               <div className="d-flex w-100">
                 <p className="titulo">Distrito: </p>
                 <p className="contenido">
-                  {" "}
                   {props.datos.datosUbicacion.distrito}
                 </p>
-              </div>
-            </Col>
-            <Col span={24} md={{ span: 12 }}>
-              <div className="d-flex w-100">
-                <p className="titulo">Zona: </p>
-                <p className="contenido">{props.datos.datosUbicacion.zona}</p>
-              </div>
-            </Col>
-            <Col span={24} md={{ span: 12 }}>
-              <div className="d-flex w-100">
-                <p className="titulo">Calle o avenida: </p>
-                <p className="contenido">{props.datos.datosUbicacion.calle}</p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>
@@ -267,8 +337,15 @@ const Detalles: NextPage<Props> = (props) => {
                       " (" +
                       props.datos.datosUbicacion.otra_area +
                       ")"
-                    : props.datos.datosUbicacion.area}{" "}
+                    : props.datos.datosUbicacion.area}
                 </p>
+              </div>
+            </Col>
+
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Calle o avenida: </p>
+                <p className="contenido">{props.datos.datosUbicacion.calle}</p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>
@@ -288,9 +365,19 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
+            <Col span={24} md={{ span: 12 }}>
+              <div className="d-flex w-100">
+                <p className="titulo">Zona: </p>
+                <p className="contenido">{props.datos.datosUbicacion.zona}</p>
+              </div>
+            </Col>
           </Row>
         </Col>
-        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+        <Col
+          style={{ marginTop: "2em" }}
+          span={24}
+          md={{ span: 22, offset: 1 }}
+        >
           <Row>
             <Col span={24}>
               <b>Datos del denunciado</b>
@@ -333,7 +420,11 @@ const Detalles: NextPage<Props> = (props) => {
             </Col>
           </Row>
         </Col>
-        <Col style={{ marginTop: "2em" }} span={20} offset={2}>
+        <Col
+          style={{ marginTop: "2em" }}
+          span={24}
+          md={{ span: 22, offset: 1 }}
+        >
           <Row>
             <Col span={24}>
               <b>Descripciones</b>
@@ -341,21 +432,24 @@ const Detalles: NextPage<Props> = (props) => {
             <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24}>
               <div className="d-flex w-100">
-                <p className="titulo">Descripción de los hechos: </p>
-                <p className="contenido">
-                  {" "}
+                <p className="titulo" style={{ width: "20%" }}>
+                  Descripción de los hechos:
+                </p>
+                <p className="contenido" style={{ width: "80%" }}>
                   {props.datos.descripcionHechos.length == 0
                     ? "No existe descripción"
                     : props.datos.descripcionHechos}
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24}>
               <div className="d-flex w-100">
-                <p className="titulo">Descripción de petición: </p>
-                <p className="contenido">
+                <p className="titulo" style={{ width: "20%" }}>
+                  Descripción de petición:
+                </p>
+                <p className="contenido" style={{ width: "80%" }}>
                   {props.datos.descripcionPeticion.length == 0
                     ? "No existe descripción"
                     : props.datos.descripcionPeticion}

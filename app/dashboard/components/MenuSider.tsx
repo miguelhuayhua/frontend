@@ -1,5 +1,5 @@
 "use client";
-import { Button, Menu, MenuProps } from "antd";
+import { Affix, Button, Menu, MenuProps } from "antd";
 import "moment/locale/es";
 import { useRouter } from "next/navigation";
 //estilos
@@ -121,30 +121,32 @@ const MenuSider: NextPage<Props> = (props) => {
 
   return (
     <>
-      <Sider
-        breakpoint="md"
-        collapsible
-        width={250}
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        defaultCollapsed={true}
-        style={{
-          overflow: "auto",
-          height: "100vh",
-          width: 200,
-          position: "sticky",
-          left: 0,
-        }}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          selectedKeys={[props.defaultSelectedKey]}
-          mode="inline"
-          defaultOpenKeys={[props.defaultOpenKeys]}
-          items={items}
-        />
-      </Sider>
+      <Affix>
+        <Sider
+          breakpoint="md"
+          collapsible
+          width={250}
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          defaultCollapsed={true}
+          style={{
+            overflow: "auto",
+            height: "100vh",
+            width: 200,
+            position: "sticky",
+            left: 0,
+          }}
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            selectedKeys={[props.defaultSelectedKey]}
+            mode="inline"
+            defaultOpenKeys={[props.defaultOpenKeys]}
+            items={items}
+          />
+        </Sider>
+      </Affix>
     </>
   );
 };

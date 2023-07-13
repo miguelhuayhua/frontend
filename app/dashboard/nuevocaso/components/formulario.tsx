@@ -177,6 +177,7 @@ const Formulario: NextPage<Props> = (props) => {
       <Tag
         className="hijos"
         closable
+        style={{ marginTop: -5 }}
         onClose={(e) => {
           e.preventDefault();
           handleClose(tag);
@@ -526,7 +527,6 @@ const Formulario: NextPage<Props> = (props) => {
                     label="Hijos del adulto mayor"
                   >
                     {itemHijos.map(forMap)}
-
                     <Button onClick={showInput} className="tagPlus btn">
                       <PlusOutlined /> Nuevo(a) Hijo(a)
                     </Button>
@@ -680,7 +680,10 @@ const Formulario: NextPage<Props> = (props) => {
                 </Col>
                 <Col span={24} md={{ span: 14 }} xl={{ span: 6 }}>
                   <Form.Item className="normal-input" label="Área:">
-                    <Select defaultValue={"Urbano"} onChange={handleArea}>
+                    <Select
+                      defaultValue={datosUbicacion.area}
+                      onChange={handleArea}
+                    >
                       <Select.Option value="Urbano">Urbano</Select.Option>
                       <Select.Option value="Rural">Rural</Select.Option>
                       <Select.Option value="Otro">Otro Municipio</Select.Option>
@@ -831,11 +834,19 @@ const Formulario: NextPage<Props> = (props) => {
                 </Col>
               </Row>
             </div>
-            <Form.Item>
-              <Button htmlType="submit" className="w-100 my-3">
-                Continuar
-              </Button>
-            </Form.Item>
+            <Row>
+              <Col span={14} offset={5}>
+                <Form.Item>
+                  <Button
+                    style={{ backgroundColor: "#1677ff", color: "white" }}
+                    htmlType="submit"
+                    className="w-100 my-3"
+                  >
+                    Continuar
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
           </Form>
         </Col>
       </Row>

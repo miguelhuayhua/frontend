@@ -4,21 +4,36 @@ import {
   Col,
   DatePicker,
   Empty,
+  FloatButton,
   Form,
   Input,
+  Progress,
   Row,
   Select,
   Space,
+  Spin,
   Switch,
   Tag,
+  Tooltip,
   message,
+  notification,
 } from "antd";
 import locale from "antd/es/date-picker/locale/es_ES";
 
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
-import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  PlusCircleOutlined,
+  CommentOutlined,
+  CustomerServiceOutlined,
+  FilterOutlined,
+  FileDoneOutlined,
+  FileExcelFilled,
+  FilePdfFilled,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
 import {
@@ -165,7 +180,9 @@ const Informacion = () => {
   };
   return (
     <>
-      <h5 className="mt-4">Filtros para "Casos"</h5>
+      <h5 className="mt-4">
+        Filtros para "Casos" <FilterOutlined />
+      </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
       </small>
@@ -216,10 +233,10 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
-        scroll={{ x: 800, y: 600 }}
+        scroll={{ x: 800, y: 500 }}
         rowKey={(caso) => caso.id_caso}
         key="table"
-        pagination={{ pageSize: 20 }}
+        pagination={{ pageSize: 20, position: ["bottomCenter"] }}
         columns={columns}
         locale={{
           emptyText: (
@@ -325,7 +342,70 @@ const Informacion = () => {
         setCasos={setCasos}
         setDisplayCasos={setDisplayCasos}
       ></CasoModal>
-      ;
+
+      <FloatButton.Group
+        trigger="click"
+        type="primary"
+        shape="square"
+        style={{ right: 50, bottom: 15 }}
+        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
+      >
+        <Tooltip
+          title="Generar EXCEL"
+          placement={"right"}
+          color={"#107840"}
+          key={"excel"}
+        >
+          <FloatButton
+            onClick={() => {
+              notification.info({
+                message: (
+                  <div>
+                    Generando Excel...
+                    <Spin
+                      indicator={
+                        <LoadingOutlined
+                          style={{ marginLeft: 10, fontSize: 24 }}
+                        />
+                      }
+                    />
+                  </div>
+                ),
+              });
+              axios.get("http://localhost:8000/caso/report").then((res) => {
+                console.log(res);
+              });
+            }}
+            style={{ display: "flex", justifyContent: "center" }}
+            icon={
+              <FileExcelFilled
+                style={{
+                  color: "#107840",
+                  fontSize: 25,
+                }}
+              />
+            }
+          />
+        </Tooltip>
+
+        <Tooltip
+          title="Generar PDF"
+          placement={"right"}
+          color={"#b51308"}
+          key={"pdf"}
+        >
+          <FloatButton
+            icon={
+              <FilePdfFilled
+                style={{
+                  color: "#b51308",
+                  fontSize: 25,
+                }}
+              />
+            }
+          />
+        </Tooltip>
+      </FloatButton.Group>
     </>
   );
 };

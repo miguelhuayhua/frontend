@@ -74,12 +74,10 @@ export default function NuevoCaso() {
     <main>
       <Layout>
         <Layout hasSider>
-          <Affix>
-            <MenuSider
-              defaultOpenKeys="caso1"
-              defaultSelectedKey="caso1.1"
-            ></MenuSider>
-          </Affix>
+          <MenuSider
+            defaultOpenKeys="caso1"
+            defaultSelectedKey="caso1.1"
+          ></MenuSider>
           <Content>
             <Navbar></Navbar>
             <Layout>

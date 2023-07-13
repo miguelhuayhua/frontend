@@ -104,7 +104,7 @@ export let dataDatosGenerales = {
 };
 
 export let dataDatosUbicacion = {
-    area: "",
+    area: "Urbano",
     otra_area: "",
     calle: "",
     distrito: 1,

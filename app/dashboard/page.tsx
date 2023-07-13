@@ -71,12 +71,10 @@ export default function Dashboard() {
     <main>
       <Layout>
         <Layout hasSider>
-          <Affix>
-            <MenuSider
-              defaultSelectedKey="dashboard"
-              defaultOpenKeys="null"
-            ></MenuSider>
-          </Affix>
+          <MenuSider
+            defaultSelectedKey="dashboard"
+            defaultOpenKeys="null"
+          ></MenuSider>
           <Content>
             <Navbar></Navbar>
             <Layout>
