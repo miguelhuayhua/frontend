@@ -24,7 +24,7 @@ import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Caso, Denunciado, datosCaso } from "../data";
 import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
-import { AdultoMayor, AdultoMayor2 } from "../../nuevocaso/data";
+import { AdultoMayor, AdultoMayor2 } from "../nuevocaso/data";
 export const DataContext = createContext({});
 //ROUTING
 

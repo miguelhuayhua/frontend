@@ -73,7 +73,7 @@ export default function Dashboard() {
         <Layout hasSider>
           <MenuSider
             defaultSelectedKey="dashboard"
-            defaultOpenKeys="null"
+            defaultOpenKeys={[]}
           ></MenuSider>
           <Content>
             <Navbar></Navbar>

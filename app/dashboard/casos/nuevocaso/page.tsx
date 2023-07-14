@@ -33,8 +33,8 @@ import {
   dataDatosGenerales,
   dataDatosUbicacion,
 } from "./data";
-import Navbar from "../components/Navbar";
-import MenuSider from "../components/MenuSider";
+import Navbar from "../../components/Navbar";
+import MenuSider from "../../components/MenuSider";
 export default function NuevoCaso() {
   const [datos, setDatos] = useState<{
     datosGenerales: AdultoMayor;

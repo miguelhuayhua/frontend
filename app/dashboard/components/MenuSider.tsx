@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface Props {
-  defaultOpenKeys: string;
+  defaultOpenKeys: string[];
   defaultSelectedKey: string;
 }
 
@@ -46,7 +46,7 @@ const MenuSider: NextPage<Props> = (props) => {
           key: "caso1.1",
           icon: <PlusOutlined />,
           onClick: () => {
-            router.push("/dashboard/nuevocaso");
+            router.push("/dashboard/casos/nuevocaso");
           },
         },
         {
@@ -58,14 +58,38 @@ const MenuSider: NextPage<Props> = (props) => {
           },
         },
         {
-          label: "Ver Personas Adultas",
+          label: "Personas Adultas",
           key: "caso1.3",
           icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/adultos");
+          },
+          children: [
+            {
+              label: "Ver Adultos",
+              key: "caso1.3.1",
+              icon: <EyeOutlined />,
+              onClick: () => {
+                router.push("/dashboard/adultos");
+              },
+            },
+            {
+              label: "Ver Hijos",
+              key: "caso1.3.2",
+              icon: <EyeOutlined />,
+              onClick: () => {
+                router.push("/dashboard/hijos");
+              },
+            },
+          ],
         },
         {
           label: "Ver Denunciados",
           key: "caso1.4",
           icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/denunciados");
+          },
         },
       ],
     },
@@ -142,7 +166,7 @@ const MenuSider: NextPage<Props> = (props) => {
             theme="dark"
             selectedKeys={[props.defaultSelectedKey]}
             mode="inline"
-            defaultOpenKeys={[props.defaultOpenKeys]}
+            defaultOpenKeys={props.defaultOpenKeys}
             items={items}
           />
         </Sider>

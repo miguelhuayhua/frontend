@@ -21,12 +21,10 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { ColumnsType } from "antd/es/table";
-import Informacion from "./components/informacion";
-import { Caso } from "./data";
 import axios from "axios";
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
+import Informacion from "./components/informacion";
 export default function NuevoCaso() {
   const router = useRouter();
   function getItem(
@@ -75,8 +73,8 @@ export default function NuevoCaso() {
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultOpenKeys={["caso1"]}
-            defaultSelectedKey="caso1.2"
+            defaultOpenKeys={["caso1", "caso1.3"]}
+            defaultSelectedKey="caso1.3.1"
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
