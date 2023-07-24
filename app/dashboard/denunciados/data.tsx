@@ -1,17 +1,23 @@
-export interface Adulto {
-  nombre: string;
+export interface Denunciado {
+  id_denunciado: string;
+  nombres: string;
   paterno: string;
   materno: string;
-  sexo: string;
-  edad: number;
-  ci: number;
-  fecha_nac: string;
-  referencia: number;
-  estado_civil: string;
-  grado: string;
-  ocupacion: string;
-  beneficios: string;
-  id_adulto: string;
   estado: number;
   ult_modificacion: string;
+  id_caso: string;
+  parentezco: string;
+  genero: string;
 }
+
+export let dataDenunciado: Denunciado = {
+  id_denunciado: "",
+  nombres: "",
+  paterno: "",
+  materno: "",
+  estado: 0,
+  ult_modificacion: "",
+  id_caso: "",
+  parentezco: "",
+  genero: "",
+};

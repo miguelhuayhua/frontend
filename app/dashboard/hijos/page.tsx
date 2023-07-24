@@ -26,46 +26,6 @@ import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
 import Informacion from "./components/informacion";
 export default function NuevoCaso() {
-  const router = useRouter();
-  function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[]
-  ): MenuItem {
-    return {
-      key,
-      icon,
-      children,
-      label,
-    } as MenuItem;
-  }
-  const items: MenuItem[] = [
-    {
-      key: 1,
-      label: "Casos",
-      children: [
-        {
-          label: "Agregar Caso",
-          key: 1.1,
-          icon: <UserOutlined />,
-          onClick: () => {
-            router.push("/dashboard/nuevocaso");
-          },
-        },
-        {
-          label: "Ver Casos",
-          key: 1.2,
-          icon: <UserOutlined />,
-          onClick: () => {
-            router.push("/dashboard/casos");
-          },
-        },
-      ],
-    },
-  ];
-  const [collapsed, setCollapsed] = useState(false);
-
   //cargado de casos desde la API
 
   return (

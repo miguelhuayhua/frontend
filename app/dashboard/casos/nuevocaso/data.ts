@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import moment from "moment";
+import { Hijo } from "../../hijos/data";
 
 export const dias = [
     "Dom",
@@ -37,7 +38,7 @@ export interface AdultoMayor {
     edad: number;
     ci: number;
     fecha_nac: string;
-    referencia: number;
+    nro_referencia: number;
     estado_civil: string;
     hijos: string[];
     grado: string;
@@ -54,9 +55,9 @@ export interface AdultoMayor2 {
     edad: number;
     ci: number;
     fecha_nac: string;
-    referencia: number;
+    nro_referencia: number;
     estado_civil: string;
-    hijos: { ult_modificacion: string, id_hijo: string, estado: number, nombres_apellidos: string }[];
+    hijos: Hijo[];
     grado: string;
     ocupacion: string;
     beneficios: string;
@@ -81,8 +82,8 @@ export interface DatosDenunciado {
     parentezco: string;
 };
 export interface DatosDenuncia {
-    fecha: string,
-    hora: string,
+    fecha_registro: string,
+    hora_registro: string,
     tipologia: string,
     nro_caso: string
 }
@@ -95,7 +96,7 @@ export let dataDatosGenerales = {
     materno: "",
     nombre: "",
     paterno: "",
-    referencia: 0,
+    nro_referencia: 0,
     sexo: "Femenino",
     hijos: [],
     grado: "Primaria",
@@ -122,8 +123,8 @@ export let dataDatosDenunciado = {
 
 }
 export let dataDatosDenuncia = {
-    fecha: dayjs().format('YYYY-MM-DD'),
-    hora: dayjs().format('HH:mm:ss'),
+    fecha_registro: dayjs().format('YYYY-MM-DD'),
+    hora_registro: dayjs().format('HH:mm:ss'),
     tipologia: "",
     nro_caso: ""
 

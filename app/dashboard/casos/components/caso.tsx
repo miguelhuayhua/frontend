@@ -24,7 +24,11 @@ import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Caso, Denunciado, datosCaso } from "../data";
 import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
+import { AiFillFilePdf } from "react-icons/ai";
+
 import { AdultoMayor, AdultoMayor2 } from "../nuevocaso/data";
+import MyDocument from "../nuevocaso/components/pdf";
+import { pdf } from "@react-pdf/renderer";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -85,6 +89,67 @@ const CasoModal: NextPage<Props> = (props) => {
         }}
         width={"90%"}
         footer={[
+          <Button
+            style={{
+              color: "white",
+              backgroundColor: "#b51308",
+              display: "flex",
+              alignItems: "center",
+              height: 45,
+              fontWeight: "bold",
+            }}
+            /* datosGenerales: AdultoMayor;
+    datosUbicacion: DatosUbicacion;
+    descripcionHechos: string;
+    descripcionPeticion: string;
+    datosDenunciado: DatosDenunciado;
+    accionRealizada: string;
+    datosDenuncia: DatosDenuncia;*/
+            onClick={() => {
+              pdf(
+                <DataContext.Provider
+                  value={{
+                    datosGenerales: props.adultoMayor,
+                    descripcionHechos: props.caso.descripcion_hechos,
+                    descripcionPeticion: props.caso.peticion,
+                    datosDenunciado: props.denunciado,
+                    accionRealizada: props.caso.accion_realizada,
+                    datosUbicacion: null,
+                  }}
+                >
+                  <MyDocument />
+                </DataContext.Provider>
+              )
+                .toBlob()
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  let { nombre, paterno, materno } = props.adultoMayor;
+
+                  link.setAttribute(
+                    "download",
+                    nombre +
+                      paterno +
+                      materno +
+                      props.caso.fecha_registro +
+                      ".pdf"
+                  );
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  notification.success({
+                    message: "Formulario generado con éxito",
+                  });
+                })
+                .catch((e) => {
+                  notification.error({ message: e });
+                });
+            }}
+          >
+            <AiFillFilePdf style={{ fontSize: 25 }} />
+            Generar Formulario
+          </Button>,
           <Popconfirm
             key="popconfirm"
             title="¿Estás seguro de continuar?"
@@ -126,7 +191,7 @@ const CasoModal: NextPage<Props> = (props) => {
               </Col>
             </Row>
           </Col>
-          <Col span={12}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form layout="horizontal">
               <Form.Item label="Descripción de los Hechos">
                 <TextArea
@@ -162,7 +227,8 @@ const CasoModal: NextPage<Props> = (props) => {
             </Form>
           </Col>
           <Col
-            span={12}
+            span={24}
+            lg={{ span: 12 }}
             style={{ border: "1px solid #CCC", padding: 10, borderRadius: 10 }}
           >
             <h5 className="text-center">Personas Involucradas</h5>
@@ -205,7 +271,7 @@ const CasoModal: NextPage<Props> = (props) => {
                     <b>Número de referencia:</b>
                   </span>
                   <br />
-                  {props.adultoMayor.referencia}
+                  {props.adultoMayor.nro_referencia}
                 </p>
               </Col>
               <Col span={24}>
@@ -227,7 +293,16 @@ const CasoModal: NextPage<Props> = (props) => {
                               key={hijo.nombres_apellidos}
                               style={{ padding: 4 }}
                             >
-                              <Avatar icon={<UserOutlined />}></Avatar>
+                              <Avatar
+                                style={{
+                                  backgroundColor:
+                                    hijo.genero == "Femenino"
+                                      ? "#ff0080"
+                                      : "#0041c8",
+                                  color: "white",
+                                }}
+                                icon={<UserOutlined />}
+                              ></Avatar>
                               <div>{hijo.nombres_apellidos}</div>
                             </div>
                           ),
@@ -241,28 +316,51 @@ const CasoModal: NextPage<Props> = (props) => {
               <Col style={{ borderLeft: "1px solid #AAA" }} span={12}>
                 <h6>Denunciado</h6>
                 <Row>
-                  <Col span={24}>
-                    <p>
-                      <span>
-                        <b>Nombres y Apellidos del Denunciado:</b>
-                      </span>
-                      <br />
-                      {props.denunciado.nombres +
-                        " " +
-                        props.denunciado.paterno +
-                        " " +
-                        props.denunciado.materno}
-                    </p>
+                  <Col span={6}>
+                    <Avatar
+                      style={{
+                        backgroundColor:
+                          props.denunciado.genero == "Femenino"
+                            ? "#ff0080"
+                            : "#0041c8",
+                        color: "white",
+                        width: 60,
+                        height: 60,
+                        fontSize: 30,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        margin: "0 auto",
+                      }}
+                      icon={<UserOutlined />}
+                    ></Avatar>
                   </Col>
+                  <Col span={18}>
+                    <Row>
+                      <Col span={24}>
+                        <p style={{ textAlign: "start" }}>
+                          <span>
+                            <b>Nombres y Apellidos del Denunciado:</b>
+                          </span>
+                          <br />
+                          {props.denunciado.nombres +
+                            " " +
+                            props.denunciado.paterno +
+                            " " +
+                            props.denunciado.materno}
+                        </p>
+                      </Col>
 
-                  <Col span={24}>
-                    <p>
-                      <span>
-                        <b>Parentezco con la persona adulta mayor: </b>
-                      </span>
-                      <br />
-                      {props.denunciado.parentezco}
-                    </p>
+                      <Col span={24}>
+                        <p style={{ textAlign: "start" }}>
+                          <span>
+                            <b>Parentezco con la persona adulta mayor: </b>
+                          </span>
+                          <br />
+                          {props.denunciado.parentezco}
+                        </p>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </Col>

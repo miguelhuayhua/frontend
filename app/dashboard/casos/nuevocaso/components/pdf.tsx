@@ -98,11 +98,24 @@ const MyDocument = () => {
             height: 60,
             position: "absolute",
             top: 10,
-            left: 10,
+            right: 10,
           }}
           src={"/assets/logo-gamea.png"}
         ></Image>
+        <Image
+          style={{
+            width: 90,
+            height: 60,
+            position: "absolute",
+            top: 10,
+            left: 10,
+          }}
+          src={"/assets/logo-elalto.png"}
+        ></Image>
         <View style={{ width: "70%", marginHorizontal: "auto" }}>
+          <Text style={{ fontWeight: "light", fontSize: 14, ...styles.title }}>
+            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
+          </Text>
           <Text
             style={{ fontWeight: "extrabold", fontSize: 14, ...styles.title }}
           >
@@ -125,9 +138,9 @@ const MyDocument = () => {
         <View style={{ ...styles.horizontal, marginTop: 10 }}>
           <Text style={styles.textInfo}>
             {"Fecha y hora de registro: " +
-              datosDenuncia.fecha +
+              datosDenuncia.fecha_registro +
               " " +
-              datosDenuncia.hora}
+              datosDenuncia.hora_registro}
           </Text>
           <Text style={styles.textInfo}>
             {"Tipología: " + datosDenuncia.tipologia}
@@ -190,12 +203,14 @@ const MyDocument = () => {
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={{ fontSize: 10 }}>NRO. DE REFERENCIA: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 10 }}>
-                {datosGenerales.referencia}
+                {datosGenerales.nro_referencia}
               </Text>
             </View>
           </View>
           <View style={{ width: "100%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontWeight: "bold" }}>ESTADO CIVIL:</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 10 }}>
+              ESTADO CIVIL:
+            </Text>
             <Text style={{ fontSize: 10 }}>SOLTERO(A)</Text>
             <View
               style={

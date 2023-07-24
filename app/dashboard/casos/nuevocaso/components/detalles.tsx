@@ -1,3 +1,4 @@
+"use client";
 interface Props {
   getPosicion: any;
   datos: {
@@ -40,14 +41,16 @@ import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
 import { InfoCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { type } from "os";
 export const DataContext = createContext({});
 //ROUTING
 
 //PDF
 
 const Detalles: NextPage<Props> = (props) => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   //estados
   const [open, setOpen] = useState(false);
   const [counter, setCounter] = useState(0);
@@ -59,7 +62,6 @@ const Detalles: NextPage<Props> = (props) => {
   };
 
   //referencias
-  let refDown = useRef(null);
   const handleEnviar = () => {
     setOpen(true);
     let interval = setInterval(
@@ -118,7 +120,6 @@ const Detalles: NextPage<Props> = (props) => {
 
   const savePdf = () => {
     setOpen(false);
-    console.log(refDown);
   };
   return (
     <>
@@ -278,7 +279,7 @@ const Detalles: NextPage<Props> = (props) => {
               <div className="d-flex w-100">
                 <p className="titulo"> Nro. de referencia: </p>
                 <p className="contenido">
-                  {props.datos.datosGenerales.referencia}
+                  {props.datos.datosGenerales.nro_referencia}
                 </p>
               </div>
             </Col>

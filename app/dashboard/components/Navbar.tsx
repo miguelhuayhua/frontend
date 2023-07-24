@@ -3,6 +3,7 @@ import {
   Affix,
   Avatar,
   Badge,
+  Button,
   Col,
   Dropdown,
   Menu,
@@ -13,8 +14,47 @@ import {
 import { Header } from "antd/es/layout/layout";
 import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { CiLogout } from "react-icons/ci";
+import { FaCalendarAlt } from "react-icons/fa";
 import "./estilos.scss";
+import { signOut } from "next-auth/react";
+import dayjs from "dayjs";
 const Navbar = () => {
+  const items: MenuProps["items"] = [
+    {
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.antgroup.com"
+        >
+          1st menu item
+        </a>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.aliyun.com"
+        >
+          2nd menu item
+        </a>
+      ),
+      key: "1",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: "3rd menu item（disabled）",
+      key: "3",
+      disabled: true,
+    },
+  ];
+
   return (
     <Affix>
       <Row>
@@ -38,10 +78,21 @@ const Navbar = () => {
               padding: "35px 0",
             }}
           >
+            <div
+              className="fecha-container"
+              style={{ position: "absolute", right: 160 }}
+            >
+              <span>
+                <FaCalendarAlt style={{ marginRight: 10 }} />
+                {`${dayjs().date()}/${dayjs().month()}/${dayjs().year()}`}
+              </span>
+            </div>
             <div style={{ position: "absolute", right: 100 }}>
-              <Badge count={99} overflowCount={10} style={{ border: "none" }}>
-                <Avatar icon={<BellOutlined />} size="large" />
-              </Badge>
+              <Dropdown placement="bottom" menu={{ items }}>
+                <Badge count={99} overflowCount={10} style={{ border: "none" }}>
+                  <Avatar icon={<BellOutlined />} size="large" />
+                </Badge>
+              </Dropdown>
             </div>
 
             <Dropdown
@@ -51,8 +102,22 @@ const Navbar = () => {
                   {
                     key: "1",
                     label: (
-                      <div style={{ width: 300 }}>
-                        <Link href={"/logout"}>Cerrar Sesión</Link>
+                      <div style={{ width: 200 }}>
+                        <button
+                          onClick={() => {
+                            signOut({ redirect: true });
+                          }}
+                          className="btn w-100"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            textAlign: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <CiLogout style={{ fontSize: 18, marginRight: 20 }} />
+                          Cerrar Sesión
+                        </button>
                       </div>
                     ),
                   },
@@ -63,7 +128,7 @@ const Navbar = () => {
             >
               <Avatar
                 style={{
-                  backgroundColor: "#87d068",
+                  backgroundColor: "#1677ff",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",

@@ -34,6 +34,7 @@ export interface Denunciado {
     materno: string;
     parentezco: string;
     estado: number;
+    genero: string;
     ult_modificacion: string;
     id_caso: string;
     id_denunciado: string;
@@ -46,6 +47,7 @@ export let DatosDenunciado = {
     materno: "",
     parentezco: "",
     estado: 1,
+    genero: "",
     ult_modificacion: "",
     id_caso: "",
     id_denunciado: "",

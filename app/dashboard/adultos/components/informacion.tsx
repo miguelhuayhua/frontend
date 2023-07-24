@@ -7,7 +7,6 @@ import {
   FloatButton,
   Form,
   Input,
-  Progress,
   Row,
   Select,
   Space,
@@ -20,14 +19,11 @@ import {
 } from "antd";
 import locale from "antd/es/date-picker/locale/es_ES";
 
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
-  PlusCircleOutlined,
-  CommentOutlined,
-  CustomerServiceOutlined,
   FilterOutlined,
   FileDoneOutlined,
   FileExcelFilled,
@@ -38,19 +34,22 @@ import AdultoModal from "./adulto";
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { Adulto } from "../data";
+import { Adulto, Domicilio, dataAdulto, dataDomicilio } from "../data";
 import { dias, meses } from "../../casos/nuevocaso/data";
+import { Hijo } from "../../hijos/data";
 export const DataContext = createContext({});
 //ROUTING
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
+  const [domicilios, setDomicilios] = useState<Domicilio[]>([]);
+
+  const [loaded, setLoaded] = useState(false);
   //estados
   const [open, setOpen] = useState(false);
-
-  const [filtroCaso, setFiltroCaso] = useState("");
-  const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
-  const [filtroRangoFecha, setFiltroRangoFecha] = useState("");
+  const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
+  const [domicilio, setDomicilio] = useState<Domicilio>(dataDomicilio);
+  const [filtroNombre, setFiltroNombre] = useState("");
   const columns: ColumnsType<Adulto> = [
     {
       title: "ID Adulto",
@@ -58,6 +57,13 @@ const Informacion = () => {
       key: "id_adulto",
       className: "text-center",
       fixed: "left",
+      sortDirections: ["ascend", "descend"],
+
+      sorter: (a, b) => {
+        let id1 = Number.parseInt(a.id_adulto.split("-")[1]);
+        let id2 = Number.parseInt(b.id_adulto.split("-")[1]);
+        return id1 - id2;
+      },
     },
     {
       title: "Nombres y Apellidos",
@@ -81,7 +87,7 @@ const Informacion = () => {
           </Tag>
         ) : (
           <Tag key={_} color="red">
-            Cerrado
+            Inactivo
           </Tag>
         ),
     },
@@ -156,7 +162,7 @@ const Informacion = () => {
   return (
     <>
       <h5 className="mt-4">
-        Filtros para "Casos" <FilterOutlined />
+        {'Filtros para "Casos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
@@ -164,43 +170,33 @@ const Informacion = () => {
       <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
         <Row>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
+            <Form.Item style={{ marginLeft: 10 }} label="ID del adulto: ">
               <Input
                 placeholder="Introduzca el ID del adulto"
-                value={filtroCaso}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              label="Tipo de acción realizada: "
-              style={{ marginLeft: 10 }}
-            >
-              <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
-                <Select.Option value="Apertura">Apertura de Caso</Select.Option>
-                <Select.Option value="Orientacion">Orientación</Select.Option>
-                <Select.Option value="Citacion">Citación</Select.Option>
-                <Select.Option value="Derivacion">Derivación</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              style={{ marginLeft: 10, width: "100%" }}
-              label="Filtrar por rango de fechas:"
-            >
-              <RangePicker
-                style={{ width: "100%" }}
-                locale={{
-                  ...locale,
-                  lang: {
-                    ...locale.lang,
-                    shortWeekDays: dias,
-                    shortMonths: meses,
-                  },
+                onChange={(value) => {
+                  setDisplayAdultos(
+                    adultos.filter((adulto) => {
+                      return adulto.id_adulto.includes(value.target.value);
+                    })
+                  );
                 }}
-                onChange={handleFiltroRange}
               />
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={{ span: 8 }}>
+            <Form.Item label="Nombres o Apellidos: " style={{ marginLeft: 10 }}>
+              <Input
+                placeholder="Buscar por nombres o apellidos"
+                onChange={(value) => {
+                  setDisplayAdultos(
+                    adultos.filter((adulto) => {
+                      return (adulto.nombre + adulto.paterno + adulto.materno)
+                        .toLocaleLowerCase()
+                        .includes(value.target.value.toLocaleLowerCase());
+                    })
+                  );
+                }}
+              ></Input>
             </Form.Item>
           </Col>
         </Row>
@@ -230,11 +226,14 @@ const Informacion = () => {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
-                      message.success(
-                        "Adulto " +
-                          value.id_adulto +
-                          (+value.estado == 1 ? " inactivo" : " activo")
-                      );
+                      value.estado == 0
+                        ? message.success(
+                            "Adulto " + value.id_adulto + " activo"
+                          )
+                        : message.error(
+                            "Adulto " + value.id_adulto + " inactivo"
+                          );
+
                       axios
                         .get<Adulto[]>("http://localhost:8000/adulto/all")
                         .then((res) => {
@@ -243,33 +242,97 @@ const Informacion = () => {
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
-                  axios
-                    .post<{}>("http://localhost:8000/adulto/obtener", {})
-                    .then((res) => {});
-                  axios
-                    .post("http://localhost:8000/denunciado/obtener", {})
-                    .then((res) => {});
                   setOpen(true);
+                  axios
+                    .post<Domicilio[]>(
+                      "http://localhost:8000/domicilio/getByIdAdulto",
+                      {
+                        id_adulto: value.id_adulto,
+                      }
+                    )
+                    .then((res) => {
+                      setDomicilios(res.data);
+                    });
+                  axios
+                    .post<Domicilio>(
+                      "http://localhost:8000/domicilio/obtener",
+                      {
+                        id_adulto: value.id_adulto,
+                      }
+                    )
+                    .then((res) => {
+                      setDomicilio(res.data);
+                    });
+                  axios
+                    .post<{ adulto: Adulto; hijos: Hijo[] }>(
+                      "http://localhost:8000/adulto/obtener",
+                      {
+                        id_adulto: value.id_adulto,
+                      }
+                    )
+                    .then((res) => {
+                      setAdulto({
+                        ...res.data.adulto,
+                        hijos: res.data.hijos,
+                      });
+                      setLoaded(true);
+                    });
                 }
               } catch (error) {
-                axios
-                  .post("http://localhost:8000/adulto/obtener", {
-                    id_adulto: value.id_adulto,
-                  })
-                  .then((res) => {});
-                axios
-                  .post("http://localhost:8000/denunciado/obtener", {})
-                  .then((res) => {});
                 setOpen(true);
+                axios
+                  .post<{ adulto: Adulto; hijos: Hijo[] }>(
+                    "http://localhost:8000/adulto/obtener",
+                    {
+                      id_adulto: value.id_adulto,
+                    }
+                  )
+                  .then((res) => {
+                    setAdulto({
+                      ...res.data.adulto,
+                      hijos: res.data.hijos,
+                    });
+                    axios
+                      .post<Domicilio[]>(
+                        "http://localhost:8000/domicilio/getByIdAdulto",
+                        {
+                          id_adulto: value.id_adulto,
+                        }
+                      )
+                      .then((res) => {
+                        setDomicilios(res.data);
+                      });
+                    axios
+                      .post<Domicilio>(
+                        "http://localhost:8000/domicilio/obtener",
+                        {
+                          id_adulto: value.id_adulto,
+                        }
+                      )
+                      .then((res) => {
+                        setDomicilio(res.data);
+                        setLoaded(true);
+                      });
+                  });
               }
             },
           };
         }}
       />
       <AdultoModal
+        domicilios={domicilios}
+        loaded={loaded}
+        setLoaded={setLoaded}
         key="adultomodal"
+        domicilio={domicilio}
+        setDomicilio={setDomicilio}
         open={open}
         setOpen={setOpen}
+        adulto={adulto}
+        setAdulto={setAdulto}
+        setAdultos={setAdultos}
+        setDisplayAdultos={setDisplayAdultos}
+        setDomicilios={setDomicilios}
       ></AdultoModal>
 
       <FloatButton.Group
@@ -301,9 +364,7 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get("http://localhost:8000/caso/report").then((res) => {
-                console.log(res);
-              });
+              axios.get("http://localhost:8000/caso/report").then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

@@ -7,9 +7,7 @@ import {
   FloatButton,
   Form,
   Input,
-  Progress,
   Row,
-  Select,
   Space,
   Spin,
   Switch,
@@ -25,37 +23,34 @@ import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
-  PlusCircleOutlined,
-  CommentOutlined,
-  CustomerServiceOutlined,
   FilterOutlined,
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
 } from "@ant-design/icons";
-import AdultoModal from "./adulto";
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { Adulto } from "../data";
 import { dias, meses } from "../../casos/nuevocaso/data";
+import { Denunciado, dataDenunciado } from "../data";
+import DenunciadoModal from "./denunciado";
+import { Adulto, dataAdulto } from "../../adultos/data";
 export const DataContext = createContext({});
 //ROUTING
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
   //estados
+  const [loaded, setLoaded] = useState(false);
+  const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
   const [open, setOpen] = useState(false);
 
-  const [filtroCaso, setFiltroCaso] = useState("");
-  const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
-  const [filtroRangoFecha, setFiltroRangoFecha] = useState("");
-  const columns: ColumnsType<Adulto> = [
+  const columns: ColumnsType<Denunciado> = [
     {
-      title: "ID Adulto",
-      dataIndex: "id_adulto",
-      key: "id_adulto",
+      title: "ID Denunciado",
+      dataIndex: "id_denunciado",
+      key: "id_denunciado",
       className: "text-center",
       fixed: "left",
     },
@@ -63,25 +58,24 @@ const Informacion = () => {
       title: "Nombres y Apellidos",
 
       key: "accion_realizada",
-      render: (_, adulto) => {
-        return adulto.nombre + " " + adulto.paterno + " " + adulto.materno;
+      render: (_, Denunciado) => {
+        return `${Denunciado.nombres} ${Denunciado.paterno} ${Denunciado.materno}`;
       },
       className: "text-center",
     },
-
     {
       title: "Estado",
       key: "estado",
       dataIndex: "estado",
       className: "text-center",
-      render: (_, adulto) =>
-        adulto.estado == 1 ? (
+      render: (_, Denunciado) =>
+        Denunciado.estado == 1 ? (
           <Tag key={_} color="green">
             Activo
           </Tag>
         ) : (
           <Tag key={_} color="red">
-            Cerrado
+            Inactivo
           </Tag>
         ),
     },
@@ -90,13 +84,13 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
-      render: (_, adulto) => (
+      render: (_, denunciado) => (
         <div
-          key={adulto.id_adulto + "d"}
+          key={denunciado.id_denunciado + "d"}
           className="d-flex align-items-center justify-content-around"
         >
           <Button
-            key={adulto.id_adulto}
+            key={denunciado.id_denunciado}
             style={{
               fontSize: 20,
               width: 40,
@@ -109,54 +103,38 @@ const Informacion = () => {
           >
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
-          <Switch key={adulto.id_adulto + "-"} checked={adulto.estado == 1} />
+          <Switch
+            key={denunciado.id_denunciado + "-"}
+            checked={denunciado.estado == 1}
+          />
         </div>
       ),
     },
   ];
-  const [adultos, setAdultos] = useState<Adulto[]>([]);
-  const [displayAdultos, setDisplayAdultos] = useState<Adulto[]>([]);
+  const [denunciados, setDenunciados] = useState<Denunciado[]>([]);
+  const [denunciado, setDenunciado] = useState<Denunciado>(dataDenunciado);
+  const [displayDenunciados, setDisplayDenunciados] = useState<Denunciado[]>(
+    []
+  );
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Adulto[]>("http://localhost:8000/adulto/all").then((res) => {
-      setAdultos(res.data);
-      setDisplayAdultos(res.data);
-    });
+    axios
+      .get<Denunciado[]>("http://localhost:8000/denunciado/all")
+      .then((res) => {
+        setDenunciados(res.data);
+        setDisplayDenunciados(res.data);
+      });
   }, []);
 
   const { RangePicker } = DatePicker;
 
   //cambios en los filtros
-  const handleFiltroAdulto = (ev: any) => {
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        return adulto.id_adulto.includes(ev.target.value);
-      })
-    );
-  };
-  const handleFiltroAccion = (ev: any) => {
-    setDisplayAdultos(adultos.filter((adulto) => {}));
-  };
 
-  const handleFiltroRange = (ev: any) => {
-    let [inicio, final] = ev;
-    let fechaInicio = dayjs(inicio.$d);
-    let fechaFinal = dayjs(final.$d);
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        dayjs(adulto.ult_modificacion).isBetween(fechaInicio, fechaFinal);
-        return dayjs(adulto.ult_modificacion).isBetween(
-          fechaInicio,
-          fechaFinal
-        );
-      })
-    );
-  };
   return (
     <>
       <h5 className="mt-4">
-        Filtros para "Casos" <FilterOutlined />
+        {' Filtros para "Denunciados"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
@@ -165,25 +143,10 @@ const Informacion = () => {
         <Row>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
             <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-              <Input
-                placeholder="Introduzca el ID del adulto"
-                value={filtroCaso}
-              />
+              <Input placeholder="Introduzca el ID del Denunciado" />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              label="Tipo de acción realizada: "
-              style={{ marginLeft: 10 }}
-            >
-              <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
-                <Select.Option value="Apertura">Apertura de Caso</Select.Option>
-                <Select.Option value="Orientacion">Orientación</Select.Option>
-                <Select.Option value="Citacion">Citación</Select.Option>
-                <Select.Option value="Derivacion">Derivación</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+
           <Col span={24} lg={{ span: 8 }}>
             <Form.Item
               style={{ marginLeft: 10, width: "100%" }}
@@ -199,7 +162,6 @@ const Informacion = () => {
                     shortMonths: meses,
                   },
                 }}
-                onChange={handleFiltroRange}
               />
             </Form.Item>
           </Col>
@@ -208,7 +170,7 @@ const Informacion = () => {
       <hr />
       <Table
         scroll={{ x: 800, y: 500 }}
-        rowKey={(adulto) => adulto.id_adulto + "T"}
+        rowKey={(Denunciado) => Denunciado.id_denunciado + "T"}
         key="table"
         pagination={{ pageSize: 20, position: ["bottomCenter"] }}
         columns={columns}
@@ -219,58 +181,64 @@ const Informacion = () => {
             </Space>
           ),
         }}
-        dataSource={displayAdultos}
+        dataSource={displayDenunciados}
         onRow={(value, index) => {
           return {
             onClick: (ev: any) => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post("http://localhost:8000/adulto/estado", {
-                      id_adulto: value.id_adulto,
+                    .post("http://localhost:8000/denunciado/estado", {
+                      id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
-                      message.success(
-                        "Adulto " +
-                          value.id_adulto +
-                          (+value.estado == 1 ? " inactivo" : " activo")
-                      );
+                      message.success("¡Denunciado cambiado con éxito!");
                       axios
-                        .get<Adulto[]>("http://localhost:8000/adulto/all")
+                        .get<Denunciado[]>(
+                          "http://localhost:8000/denunciado/all"
+                        )
                         .then((res) => {
-                          setAdultos(res.data);
-                          setDisplayAdultos(res.data);
+                          setDenunciados(res.data);
+                          setDisplayDenunciados(res.data);
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
-                  axios
-                    .post<{}>("http://localhost:8000/adulto/obtener", {})
-                    .then((res) => {});
-                  axios
-                    .post("http://localhost:8000/denunciado/obtener", {})
-                    .then((res) => {});
                   setOpen(true);
+                  axios
+                    .post("http://localhost:8000/denunciado/obtenerById", {
+                      id_denunciado: value.id_denunciado,
+                    })
+                    .then((res) => {
+                      setDenunciado(res.data);
+                      setLoaded(true);
+                    });
                 }
               } catch (error) {
-                axios
-                  .post("http://localhost:8000/adulto/obtener", {
-                    id_adulto: value.id_adulto,
-                  })
-                  .then((res) => {});
-                axios
-                  .post("http://localhost:8000/denunciado/obtener", {})
-                  .then((res) => {});
                 setOpen(true);
+                axios
+                  .post("http://localhost:8000/denunciado/obtenerById", {
+                    id_denunciado: value.id_denunciado,
+                  })
+                  .then((res) => {
+                    setDenunciado(res.data);
+                    setLoaded(true);
+                  });
               }
             },
           };
         }}
       />
-      <AdultoModal
-        key="adultomodal"
+      <DenunciadoModal
+        denunciado={denunciado}
+        loaded={loaded}
+        adulto={adulto}
+        setDisplayDenunciados={setDisplayDenunciados}
+        setDenunciado={setDenunciado}
+        setDenunciados={setDenunciados}
+        key="Denunciadomodal"
         open={open}
         setOpen={setOpen}
-      ></AdultoModal>
+      ></DenunciadoModal>
 
       <FloatButton.Group
         trigger="click"
@@ -301,9 +269,7 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get("http://localhost:8000/caso/report").then((res) => {
-                console.log(res);
-              });
+              axios.get("http://localhost:8000/caso/report").then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

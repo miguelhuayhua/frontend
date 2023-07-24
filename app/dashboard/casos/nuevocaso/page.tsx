@@ -1,24 +1,13 @@
 "use client";
-import {
-  Affix,
-  Breadcrumb,
-  Button,
-  Col,
-  Layout,
-  Menu,
-  MenuProps,
-  Row,
-  Tabs,
-} from "antd";
+import { Layout } from "antd";
 import "moment/locale/es";
-import { Content, Footer, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
 //estilos
 import "./estilos.scss";
 import Formulario from "./components/formulario";
 import Detalles from "./components/detalles";
 import { useState } from "react";
-import Sider from "antd/es/layout/Sider";
 //env
 import dotenv from "dotenv";
 dotenv.config();
@@ -75,7 +64,7 @@ export default function NuevoCaso() {
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultOpenKeys="caso1"
+            defaultOpenKeys={["caso1"]}
             defaultSelectedKey="caso1.1"
           ></MenuSider>
           <Content>

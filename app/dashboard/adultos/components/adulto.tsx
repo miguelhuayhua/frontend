@@ -1,28 +1,21 @@
 "use client";
 import {
-  Avatar,
   Button,
   Col,
-  DatePicker,
-  Form,
   Modal,
   Popconfirm,
   Row,
-  Segmented,
-  Select,
-  Slider,
-  Space,
-  Switch,
-  Upload,
+  Skeleton,
   notification,
 } from "antd";
 import { NextPage } from "next";
 
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
-import { EditOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
+import { Adulto, Domicilio } from "../data";
+import FormAdulto from "./formadulto";
+import FormDomicilio from "./formdomicilio";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -30,21 +23,59 @@ export const DataContext = createContext({});
 interface Props {
   setOpen: any;
   open: boolean;
+  adulto: Adulto;
+  setAdulto: any;
+  setAdultos: any;
+  loaded: boolean;
+  setDisplayAdultos: any;
+  domicilio: Domicilio;
+  setDomicilio: any;
+  setLoaded: any;
+  domicilios: Domicilio[];
+  setDomicilios: any;
 }
 const AdultoModal: NextPage<Props> = (props) => {
   //control del modal
-  const handleConfirm = () => {};
+
+  const handleConfirm = () => {
+    props.setOpen(false);
+    axios
+      .post("http://localhost:8000/adulto/update", { ...props.adulto })
+      .then((res) => {
+        let tipo = props.domicilio.actual == 1 ? "update" : "insert";
+        axios
+          .post("http://localhost:8000/domicilio/" + tipo, {
+            ...props.domicilio,
+          })
+          .then((res) => {
+            if (res.data.status == 1) {
+              notification.success({
+                message: "¡Los datos del adulto mayor se  modificó con éxito!",
+              });
+              axios
+                .get<Adulto[]>("http://localhost:8000/adulto/all")
+                .then((res) => {
+                  props.setAdultos(res.data);
+                  props.setDisplayAdultos(res.data);
+                });
+            } else {
+              notification.error({
+                message:
+                  "No se pudo modificar los datos de la persona adulta...",
+              });
+            }
+          });
+      });
+  };
   const handleHideModal = () => {
     props.setOpen(false);
   };
-
-  //cambio del estado de caso
 
   return (
     <>
       <Modal
         key="modal"
-        title={"EDITE LOS VALORES PARA EL CASO "}
+        title={"EDITE LOS VALORES DEL ADULTO MAYOR "}
         centered
         style={{ textAlign: "center" }}
         open={props.open}
@@ -69,79 +100,34 @@ const AdultoModal: NextPage<Props> = (props) => {
           </Button>,
         ]}
       >
-        <Row>
-          <Col span={24}>
-            <Row>
-              <Col span={8}></Col>
-            </Row>
-          </Col>
-          <Col span={12}>
-            <Form layout="horizontal"></Form>
-          </Col>
-          <Col
-            span={12}
-            style={{ border: "1px solid #CCC", padding: 10, borderRadius: 10 }}
-          >
-            <h5 className="text-center">Personas Involucradas</h5>
-            <Row>
-              <hr />
-              <Col span={12}></Col>
-              <Col span={12}>
-                <p>
-                  <span>
-                    <b>C.I.:</b>
-                  </span>
-                  <br />
-                </p>
-              </Col>
-              <Col span={12}>
-                <p>
-                  <span>
-                    <b>Edad: </b>
-                  </span>
-                  <br />
-                </p>
-              </Col>
-              <Col span={12}>
-                <p>
-                  <span>
-                    <b>Número de referencia:</b>
-                  </span>
-                  <br />
-                </p>
-              </Col>
-              <Col span={24}>
-                <hr />
-              </Col>
-              <Col span={12}>
-                <h6>Hijos</h6>
-                <Space direction="vertical"></Space>
-              </Col>
-              <Col style={{ borderLeft: "1px solid #AAA" }} span={12}>
-                <h6>Denunciado</h6>
-                <Row>
-                  <Col span={24}>
-                    <p>
-                      <span>
-                        <b>Nombres y Apellidos del Denunciado:</b>
-                      </span>
-                      <br />
-                    </p>
-                  </Col>
-
-                  <Col span={24}>
-                    <p>
-                      <span>
-                        <b>Parentezco con la persona adulta mayor: </b>
-                      </span>
-                      <br />
-                    </p>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        {props.loaded ? (
+          <Row gutter={24}>
+            <Col span={24}>
+              <Row>
+                <Col span={4} style={{ marginBottom: 20 }}>
+                  <p style={{ color: "gray" }}>
+                    <span>Última modifcación: </span>
+                    {moment(props.adulto.ult_modificacion).format(
+                      "YYYY-MM-DD HH:mm:ss"
+                    )}
+                  </p>
+                </Col>
+              </Row>
+            </Col>
+            <FormAdulto
+              adulto={props.adulto}
+              setAdulto={props.setAdulto}
+            ></FormAdulto>
+            <FormDomicilio
+              domicilio={props.domicilio}
+              setDomicilio={props.setDomicilio}
+              domicilios={props.domicilios}
+              setDomicilios={props.setDomicilios}
+            ></FormDomicilio>
+          </Row>
+        ) : (
+          <Skeleton avatar active paragraph={{ rows: 4 }}></Skeleton>
+        )}
       </Modal>
     </>
   );

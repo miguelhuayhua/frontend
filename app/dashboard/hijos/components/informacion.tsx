@@ -7,9 +7,7 @@ import {
   FloatButton,
   Form,
   Input,
-  Progress,
   Row,
-  Select,
   Space,
   Spin,
   Switch,
@@ -25,37 +23,34 @@ import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
-  PlusCircleOutlined,
-  CommentOutlined,
-  CustomerServiceOutlined,
   FilterOutlined,
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
 } from "@ant-design/icons";
-import AdultoModal from "./adulto";
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { Adulto } from "../data";
 import { dias, meses } from "../../casos/nuevocaso/data";
+import { Hijo, dataHijo } from "../data";
+import HijoModal from "./hijo";
+import { Adulto, dataAdulto } from "../../adultos/data";
 export const DataContext = createContext({});
 //ROUTING
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
   //estados
+  const [loaded, setLoaded] = useState(false);
+  const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
   const [open, setOpen] = useState(false);
 
-  const [filtroCaso, setFiltroCaso] = useState("");
-  const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
-  const [filtroRangoFecha, setFiltroRangoFecha] = useState("");
-  const columns: ColumnsType<Adulto> = [
+  const columns: ColumnsType<Hijo> = [
     {
-      title: "ID Adulto",
-      dataIndex: "id_adulto",
-      key: "id_adulto",
+      title: "ID Hijo",
+      dataIndex: "id_hijo",
+      key: "id_hijo",
       className: "text-center",
       fixed: "left",
     },
@@ -63,8 +58,8 @@ const Informacion = () => {
       title: "Nombres y Apellidos",
 
       key: "accion_realizada",
-      render: (_, adulto) => {
-        return adulto.nombre + " " + adulto.paterno + " " + adulto.materno;
+      render: (_, hijo) => {
+        return hijo.nombres_apellidos;
       },
       className: "text-center",
     },
@@ -74,8 +69,8 @@ const Informacion = () => {
       key: "estado",
       dataIndex: "estado",
       className: "text-center",
-      render: (_, adulto) =>
-        adulto.estado == 1 ? (
+      render: (_, hijo) =>
+        hijo.estado == 1 ? (
           <Tag key={_} color="green">
             Activo
           </Tag>
@@ -90,13 +85,13 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
-      render: (_, adulto) => (
+      render: (_, hijo) => (
         <div
-          key={adulto.id_adulto + "d"}
+          key={hijo.id_hijo + "d"}
           className="d-flex align-items-center justify-content-around"
         >
           <Button
-            key={adulto.id_adulto}
+            key={hijo.id_hijo}
             style={{
               fontSize: 20,
               width: 40,
@@ -109,54 +104,52 @@ const Informacion = () => {
           >
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
-          <Switch key={adulto.id_adulto + "-"} checked={adulto.estado == 1} />
+          <Switch key={hijo.id_hijo + "-"} checked={hijo.estado == 1} />
         </div>
       ),
     },
   ];
-  const [adultos, setAdultos] = useState<Adulto[]>([]);
-  const [displayAdultos, setDisplayAdultos] = useState<Adulto[]>([]);
+  const [hijos, setHijos] = useState<Hijo[]>([]);
+  const [displayHijos, setDisplayHijos] = useState<Hijo[]>([]);
+  const [hijo, setHijo] = useState<Hijo>(dataHijo);
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Adulto[]>("http://localhost:8000/adulto/all").then((res) => {
-      setAdultos(res.data);
-      setDisplayAdultos(res.data);
+    axios.get<Hijo[]>("http://localhost:8000/hijo/all").then((res) => {
+      setHijos(res.data);
+      setDisplayHijos(res.data);
     });
   }, []);
 
   const { RangePicker } = DatePicker;
 
   //cambios en los filtros
-  const handleFiltroAdulto = (ev: any) => {
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        return adulto.id_adulto.includes(ev.target.value);
+  const handleFiltrohijo = (ev: any) => {
+    setDisplayHijos(
+      hijos.filter((hijo) => {
+        return hijo.id_hijo.includes(ev.target.value);
       })
     );
   };
   const handleFiltroAccion = (ev: any) => {
-    setDisplayAdultos(adultos.filter((adulto) => {}));
+    setDisplayHijos(hijos.filter((hijo) => {}));
   };
 
   const handleFiltroRange = (ev: any) => {
     let [inicio, final] = ev;
     let fechaInicio = dayjs(inicio.$d);
     let fechaFinal = dayjs(final.$d);
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        dayjs(adulto.ult_modificacion).isBetween(fechaInicio, fechaFinal);
-        return dayjs(adulto.ult_modificacion).isBetween(
-          fechaInicio,
-          fechaFinal
-        );
+    setDisplayHijos(
+      hijos.filter((hijo) => {
+        dayjs(hijo.ult_modificacion).isBetween(fechaInicio, fechaFinal);
+        return dayjs(hijo.ult_modificacion).isBetween(fechaInicio, fechaFinal);
       })
     );
   };
   return (
     <>
       <h5 className="mt-4">
-        Filtros para "Casos" <FilterOutlined />
+        {' Filtros para "Casos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
@@ -165,25 +158,10 @@ const Informacion = () => {
         <Row>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
             <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-              <Input
-                placeholder="Introduzca el ID del adulto"
-                value={filtroCaso}
-              />
+              <Input placeholder="Introduzca el ID del hijo" />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              label="Tipo de acción realizada: "
-              style={{ marginLeft: 10 }}
-            >
-              <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
-                <Select.Option value="Apertura">Apertura de Caso</Select.Option>
-                <Select.Option value="Orientacion">Orientación</Select.Option>
-                <Select.Option value="Citacion">Citación</Select.Option>
-                <Select.Option value="Derivacion">Derivación</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+
           <Col span={24} lg={{ span: 8 }}>
             <Form.Item
               style={{ marginLeft: 10, width: "100%" }}
@@ -208,7 +186,7 @@ const Informacion = () => {
       <hr />
       <Table
         scroll={{ x: 800, y: 500 }}
-        rowKey={(adulto) => adulto.id_adulto + "T"}
+        rowKey={(hijo) => hijo.id_hijo + "T"}
         key="table"
         pagination={{ pageSize: 20, position: ["bottomCenter"] }}
         columns={columns}
@@ -219,54 +197,88 @@ const Informacion = () => {
             </Space>
           ),
         }}
-        dataSource={displayAdultos}
+        dataSource={displayHijos}
         onRow={(value, index) => {
           return {
             onClick: (ev: any) => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post("http://localhost:8000/adulto/estado", {
-                      id_adulto: value.id_adulto,
+                    .post("http://localhost:8000/hijo/estado", {
+                      id_hijo: value.id_hijo,
                     })
                     .then((res) => {
                       message.success("¡Caso cambiado con éxito!");
                       axios
-                        .get<Adulto[]>("http://localhost:8000/adulto/all")
+                        .get<Hijo[]>("http://localhost:8000/hijo/all")
                         .then((res) => {
-                          setAdultos(res.data);
-                          setDisplayAdultos(res.data);
+                          setHijos(res.data);
+                          setDisplayHijos(res.data);
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
-                  axios
-                    .post<{}>("http://localhost:8000/adulto/obtener", {})
-                    .then((res) => {});
-                  axios
-                    .post("http://localhost:8000/denunciado/obtener", {})
-                    .then((res) => {});
                   setOpen(true);
+                  axios
+                    .post("http://localhost:8000/hijo/obtener", {
+                      id_hijo: value.id_hijo,
+                    })
+                    .then((res) => {
+                      setHijo(res.data);
+                      axios
+                        .post<{ adulto: Adulto; hijos: Hijo[] }>(
+                          "http://localhost:8000/adulto/obtener",
+                          {
+                            id_adulto: value.id_adulto,
+                          }
+                        )
+                        .then((res) => {
+                          setAdulto({
+                            ...res.data.adulto,
+                            hijos: res.data.hijos,
+                          });
+                          setLoaded(true);
+                        });
+                    });
                 }
               } catch (error) {
-                axios
-                  .post("http://localhost:8000/adulto/obtener", {
-                    id_adulto: value.id_adulto,
-                  })
-                  .then((res) => {});
-                axios
-                  .post("http://localhost:8000/denunciado/obtener", {})
-                  .then((res) => {});
                 setOpen(true);
+                axios
+                  .post("http://localhost:8000/hijo/obtener", {
+                    id_hijo: value.id_hijo,
+                  })
+                  .then((res) => {
+                    setHijo(res.data);
+                    axios
+                      .post<{ adulto: Adulto; hijos: Hijo[] }>(
+                        "http://localhost:8000/adulto/obtener",
+                        {
+                          id_adulto: value.id_adulto,
+                        }
+                      )
+                      .then((res) => {
+                        setAdulto({
+                          ...res.data.adulto,
+                          hijos: res.data.hijos,
+                        });
+                        setLoaded(true);
+                      });
+                  });
               }
             },
           };
         }}
       />
-      <AdultoModal
-        key="adultomodal"
+      <HijoModal
+        hijo={hijo}
+        loaded={loaded}
+        adulto={adulto}
+        setDisplayHijos={setDisplayHijos}
+        setHijo={setHijo}
+        setHijos={setHijos}
+        key="hijomodal"
         open={open}
         setOpen={setOpen}
-      ></AdultoModal>
+      ></HijoModal>
 
       <FloatButton.Group
         trigger="click"
@@ -297,9 +309,7 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get("http://localhost:8000/caso/report").then((res) => {
-                console.log(res);
-              });
+              axios.get("http://localhost:8000/caso/report").then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

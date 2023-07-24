@@ -11,3 +11,20 @@
 .ant-scroll-number {
   box-shadow: none !important;
 }
+
+//contenedor de fecha
+
+.fecha-container {
+  span {
+    display: inline-block;
+    border-radius: 10px;
+    padding: 0 10px;
+    background-color: #1677ff;
+    height: 40px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em;
+  }
+}

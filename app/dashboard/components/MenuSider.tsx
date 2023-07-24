@@ -4,7 +4,9 @@ import "moment/locale/es";
 import { useRouter } from "next/navigation";
 //estilos
 import React, { useState } from "react";
-
+import { MdElderly } from "react-icons//md";
+import { GiInjustice } from "react-icons/gi";
+import { TbReportAnalytics } from "react-icons/tb";
 interface Props {
   defaultOpenKeys: string[];
   defaultSelectedKey: string;
@@ -39,7 +41,7 @@ const MenuSider: NextPage<Props> = (props) => {
     {
       key: "caso1",
       label: "Casos",
-      icon: <BankOutlined />,
+      icon: <GiInjustice />,
       children: [
         {
           label: "Agregar Caso",
@@ -60,10 +62,7 @@ const MenuSider: NextPage<Props> = (props) => {
         {
           label: "Personas Adultas",
           key: "caso1.3",
-          icon: <EyeOutlined />,
-          onClick: () => {
-            router.push("/dashboard/adultos");
-          },
+          icon: <MdElderly></MdElderly>,
           children: [
             {
               label: "Ver Adultos",
@@ -94,6 +93,14 @@ const MenuSider: NextPage<Props> = (props) => {
       ],
     },
     {
+      key: "reportes",
+      label: "Reportes",
+      icon: <TbReportAnalytics />,
+      onClick: () => {
+        router.push("/dashboard/reportes");
+      },
+    },
+    {
       key: "personal",
       label: "Personal",
       icon: <TeamOutlined />,
@@ -103,7 +110,7 @@ const MenuSider: NextPage<Props> = (props) => {
           key: "personal1.1",
           icon: <UsergroupAddOutlined />,
           onClick: () => {
-            router.push("/dashboard/agregarpersonal");
+            router.push("/dashboard/personal/agregar");
           },
         },
         {

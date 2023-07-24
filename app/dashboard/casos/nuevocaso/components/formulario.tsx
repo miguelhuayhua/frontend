@@ -117,20 +117,26 @@ const Formulario: NextPage<Props> = (props) => {
       if (caso) {
         let [nro, gestion] = caso.nro_caso.split("/");
         if (gestion == dayjs().year()) {
-          setDatosDenuncia({
-            ...datosDenuncia,
-            nro_caso: (Number.parseInt(nro) + 1).toString(),
+          setDatosDenuncia((value) => {
+            return {
+              ...value,
+              nro_caso: (Number.parseInt(nro) + 1).toString(),
+            };
           });
         } else {
-          setDatosDenuncia({
-            ...datosDenuncia,
-            nro_caso: "1",
+          setDatosDenuncia((value) => {
+            return {
+              ...value,
+              nro_caso: "1",
+            };
           });
         }
       } else {
-        setDatosDenuncia({
-          ...datosDenuncia,
-          nro_caso: "1",
+        setDatosDenuncia((value) => {
+          return {
+            ...value,
+            nro_caso: "1",
+          };
         });
       }
     });
@@ -236,7 +242,7 @@ const Formulario: NextPage<Props> = (props) => {
   };
 
   const handleReferencia = (value: any) => {
-    setDatosGenerales({ ...datosGenerales, referencia: value });
+    setDatosGenerales({ ...datosGenerales, nro_referencia: value });
   };
 
   const handleInstruccion = (value: any) => {
@@ -337,7 +343,19 @@ const Formulario: NextPage<Props> = (props) => {
               </Col>
               <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
                 <Form.Item label="Tipología:">
-                  <Input onChange={handleTipologia} className="small-input" />
+                  <Select
+                    defaultValue={dataDatosDenuncia.tipologia}
+                    onChange={handleTipologia}
+                  >
+                    <Select.Option value="1">1</Select.Option>
+                    <Select.Option value="2">2</Select.Option>
+                    <Select.Option value="3">3</Select.Option>
+                    <Select.Option value="4">4</Select.Option>
+                    <Select.Option value="5">5</Select.Option>
+                    <Select.Option value="6">6</Select.Option>
+                    <Select.Option value="7">7</Select.Option>
+                    <Select.Option value="8">8</Select.Option>
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>

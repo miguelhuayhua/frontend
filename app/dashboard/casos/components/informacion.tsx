@@ -19,7 +19,7 @@ import {
   notification,
 } from "antd";
 import locale from "antd/es/date-picker/locale/es_ES";
-
+import { AiFillFilePdf } from "react-icons/ai";
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
@@ -45,6 +45,7 @@ import {
 } from "../nuevocaso/data";
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
+import { Hijo } from "../../hijos/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -126,6 +127,7 @@ const Informacion = () => {
           >
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
+          
           <Switch key={caso.id_caso + "-"} checked={caso.estado == 1} />
         </div>
       ),
@@ -181,7 +183,7 @@ const Informacion = () => {
   return (
     <>
       <h5 className="mt-4">
-        Filtros para "Casos" <FilterOutlined />
+        {'Filtros para "Casos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
@@ -271,12 +273,7 @@ const Informacion = () => {
                   axios
                     .post<{
                       adulto: AdultoMayor2;
-                      hijos: {
-                        ult_modificacion: string;
-                        id_hijo: string;
-                        estado: number;
-                        nombres_apellidos: string;
-                      }[];
+                      hijos: Hijo[];
                     }>("http://localhost:8000/adulto/obtener", {
                       id_adulto: value.id_adulto,
                     })
@@ -300,12 +297,7 @@ const Informacion = () => {
                 axios
                   .post<{
                     adulto: AdultoMayor2;
-                    hijos: {
-                      ult_modificacion: string;
-                      id_hijo: string;
-                      estado: number;
-                      nombres_apellidos: string;
-                    }[];
+                    hijos: Hijo[];
                   }>("http://localhost:8000/adulto/obtener", {
                     id_adulto: value.id_adulto,
                   })
@@ -358,23 +350,30 @@ const Informacion = () => {
         >
           <FloatButton
             onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios.get("http://localhost:8000/caso/report").then((res) => {
-                console.log(res);
-              });
+              axios
+                .get("http://localhost:8000/caso/report", {
+                  responseType: "blob",
+                })
+                .then((res) => {
+                  const url = URL.createObjectURL(res.data);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute(
+                    "download",
+                    "Casos-" + dayjs().format("DD-MM-YYYY_HH:mm:ss") + ".xlsx"
+                  );
+                  link.click();
+                  link.remove();
+                  notification.success({
+                    message: (
+                      <p style={{ fontSize: 14 }}>
+                        {"¡Excel: Casos-" +
+                          dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                          ".xlsx, generado con éxito!"}
+                      </p>
+                    ),
+                  });
+                });
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={
