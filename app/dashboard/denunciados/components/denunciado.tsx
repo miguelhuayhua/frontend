@@ -1,5 +1,18 @@
 "use client";
-import { Button, Col, Modal, Popconfirm, Row, Skeleton, Slider } from "antd";
+import {
+  Avatar,
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Popconfirm,
+  Radio,
+  Row,
+  Skeleton,
+  Slider,
+  message,
+} from "antd";
 import { NextPage } from "next";
 
 import { createContext } from "react";
@@ -8,7 +21,8 @@ import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
 import { Denunciado, dataDenunciado } from "../data";
 import { Adulto } from "../../adultos/data";
-export const DataContext = createContext({});
+import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+
 //ROUTING
 
 //PDF
@@ -67,18 +81,116 @@ const DenunciadoModal: NextPage<Props> = (props) => {
         {props.loaded ? (
           <Row gutter={24}>
             <Col span={24}>
-              <Row>
-                <Col span={4} style={{ marginBottom: 20 }}>
-                  <p style={{ color: "gray" }}>
-                    <span>Última modifcación: </span>
-                    {moment(props.denunciado.ult_modificacion).format(
-                      "YYYY-MM-DD HH:mm:ss"
-                    )}
-                  </p>
-                </Col>
-              </Row>
+              <p style={{ color: "gray", textAlign: "start" }}>
+                <span>Última modifcación: </span>
+                {moment(props.denunciado.ult_modificacion).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}
+              </p>
             </Col>
-            <Col>acá va lo demas</Col>
+            <Col span={4}>
+              <Avatar
+                style={{
+                  backgroundColor:
+                    props.denunciado.genero == "Femenino"
+                      ? "#ff0080"
+                      : "#0041c8",
+                  color: "white",
+                  width: 70,
+                  height: 70,
+                  fontSize: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto",
+                }}
+                icon={<UserOutlined />}
+              ></Avatar>
+              <b style={{ marginLeft: 10 }}>ID: </b>
+              {props.denunciado.id_denunciado}
+              <Button
+                style={{ marginLeft: 5 }}
+                onClick={() => {
+                  const textField = document.createElement("textarea");
+                  textField.innerText = props.adulto.id_adulto;
+                  document.body.appendChild(textField);
+                  textField.select();
+                  navigator.clipboard
+                    .writeText(props.adulto.id_adulto)
+                    .then(() => {
+                      textField.remove();
+                      message.success("¡ID - Hijo, copiado al portapapeles!");
+                    });
+                }}
+                icon={<CopyOutlined color="blue" />}
+              ></Button>
+            </Col>
+            <Col span={20}>
+              <Form>
+                <Row gutter={[24, 24]}>
+                  <Col span={24} md={{ span: 8 }}>
+                    <Form.Item label="Nombres: ">
+                      <Input
+                        name="nombre"
+                        value={props.denunciado.nombres}
+                        onChange={(value) =>
+                          props.setDenunciado({
+                            ...props.denunciado,
+                            nombres: value.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} md={{ span: 8 }}>
+                    <Form.Item label="Nombres: ">
+                      <Input
+                        name="nombre"
+                        value={props.denunciado.paterno}
+                        onChange={(value) =>
+                          props.setDenunciado({
+                            ...props.denunciado,
+                            paterno: value.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} md={{ span: 8 }}>
+                    <Form.Item label="Nombres: ">
+                      <Input
+                        name="nombre"
+                        value={props.denunciado.materno}
+                        onChange={(value) =>
+                          props.setDenunciado({
+                            ...props.denunciado,
+                            materno: value.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={24} md={{ span: 8 }}>
+                    <Form.Item label="Sexo:">
+                      <Radio.Group
+                        value={props.denunciado.genero}
+                        defaultValue={props.denunciado.genero}
+                        onChange={(value) => {
+                          props.setDenunciado({
+                            ...props.denunciado,
+                            genero: value.target.value,
+                          });
+                        }}
+                      >
+                        <Radio value="Femenino"> Femenino </Radio>
+                        <Radio value="Masculino"> Masculino </Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
           </Row>
         ) : (
           <Skeleton avatar active paragraph={{ rows: 4 }}></Skeleton>

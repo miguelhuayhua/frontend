@@ -41,7 +41,6 @@ import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
 import { InfoCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { type } from "os";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -87,7 +86,7 @@ const Detalles: NextPage<Props> = (props) => {
 
         link.setAttribute(
           "download",
-          nombre + paterno + materno + dataDatosDenuncia.fecha + ".pdf"
+          nombre + paterno + materno + dataDatosDenuncia.fecha_registro + ".pdf"
         );
         document.body.appendChild(link);
         link.click();
@@ -151,13 +150,13 @@ const Detalles: NextPage<Props> = (props) => {
                               <span>
                                 <b>Fecha de Registro del caso: </b>
                               </span>
-                              {props.datos.datosDenuncia.fecha}
+                              {props.datos.datosDenuncia.fecha_registro}
                             </p>
                           </Col>
                           <Col span={24}>
                             <p className="info">
                               <b>Hora de registro del caso: </b>
-                              {props.datos.datosDenuncia.hora}
+                              {props.datos.datosDenuncia.hora_registro}
                             </p>
                           </Col>
                           <Col span={24}>

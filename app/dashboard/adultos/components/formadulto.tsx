@@ -46,7 +46,7 @@ const FormAdulto: NextPage<Props> = (props) => {
 
   return (
     <>
-      <Col span={16}>
+      <Col span={24} lg={{ span: 16 }}>
         <Form layout="horizontal">
           <Row gutter={[12, 12]}>
             <Col span={4}>
@@ -86,7 +86,7 @@ const FormAdulto: NextPage<Props> = (props) => {
             </Col>
             <Col span={20}>
               <Row gutter={24}>
-                <Col span={8}>
+                <Col span={12} lg={{ span: 8 }}>
                   <Form.Item label="Nombres: ">
                     <Input
                       name="nombre"
@@ -100,7 +100,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={12} lg={{ span: 8 }}>
                   <Form.Item label="Apellido paterno: ">
                     <Input
                       name="paterno"
@@ -114,7 +114,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={12} lg={{ span: 8 }}>
                   <Form.Item label="Apellido materno: ">
                     <Input
                       name="materno"
@@ -128,7 +128,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} lg={{ span: 8 }}>
+                <Col span={12} lg={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
                       value={dayjs(props.adulto.f_nacimiento)}
@@ -145,7 +145,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                     ></DatePicker>
                   </Form.Item>
                 </Col>
-                <Col span={4}>
+                <Col span={8} lg={{ span: 4 }}>
                   <Form.Item
                     label="Edad"
                     rules={[
@@ -158,7 +158,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                     <InputNumber value={props.adulto.edad} min={60} />
                   </Form.Item>
                 </Col>
-                <Col span={18} lg={{ span: 6 }}>
+                <Col span={8} lg={{ span: 6 }}>
                   <Form.Item
                     label="N° de C.I."
                     rules={[
@@ -182,7 +182,7 @@ const FormAdulto: NextPage<Props> = (props) => {
               </Row>
             </Col>
 
-            <Col span={10} xl={{ span: 4 }}>
+            <Col span={6} lg={{ span: 6 }}>
               <Form.Item label="Sexo:">
                 <Radio.Group
                   value={props.adulto.genero}
@@ -200,7 +200,7 @@ const FormAdulto: NextPage<Props> = (props) => {
               </Form.Item>
             </Col>
 
-            <Col span={12} xl={{ span: 6 }}>
+            <Col span={9} xl={{ span: 6 }}>
               <Form.Item label="Estado Civil:">
                 <Select
                   value={props.adulto.estado_civil}
@@ -224,7 +224,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={24} xl={{ span: 8 }}>
+            <Col span={9} lg={{ span: 9 }}>
               <Form.Item
                 label="N° de Referencia:"
                 rules={[
@@ -247,7 +247,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={24} xl={{ span: 8 }}>
+            <Col span={12} lg={{ span: 8 }}>
               <Form.Item
                 label="Ocupación:"
                 rules={[
@@ -268,7 +268,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
+            <Col span={12} lg={{ span: 8 }}>
               <Form.Item label="Grado de Instrucción:">
                 <Select
                   onChange={(value) =>
@@ -312,7 +312,8 @@ const FormAdulto: NextPage<Props> = (props) => {
         </Form>
       </Col>
       <Col
-        span={8}
+        span={24}
+        lg={{ span: 8 }}
         style={{
           border: "1px solid #CCC",
           padding: 10,

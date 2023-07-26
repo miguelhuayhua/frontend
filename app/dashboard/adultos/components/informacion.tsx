@@ -58,7 +58,7 @@ const Informacion = () => {
       className: "text-center",
       fixed: "left",
       sortDirections: ["ascend", "descend"],
-
+      width: 130,
       sorter: (a, b) => {
         let id1 = Number.parseInt(a.id_adulto.split("-")[1]);
         let id2 = Number.parseInt(b.id_adulto.split("-")[1]);
@@ -162,7 +162,7 @@ const Informacion = () => {
   return (
     <>
       <h5 className="mt-4">
-        {'Filtros para "Casos"'} <FilterOutlined />
+        {'Filtros para "Adultos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...

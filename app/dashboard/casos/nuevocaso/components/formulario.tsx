@@ -491,7 +491,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={10} md={{ span: 12 }} xl={{ span: 6 }}>
-                  <Form.Item label="Sexo:">
+                  <Form.Item label="Género:">
                     <Radio.Group
                       defaultValue={"Femenino"}
                       className="normal-input"

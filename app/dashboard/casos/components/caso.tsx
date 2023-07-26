@@ -26,9 +26,11 @@ import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
 import { AiFillFilePdf } from "react-icons/ai";
 
-import { AdultoMayor, AdultoMayor2 } from "../nuevocaso/data";
+import { AdultoMayor2 } from "../nuevocaso/data";
 import MyDocument from "../nuevocaso/components/pdf";
 import { pdf } from "@react-pdf/renderer";
+import Formulario from "./pdf";
+import { Domicilio } from "../../adultos/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -51,7 +53,10 @@ const CasoModal: NextPage<Props> = (props) => {
       .post("http://localhost:8000/caso/update", { ...props.caso })
       .then((res) => {
         if (res.data.status == 1) {
-          notification.success({ message: "¡El caso se  modificó con éxito!" });
+          notification.success({
+            message: `El caso ${props.caso.nro_caso} se modificó con éxito`,
+            duration: 7,
+          });
           axios.get<Caso[]>("http://localhost:8000/caso/all").then((res) => {
             props.setCasos(res.data);
             props.setDisplayCasos(res.data);
@@ -106,44 +111,57 @@ const CasoModal: NextPage<Props> = (props) => {
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;*/
             onClick={() => {
-              pdf(
-                <DataContext.Provider
-                  value={{
-                    datosGenerales: props.adultoMayor,
-                    descripcionHechos: props.caso.descripcion_hechos,
-                    descripcionPeticion: props.caso.peticion,
-                    datosDenunciado: props.denunciado,
-                    accionRealizada: props.caso.accion_realizada,
-                    datosUbicacion: null,
-                  }}
-                >
-                  <MyDocument />
-                </DataContext.Provider>
-              )
-                .toBlob()
-                .then((blob) => {
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement("a");
-                  link.href = url;
-                  let { nombre, paterno, materno } = props.adultoMayor;
+              notification.info({
+                message: "Generando formulario, espere por favor...",
+              });
+              axios
+                .post<Domicilio>(
+                  "http://localhost:8000/domicilio/getByIdAdulto",
+                  {
+                    id_adulto: props.adultoMayor.id_adulto,
+                  }
+                )
+                .then((res) => {
+                  pdf(
+                    <DataContext.Provider
+                      value={{
+                        datosGenerales: props.adultoMayor,
+                        descripcionHechos: props.caso.descripcion_hechos,
+                        descripcionPeticion: props.caso.peticion,
+                        datosDenunciado: props.denunciado,
+                        accionRealizada: props.caso.accion_realizada,
+                        datosDenuncia: props.caso,
+                        datosUbicacion: res.data,
+                      }}
+                    >
+                      <Formulario />
+                    </DataContext.Provider>
+                  )
+                    .toBlob()
+                    .then((blob) => {
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      let { nombre, paterno, materno } = props.adultoMayor;
 
-                  link.setAttribute(
-                    "download",
-                    nombre +
-                      paterno +
-                      materno +
-                      props.caso.fecha_registro +
-                      ".pdf"
-                  );
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  notification.success({
-                    message: "Formulario generado con éxito",
-                  });
-                })
-                .catch((e) => {
-                  notification.error({ message: e });
+                      link.setAttribute(
+                        "download",
+                        nombre +
+                          paterno +
+                          materno +
+                          props.caso.fecha_registro +
+                          ".pdf"
+                      );
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      notification.success({
+                        message: "Formulario generado con éxito",
+                      });
+                    })
+                    .catch((e) => {
+                      notification.error({ message: e });
+                    });
                 });
             }}
           >

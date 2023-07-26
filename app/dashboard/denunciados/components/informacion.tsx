@@ -205,7 +205,7 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post("http://localhost:8000/denunciado/obtenerById", {
+                    .post("http://localhost:8000/denunciado/getById", {
                       id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
@@ -216,7 +216,7 @@ const Informacion = () => {
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post("http://localhost:8000/denunciado/obtenerById", {
+                  .post("http://localhost:8000/denunciado/getById", {
                     id_denunciado: value.id_denunciado,
                   })
                   .then((res) => {

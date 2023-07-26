@@ -50,7 +50,7 @@ const AdultoModal: NextPage<Props> = (props) => {
           .then((res) => {
             if (res.data.status == 1) {
               notification.success({
-                message: "¡Los datos del adulto mayor se  modificó con éxito!",
+                message: `¡Los datos de ${props.adulto.nombre} ${props.adulto.paterno} ${props.adulto.materno} se modificaron con éxito!`,
               });
               axios
                 .get<Adulto[]>("http://localhost:8000/adulto/all")
@@ -104,7 +104,7 @@ const AdultoModal: NextPage<Props> = (props) => {
           <Row gutter={24}>
             <Col span={24}>
               <Row>
-                <Col span={4} style={{ marginBottom: 20 }}>
+                <Col span={24} style={{ marginBottom: 20, textAlign: "start" }}>
                   <p style={{ color: "gray" }}>
                     <span>Última modifcación: </span>
                     {moment(props.adulto.ult_modificacion).format(

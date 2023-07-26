@@ -61,6 +61,7 @@ export interface AdultoMayor2 {
     grado: string;
     ocupacion: string;
     beneficios: string;
+    id_adulto: string;
 
 }
 export interface DatosUbicacion {
@@ -102,6 +103,7 @@ export let dataDatosGenerales = {
     grado: "Primaria",
     beneficios: "Ninguno",
     ocupacion: "",
+    id_adulto: ""
 };
 
 export let dataDatosUbicacion = {

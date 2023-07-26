@@ -219,14 +219,14 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post("http://localhost:8000/hijo/obtener", {
+                    .post("http://localhost:8000/hijo/get", {
                       id_hijo: value.id_hijo,
                     })
                     .then((res) => {
                       setHijo(res.data);
                       axios
                         .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                          "http://localhost:8000/adulto/obtener",
+                          "http://localhost:8000/adulto/get",
                           {
                             id_adulto: value.id_adulto,
                           }
@@ -243,14 +243,14 @@ const Informacion = () => {
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post("http://localhost:8000/hijo/obtener", {
+                  .post("http://localhost:8000/hijo/get", {
                     id_hijo: value.id_hijo,
                   })
                   .then((res) => {
                     setHijo(res.data);
                     axios
                       .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                        "http://localhost:8000/adulto/obtener",
+                        "http://localhost:8000/adulto/get",
                         {
                           id_adulto: value.id_adulto,
                         }
