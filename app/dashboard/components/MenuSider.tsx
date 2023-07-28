@@ -131,7 +131,7 @@ const MenuSider: NextPage<Props> = (props) => {
               key: "usuario1.1",
               icon: <UserAddOutlined />,
               onClick: () => {
-                router.push("/dashboard/agregarusuario");
+                router.push("/dashboard/usuarios/agregar");
               },
             },
             {

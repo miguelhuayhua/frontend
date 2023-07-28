@@ -255,7 +255,7 @@ const Informacion = () => {
                     });
                   axios
                     .post<Domicilio>(
-                      "http://localhost:8000/domicilio/obtener",
+                      "http://localhost:8000/domicilio/get",
                       {
                         id_adulto: value.id_adulto,
                       }
@@ -265,7 +265,7 @@ const Informacion = () => {
                     });
                   axios
                     .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                      "http://localhost:8000/adulto/obtener",
+                      "http://localhost:8000/adulto/get",
                       {
                         id_adulto: value.id_adulto,
                       }
@@ -282,7 +282,7 @@ const Informacion = () => {
                 setOpen(true);
                 axios
                   .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                    "http://localhost:8000/adulto/obtener",
+                    "http://localhost:8000/adulto/get",
                     {
                       id_adulto: value.id_adulto,
                     }
@@ -304,7 +304,7 @@ const Informacion = () => {
                       });
                     axios
                       .post<Domicilio>(
-                        "http://localhost:8000/domicilio/obtener",
+                        "http://localhost:8000/domicilio/get",
                         {
                           id_adulto: value.id_adulto,
                         }

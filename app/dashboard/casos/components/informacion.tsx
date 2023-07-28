@@ -274,7 +274,7 @@ const Informacion = () => {
                     .post<{
                       adulto: AdultoMayor2;
                       hijos: Hijo[];
-                    }>("http://localhost:8000/adulto/obtener", {
+                    }>("http://localhost:8000/adulto/get", {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
@@ -284,7 +284,7 @@ const Informacion = () => {
                       });
                     });
                   axios
-                    .post("http://localhost:8000/denunciado/obtener", {
+                    .post("http://localhost:8000/denunciado/get", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -298,7 +298,7 @@ const Informacion = () => {
                   .post<{
                     adulto: AdultoMayor2;
                     hijos: Hijo[];
-                  }>("http://localhost:8000/adulto/obtener", {
+                  }>("http://localhost:8000/adulto/get", {
                     id_adulto: value.id_adulto,
                   })
                   .then((res) => {
@@ -309,7 +309,7 @@ const Informacion = () => {
                   });
                 axios
                   .post<Denunciado>(
-                    "http://localhost:8000/denunciado/obtener",
+                    "http://localhost:8000/denunciado/get",
                     {
                       id_caso: value.id_caso,
                     }
