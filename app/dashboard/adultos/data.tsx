@@ -20,21 +20,21 @@ export interface Adulto {
 }
 
 export let dataAdulto = {
-  nombre: "",
-  paterno: "",
-  materno: "",
-  genero: "",
+  nombre:"",
+  paterno:"",
+  materno:"",
+  genero:"",
   edad: 10,
   ci: 0,
-  f_nacimiento: "",
+  f_nacimiento:"",
   nro_referencia: 0,
-  estado_civil: "",
-  grado: "",
-  ocupacion: "",
-  beneficios: "",
-  id_adulto: "",
+  estado_civil:"",
+  grado:"",
+  ocupacion:"",
+  beneficios:"",
+  id_adulto:"",
   estado: 0,
-  ult_modificacion: "",
+  ult_modificacion:"",
   hijos: [],
 };
 export interface Domicilio {
@@ -54,19 +54,19 @@ export interface Domicilio {
 }
 
 export let dataDomicilio = {
-  id_domicilio: "",
-  distrito: "",
-  zona: "",
-  calle_av: "",
+  id_domicilio:"",
+  distrito:"",
+  zona:"",
+  calle_av:"",
   nro_vivienda: 0,
-  area: "",
-  otra_area: "",
+  area:"",
+  otra_area:"",
   actual: 0,
-  estado: "",
-  ult_modificacion: "",
-  id_adulto: "",
-  tipo_domicilio: "",
-  otro_domicilio: "",
+  estado:"",
+  ult_modificacion:"",
+  id_adulto:"",
+  tipo_domicilio:"",
+  otro_domicilio:"",
 };
 export const generarColorOscuro = () => {
   const letters = "345678";

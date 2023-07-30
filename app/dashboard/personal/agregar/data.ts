@@ -42,15 +42,15 @@ export interface Persona {
 }
 
 export let dataPersona = {
-    id_persona: "",
-    nombres: "",
-    paterno: "",
-    materno: "",
+    id_persona:"",
+    nombres:"",
+    paterno:"",
+    materno:"",
     ci: 0,
     celular: 0,
     f_nacimiento: dayjs().toISOString(),
-    cargo: "",
+    cargo:"",
     genero: "Femenino",
-    ult_modificacion: "",
+    ult_modificacion:"",
     estado: 0,
 }

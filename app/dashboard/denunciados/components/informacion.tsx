@@ -120,7 +120,7 @@ const Informacion = () => {
   //cargado de datos desde la API
   useEffect(() => {
     axios
-      .get<Denunciado[]>("http://localhost:8000/denunciado/all")
+      .get<Denunciado[]>(process.env.BACKEND_URL+"/denunciado/all")
       .then((res) => {
         setDenunciados(res.data);
         setDisplayDenunciados(res.data);
@@ -188,14 +188,14 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post("http://localhost:8000/denunciado/estado", {
+                    .post(process.env.BACKEND_URL+"/denunciado/estado", {
                       id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
                       message.success("¡Denunciado cambiado con éxito!");
                       axios
                         .get<Denunciado[]>(
-                          "http://localhost:8000/denunciado/all"
+                          process.env.BACKEND_URL+"RLRL/denunciado/all"
                         )
                         .then((res) => {
                           setDenunciados(res.data);
@@ -205,7 +205,7 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post("http://localhost:8000/denunciado/getById", {
+                    .post(process.env.BACKEND_URL+"/denunciado/getById", {
                       id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
@@ -216,7 +216,7 @@ const Informacion = () => {
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post("http://localhost:8000/denunciado/getById", {
+                  .post(process.env.BACKEND_URL+"/denunciado/getById", {
                     id_denunciado: value.id_denunciado,
                   })
                   .then((res) => {
@@ -269,7 +269,7 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get("http://localhost:8000/caso/report").then((res) => {});
+              axios.get(process.env.BACKEND_URL+"RL/caso/report").then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

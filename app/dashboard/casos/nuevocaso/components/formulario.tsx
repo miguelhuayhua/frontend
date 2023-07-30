@@ -99,7 +99,7 @@ const Formulario: NextPage<Props> = (props) => {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:8000/adulto/npmunicos").then((res) => {
+    axios.get(process.env.BACKEND_URL+"/adulto/npmunicos").then((res) => {
       let data = res.data as {
         nombres: string[];
         apellidos: string[];
@@ -112,7 +112,7 @@ const Formulario: NextPage<Props> = (props) => {
       });
       setNombres({ nombres, apellidos });
     });
-    axios.get("http://localhost:8000/caso/getultimo").then((res) => {
+    axios.get(process.env.BACKEND_URL+"RLRLRLRL/caso/getultimo").then((res) => {
       let caso = res.data;
       if (caso) {
         let [nro, gestion] = caso.nro_caso.split("/");

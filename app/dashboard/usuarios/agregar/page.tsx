@@ -59,13 +59,13 @@ const AgregarUsuarios = () => {
   const [file, setFile] = useState<any>(null);
   const params = useSearchParams();
   useEffect(() => {
-    axios.get<Persona[]>("http://localhost:8000/persona/all").then((res) => {
+    axios.get<Persona[]>(process.env.BACKEND_URL+"/persona/all").then((res) => {
       setPersonas(res.data);
     });
     let id_persona = params.get("id_persona");
     if (id_persona) {
       axios
-        .post<Persona>("http://localhost:8000/persona/get", { id_persona })
+        .post<Persona>(process.env.BACKEND_URL+"/persona/get", { id_persona })
         .then((res) => {
           if (res.data) {
             setPersona(res.data);
@@ -108,7 +108,7 @@ const AgregarUsuarios = () => {
                             } else {
                               axios
                                 .post<{ status: number }>(
-                                  "http://localhost:8000/usuario/verify",
+                                  process.env.BACKEND_URL+"/usuario/verify",
                                   {
                                     ...usuario,
                                   }
@@ -403,7 +403,7 @@ const AgregarUsuarios = () => {
                           title={<h5>Personal asociado a la cuenta</h5>}
                           description={
                             <>
-                              {persona.id_persona != "" ? (
+                              {persona.id_persona != ""? (
                                 <Row>
                                   <Col span={12}>
                                     <p>
@@ -488,7 +488,7 @@ const AgregarUsuarios = () => {
           formData.append("id_persona", persona.id_persona);
           axios
             .post<{ status: number }>(
-              "http://localhost:8000/usuario/insert",
+              process.env.BACKEND_URL+"/usuario/insert",
               formData,
               {
                 headers: {

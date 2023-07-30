@@ -138,7 +138,7 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Caso[]>("http://localhost:8000/caso/all").then((res) => {
+    axios.get<Caso[]>(process.env.BACKEND_URL+"/caso/all").then((res) => {
       setCasos(res.data);
       setDisplayCasos(res.data);
     });
@@ -254,7 +254,7 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post("http://localhost:8000/caso/estado", {
+                    .post(process.env.BACKEND_URL+"RLRLRL/caso/estado", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -262,7 +262,7 @@ const Informacion = () => {
                         "¡Caso " + value.nro_caso + " cambiado con éxito!"
                       );
                       axios
-                        .get<Caso[]>("http://localhost:8000/caso/all")
+                        .get<Caso[]>(process.env.BACKEND_URL+"/caso/all")
                         .then((res) => {
                           setCasos(res.data);
                           setDisplayCasos(res.data);
@@ -274,7 +274,7 @@ const Informacion = () => {
                     .post<{
                       adulto: AdultoMayor2;
                       hijos: Hijo[];
-                    }>("http://localhost:8000/adulto/get", {
+                    }>(process.env.BACKEND_URL+"RLRLRL/adulto/get", {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
@@ -284,7 +284,7 @@ const Informacion = () => {
                       });
                     });
                   axios
-                    .post("http://localhost:8000/denunciado/get", {
+                    .post(process.env.BACKEND_URL+"/denunciado/get", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -298,7 +298,7 @@ const Informacion = () => {
                   .post<{
                     adulto: AdultoMayor2;
                     hijos: Hijo[];
-                  }>("http://localhost:8000/adulto/get", {
+                  }>(process.env.BACKEND_URL+"RLRLRL/adulto/get", {
                     id_adulto: value.id_adulto,
                   })
                   .then((res) => {
@@ -309,7 +309,7 @@ const Informacion = () => {
                   });
                 axios
                   .post<Denunciado>(
-                    "http://localhost:8000/denunciado/get",
+                    process.env.BACKEND_URL+"RL/denunciado/get",
                     {
                       id_caso: value.id_caso,
                     }
@@ -351,7 +351,7 @@ const Informacion = () => {
           <FloatButton
             onClick={() => {
               axios
-                .get("http://localhost:8000/caso/report", {
+                .get(process.env.BACKEND_URL+"/caso/report", {
                   responseType: "blob",
                 })
                 .then((res) => {

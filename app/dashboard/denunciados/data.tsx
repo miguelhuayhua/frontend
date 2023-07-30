@@ -11,13 +11,13 @@ export interface Denunciado {
 }
 
 export let dataDenunciado: Denunciado = {
-  id_denunciado: "",
-  nombres: "",
-  paterno: "",
-  materno: "",
+  id_denunciado:"",
+  nombres:"",
+  paterno:"",
+  materno:"",
   estado: 0,
-  ult_modificacion: "",
-  id_caso: "",
-  parentezco: "",
-  genero: "",
+  ult_modificacion:"",
+  id_caso:"",
+  parentezco:"",
+  genero:"",
 };

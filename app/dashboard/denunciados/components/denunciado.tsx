@@ -42,7 +42,9 @@ const DenunciadoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post("http://localhost:8000/denunciado/update", { ...props.denunciado })
+      .post(process.env.BACKEND_URL + "/denunciado/update", {
+        ...props.denunciado,
+      })
       .then((res) => {});
   };
   const handleHideModal = () => {

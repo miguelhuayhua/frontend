@@ -13,16 +13,16 @@ export interface Caso {
 }
 
 export let datosCaso: Caso = {
-    nro_caso: "",
-    fecha_registro: "",
-    hora_registro: "",
-    peticion: "",
-    ult_modificacion: "",
-    id_adulto: "",
-    id_caso: "",
-    tipologia: "",
-    descripcion_hechos: "",
-    accion_realizada: "",
+    nro_caso:"",
+    fecha_registro:"",
+    hora_registro:"",
+    peticion:"",
+    ult_modificacion:"",
+    id_adulto:"",
+    id_caso:"",
+    tipologia:"",
+    descripcion_hechos:"",
+    accion_realizada:"",
     estado: 1,
 }
 
@@ -42,13 +42,13 @@ export interface Denunciado {
 
 
 export let DatosDenunciado = {
-    nombres: "",
-    paterno: "",
-    materno: "",
-    parentezco: "",
+    nombres:"",
+    paterno:"",
+    materno:"",
+    parentezco:"",
     estado: 1,
-    genero: "",
-    ult_modificacion: "",
-    id_caso: "",
-    id_denunciado: "",
+    genero:"",
+    ult_modificacion:"",
+    id_caso:"",
+    id_denunciado:"",
 }

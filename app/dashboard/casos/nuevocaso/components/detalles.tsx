@@ -463,7 +463,7 @@ const Detalles: NextPage<Props> = (props) => {
           <Button
             onClick={handleVolver}
             className="my-3"
-            style={{ width: "90%", margin: " auto 0" }}
+            style={{ width: "90%", margin: "" auto 0" }}
           >
             Volver
           </Button>
@@ -471,7 +471,7 @@ const Detalles: NextPage<Props> = (props) => {
         <Col
           sm={{ span: 12, offset: 0 }}
           md={{ span: 8 }}
-          style={{ width: "90%", margin: " auto 0" }}
+          style={{ width: "90%", margin: "" auto 0" }}
         >
           <Button type="primary" onClick={handleEnviar} className="w-100 my-3">
             Enviar y Generar Formulario
@@ -494,7 +494,7 @@ const Detalles: NextPage<Props> = (props) => {
         }
         open={open}
       >
-        <div className={!estado ? "hidden" : ""}>
+        <div className={!estado ? "hidden" : "}>
           <Progress
             type="circle"
             percent={counter}

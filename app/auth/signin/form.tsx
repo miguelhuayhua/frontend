@@ -8,8 +8,8 @@ import { ChangeEvent, useState } from "react";
 export const LoginForm = () => {
   const router = useRouter();
   const [formValues, setFormValues] = useState({
-    usuario: "",
-    password: "",
+    usuario:"",
+    password:"",
   });
 
   const [error, setShowError] = useState(false);
@@ -17,7 +17,7 @@ export const LoginForm = () => {
     <>
       <Form
         onFinish={async () => {
-          setFormValues({ usuario: "", password: "" });
+          setFormValues({ usuario:"", password: "" });
 
           const res = await signIn("credentials", {
             redirect: false,

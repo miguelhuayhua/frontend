@@ -9,10 +9,10 @@ export interface Hijo {
 
 export let dataHijo = {
 
-  id_hijo: "",
+  id_hijo:"",
   estado: 0,
-  id_adulto: "",
-  genero: "",
-  nombres_apellidos: "",
-  ult_modificacion: "",
+  id_adulto:"",
+  genero:"",
+  nombres_apellidos:"",
+  ult_modificacion:"",
 }

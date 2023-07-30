@@ -50,14 +50,14 @@ const CasoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post("http://localhost:8000/caso/update", { ...props.caso })
+      .post(process.env.BACKEND_URL+"/caso/update", { ...props.caso })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
             message: `El caso ${props.caso.nro_caso} se modificó con éxito`,
             duration: 7,
           });
-          axios.get<Caso[]>("http://localhost:8000/caso/all").then((res) => {
+          axios.get<Caso[]>(process.env.BACKEND_URL+"/caso/all").then((res) => {
             props.setCasos(res.data);
             props.setDisplayCasos(res.data);
           });
@@ -116,7 +116,7 @@ const CasoModal: NextPage<Props> = (props) => {
               });
               axios
                 .post<Domicilio>(
-                  "http://localhost:8000/domicilio/getByIdAdulto",
+                  process.env.BACKEND_URL+"/domicilio/getByIdAdulto",
                   {
                     id_adulto: props.adultoMayor.id_adulto,
                   }

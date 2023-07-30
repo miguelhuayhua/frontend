@@ -160,7 +160,7 @@ const FormDomicilio: NextPage<Props> = (props) => {
                 <Input
                   hidden={props.domicilio.area != "Otro"}
                   placeholder="Especifique"
-                  className=" mt-3"
+                  className="" mt-3"
                   onChange={(value) =>
                     props.setDomicilio({
                       ...props.domicilio,
@@ -183,12 +183,12 @@ const FormDomicilio: NextPage<Props> = (props) => {
                     ...props.domicilio,
                     tipo_domicilio: "Propio",
                     distrito: 1,
-                    zona: "",
-                    calle_av: "",
+                    zona:"",
+                    calle_av:"",
                     nro_vivienda: null,
                     area: "urbano",
-                    otra_area: "",
-                    otro_tipo: "",
+                    otra_area:"",
+                    otro_tipo:"",
                     actual: 0,
                   });
 

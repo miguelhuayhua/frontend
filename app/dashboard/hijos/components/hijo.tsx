@@ -42,13 +42,13 @@ const HijoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post("http://localhost:8000/hijo/update", { ...props.hijo })
+      .post(process.env.BACKEND_URL+"/hijo/update", { ...props.hijo })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
             message: `¡Los datos de ${props.hijo.nombres_apellidos} se modificaron con éxito!`,
           });
-          axios.get<Adulto[]>("http://localhost:8000/hijo/all").then((res) => {
+          axios.get<Adulto[]>(process.env.BACKEND_URL+"RLRL/hijo/all").then((res) => {
             props.setHijos(res.data);
             props.setDisplayHijos(res.data);
           });

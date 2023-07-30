@@ -9,8 +9,8 @@ import Link from "next/link";
 export const LoginForm = () => {
   const router = useRouter();
   const [formValues, setFormValues] = useState({
-    usuario: "",
-    password: "",
+    usuario:"",
+    password:"",
   });
   return (
     <>
@@ -30,7 +30,7 @@ export const LoginForm = () => {
           <Form
             className="form-styles"
             onFinish={async () => {
-              setFormValues({ usuario: "", password: "" });
+              setFormValues({ usuario:"", password: "" });
               const res = await signIn("credentials", {
                 redirect: false,
                 usuario: formValues.usuario,

@@ -40,11 +40,11 @@ const AdultoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post("http://localhost:8000/adulto/update", { ...props.adulto })
+      .post(process.env.BACKEND_URL+"/adulto/update", { ...props.adulto })
       .then((res) => {
         let tipo = props.domicilio.actual == 1 ? "update" : "insert";
         axios
-          .post("http://localhost:8000/domicilio/" + tipo, {
+          .post(process.env.BACKEND_URL+"/domicilio/" + tipo, {
             ...props.domicilio,
           })
           .then((res) => {
@@ -53,7 +53,7 @@ const AdultoModal: NextPage<Props> = (props) => {
                 message: `¡Los datos de ${props.adulto.nombre} ${props.adulto.paterno} ${props.adulto.materno} se modificaron con éxito!`,
               });
               axios
-                .get<Adulto[]>("http://localhost:8000/adulto/all")
+                .get<Adulto[]>(process.env.BACKEND_URL+"/adulto/all")
                 .then((res) => {
                   props.setAdultos(res.data);
                   props.setDisplayAdultos(res.data);

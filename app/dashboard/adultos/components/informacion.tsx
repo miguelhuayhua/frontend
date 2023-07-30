@@ -125,10 +125,12 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Adulto[]>("http://localhost:8000/adulto/all").then((res) => {
-      setAdultos(res.data);
-      setDisplayAdultos(res.data);
-    });
+    axios
+      .get<Adulto[]>(process.env.BACKEND_URL + "RLRLRL/adulto/all")
+      .then((res) => {
+        setAdultos(res.data);
+        setDisplayAdultos(res.data);
+      });
   }, []);
 
   const { RangePicker } = DatePicker;
@@ -222,7 +224,7 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post("http://localhost:8000/adulto/estado", {
+                    .post(process.env.BACKEND_URL + "/adulto/estado", {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
@@ -235,7 +237,7 @@ const Informacion = () => {
                           );
 
                       axios
-                        .get<Adulto[]>("http://localhost:8000/adulto/all")
+                        .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
                         .then((res) => {
                           setAdultos(res.data);
                           setDisplayAdultos(res.data);
@@ -245,7 +247,7 @@ const Informacion = () => {
                   setOpen(true);
                   axios
                     .post<Domicilio[]>(
-                      "http://localhost:8000/domicilio/getByIdAdulto",
+                      process.env.BACKEND_URL + "RLRL/domicilio/getByIdAdulto",
                       {
                         id_adulto: value.id_adulto,
                       }
@@ -255,7 +257,7 @@ const Informacion = () => {
                     });
                   axios
                     .post<Domicilio>(
-                      "http://localhost:8000/domicilio/get",
+                      process.env.BACKEND_URL + "/domicilio/get",
                       {
                         id_adulto: value.id_adulto,
                       }
@@ -265,7 +267,7 @@ const Informacion = () => {
                     });
                   axios
                     .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                      "http://localhost:8000/adulto/get",
+                      process.env.BACKEND_URL + "/adulto/get",
                       {
                         id_adulto: value.id_adulto,
                       }
@@ -282,7 +284,7 @@ const Informacion = () => {
                 setOpen(true);
                 axios
                   .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                    "http://localhost:8000/adulto/get",
+                    process.env.BACKEND_URL + "/adulto/get",
                     {
                       id_adulto: value.id_adulto,
                     }
@@ -294,7 +296,7 @@ const Informacion = () => {
                     });
                     axios
                       .post<Domicilio[]>(
-                        "http://localhost:8000/domicilio/getByIdAdulto",
+                        process.env.BACKEND_URL + "/domicilio/getByIdAdulto",
                         {
                           id_adulto: value.id_adulto,
                         }
@@ -304,7 +306,7 @@ const Informacion = () => {
                       });
                     axios
                       .post<Domicilio>(
-                        "http://localhost:8000/domicilio/get",
+                        process.env.BACKEND_URL + "/domicilio/get",
                         {
                           id_adulto: value.id_adulto,
                         }
@@ -364,7 +366,9 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get("http://localhost:8000/caso/report").then((res) => {});
+              axios
+                .get(process.env.BACKEND_URL + "/caso/report")
+                .then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

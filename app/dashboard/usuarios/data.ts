@@ -9,11 +9,11 @@ export interface Usuario {
 }
 
 export let dataUsuario = {
-    id_usuario: "",
-    usuario: "",
-    password: "",
-    fotografia: "",
-    ult_modificacion: "",
+    id_usuario:"",
+    usuario:"",
+    password:"",
+    fotografia:"",
+    ult_modificacion:"",
     estado: 0,
-    id_persona: "",
+    id_persona:"",
 }

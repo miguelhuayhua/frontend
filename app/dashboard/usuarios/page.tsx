@@ -5,22 +5,21 @@ import { Content } from "antd/es/layout/layout";
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/router";
+import Informacion from "./components/informacion";
 const Usuarios = () => {
-  const router = useRouter();
-
   return (
     <main>
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultSelectedKey="personal1.1"
-            defaultOpenKeys={["personal"]}
+            defaultSelectedKey="usuario1.2"
+            defaultOpenKeys={["personal", "usuarios"]}
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Content></Content>
+                <Informacion></Informacion>
               </Content>
             </Layout>
           </Content>

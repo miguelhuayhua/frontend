@@ -94,40 +94,40 @@ export let dataDatosGenerales = {
     edad: -dayjs("1960-01-01").diff(moment.now(), "years"),
     estado_civil: "Viudo(a)",
     fecha_nac: "1960-01-01",
-    materno: "",
-    nombre: "",
-    paterno: "",
+    materno:"",
+    nombre:"",
+    paterno:"",
     nro_referencia: 0,
     sexo: "Femenino",
     hijos: [],
     grado: "Primaria",
     beneficios: "Ninguno",
-    ocupacion: "",
-    id_adulto: ""
+    ocupacion:"",
+    id_adulto: "
 };
 
 export let dataDatosUbicacion = {
     area: "Urbano",
-    otra_area: "",
-    calle: "",
+    otra_area:"",
+    calle:"",
     distrito: 1,
     n_vivienda: 0,
     tipo_domicilio: "Propio",
-    zona: "",
-    otro_domicilio: "",
+    zona:"",
+    otro_domicilio:"",
 };
 
 export let dataDatosDenunciado = {
-    nombres: "",
+    nombres:"",
     parentezco: "Hijo(a)",
-    paterno: "",
-    materno: "",
+    paterno:"",
+    materno:"",
 
 }
 export let dataDatosDenuncia = {
     fecha_registro: dayjs().format('YYYY-MM-DD'),
     hora_registro: dayjs().format('HH:mm:ss'),
-    tipologia: "",
-    nro_caso: ""
+    tipologia:"",
+    nro_caso: "
 
 }

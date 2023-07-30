@@ -38,8 +38,8 @@ export default function NuevoCaso() {
     datosDenunciado: dataDatosDenunciado,
     datosUbicacion: dataDatosUbicacion,
     accionRealizada: "Apertura",
-    descripcionHechos: "",
-    descripcionPeticion: "",
+    descripcionHechos:"",
+    descripcionPeticion:"",
     datosDenuncia: dataDatosDenuncia,
   });
   const [posicion, setPosicion] = useState(0);

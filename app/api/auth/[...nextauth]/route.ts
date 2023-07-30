@@ -1,3 +1,5 @@
+import axios from "axios";
+import bcrypt from 'bcryptjs';
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 export const authOptions: AuthOptions = {
@@ -10,7 +12,16 @@ export const authOptions: AuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                const user = { id: "1", usuario: "Admin", password: '' };
+                let salt = bcrypt.genSaltSync(10);
+
+                axios.post(process.env.BACKEND_URL + 'usuario/auth', {
+
+                    usuario: credentials?.usuario,
+                    password: credentials?.password
+                }).then(res => {
+                    console.log(res.data)
+                })
+                const user = { id: "1", usuario: "Admin", password: bcrypt.hash(credentials?.password!, salt) };
                 return user;
 
             }

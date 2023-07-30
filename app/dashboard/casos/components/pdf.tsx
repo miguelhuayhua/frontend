@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 5,
     paddingVertical: 3.5,
-    border: " 1px solid black",
+    border: "" 1px solid black",
     borderRadius: 2,
   },
   checker: {
@@ -149,16 +149,16 @@ const Formulario = () => {
         </View>
         <View style={{ ...styles.horizontal, marginTop: 10 }}>
           <Text style={styles.textInfo}>
-            {"Fecha y hora de registro: " +
+            {"Fecha y hora de registro: "" +
               datosDenuncia.fecha_registro +
               " " +
               datosDenuncia.hora_registro}
           </Text>
           <Text style={styles.textInfo}>
-            {"Tipología: " + datosDenuncia.tipologia}
+            {"Tipología: "" + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: "" + datosDenuncia.nro_caso + "/" + dayjs().year()}
           </Text>
         </View>
         <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
