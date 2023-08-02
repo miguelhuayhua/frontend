@@ -9,7 +9,6 @@ import {
   Modal,
   Popconfirm,
   Progress,
-  Radio,
   Row,
   Skeleton,
   message,
@@ -187,7 +186,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
                 )}
               </p>
             </Col>
-            <Col span={8}>
+            <Col span={24} md={{ span: 12 }}>
               <div
                 style={{
                   display: "flex",
@@ -250,7 +249,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
               </div>
             </Col>
 
-            <Col span={16}>
+            <Col span={24} md={{ span: 12 }}>
               <Form>
                 <Row gutter={[24, 24]}>
                   <Col span={8}>

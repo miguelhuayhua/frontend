@@ -6,12 +6,12 @@
   .accionUsuarioItem {
     font-size: 1.2em;
     height: 50px !important;
-    background-color: rgb(74, 82, 117);
-    color: white;
+    color: black;
+    background-color: transparent;
     padding: 5px;
     margin: 0 10px;
     &:hover {
-      color: whitesmoke !important;
+      color: #1677ff !important;
     }
   }
 }

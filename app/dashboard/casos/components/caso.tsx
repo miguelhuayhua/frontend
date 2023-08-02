@@ -27,10 +27,11 @@ import moment from "moment";
 import { AiFillFilePdf } from "react-icons/ai";
 
 import { AdultoMayor2 } from "../nuevocaso/data";
-import MyDocument from "../nuevocaso/components/pdf";
 import { pdf } from "@react-pdf/renderer";
 import Formulario from "./pdf";
 import { Domicilio } from "../../adultos/data";
+import { useSession } from "next-auth/react";
+import { Persona } from "../../personal/agregar/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -47,20 +48,23 @@ interface Props {
 }
 const CasoModal: NextPage<Props> = (props) => {
   //control del modal
+  const { data } = useSession();
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL+"/caso/update", { ...props.caso })
+      .post(process.env.BACKEND_URL + "/caso/update", { ...props.caso })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
             message: `El caso ${props.caso.nro_caso} se modificó con éxito`,
             duration: 7,
           });
-          axios.get<Caso[]>(process.env.BACKEND_URL+"/caso/all").then((res) => {
-            props.setCasos(res.data);
-            props.setDisplayCasos(res.data);
-          });
+          axios
+            .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
+            .then((res) => {
+              props.setCasos(res.data);
+              props.setDisplayCasos(res.data);
+            });
         } else {
           notification.error({ message: "No se pudo modificar el caso..." });
         }
@@ -95,6 +99,7 @@ const CasoModal: NextPage<Props> = (props) => {
         width={"90%"}
         footer={[
           <Button
+            key={"btn-caso"}
             style={{
               color: "white",
               backgroundColor: "#b51308",
@@ -110,59 +115,77 @@ const CasoModal: NextPage<Props> = (props) => {
     datosDenunciado: DatosDenunciado;
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;*/
-            onClick={() => {
+            onClick={async () => {
               notification.info({
                 message: "Generando formulario, espere por favor...",
               });
-              axios
-                .post<Domicilio>(
-                  process.env.BACKEND_URL+"/domicilio/getByIdAdulto",
+              if (data) {
+                let { usuario } = data?.user as {
+                  usuario: {
+                    usuario: string;
+                    estado: number;
+                    fotografia: string;
+                    id_persona: string;
+                    id_usuario: string;
+                  };
+                };
+                let persona = await axios.post<Persona>(
+                  process.env.BACKEND_URL + "/persona/get",
                   {
-                    id_adulto: props.adultoMayor.id_adulto,
+                    id_persona: usuario.id_persona,
                   }
-                )
-                .then((res) => {
-                  pdf(
-                    <DataContext.Provider
-                      value={{
-                        datosGenerales: props.adultoMayor,
-                        descripcionHechos: props.caso.descripcion_hechos,
-                        descripcionPeticion: props.caso.peticion,
-                        datosDenunciado: props.denunciado,
-                        accionRealizada: props.caso.accion_realizada,
-                        datosDenuncia: props.caso,
-                        datosUbicacion: res.data,
-                      }}
-                    >
-                      <Formulario />
-                    </DataContext.Provider>
+                );
+                axios
+                  .post<Domicilio>(
+                    process.env.BACKEND_URL + "/domicilio/getByIdAdulto",
+                    {
+                      id_adulto: props.adultoMayor.id_adulto,
+                    }
                   )
-                    .toBlob()
-                    .then((blob) => {
-                      const url = URL.createObjectURL(blob);
-                      const link = document.createElement("a");
-                      link.href = url;
-                      let { nombre, paterno, materno } = props.adultoMayor;
+                  .then((res) => {
+                    pdf(
+                      <DataContext.Provider
+                        value={{
+                          datosGenerales: props.adultoMayor,
+                          descripcionHechos: props.caso.descripcion_hechos,
+                          descripcionPeticion: props.caso.peticion,
+                          datosDenunciado: props.denunciado,
+                          accionRealizada: props.caso.accion_realizada,
+                          datosDenuncia: props.caso,
+                          datosUbicacion: res.data,
+                          persona: persona.data,
+                        }}
+                      >
+                        <Formulario />
+                      </DataContext.Provider>
+                    )
+                      .toBlob()
+                      .then((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        let { nombre, paterno, materno } = props.adultoMayor;
 
-                      link.setAttribute(
-                        "download",
-                        nombre +
-                          paterno +
-                          materno +
-                          props.caso.fecha_registro +
-                          ".pdf"
-                      );
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                      notification.success({
-                        message: "Formulario generado con éxito",
+                        link.setAttribute(
+                          "download",
+                          nombre +
+                            paterno +
+                            materno +
+                            props.caso.fecha_registro +
+                            ".pdf"
+                        );
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        notification.success({
+                          message: "Formulario generado con éxito",
+                        });
+                      })
+                      .catch((e) => {
+                        notification.error({ message: e });
                       });
-                    })
-                    .catch((e) => {
-                      notification.error({ message: e });
-                    });
-                });
+                  });
+              }
             }}
           >
             <AiFillFilePdf style={{ fontSize: 25 }} />

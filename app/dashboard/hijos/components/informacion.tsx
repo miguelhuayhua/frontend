@@ -149,7 +149,7 @@ const Informacion = () => {
   return (
     <>
       <h5 className="mt-4">
-        {' Filtros para "Casos"'} <FilterOutlined />
+        {' Filtros para "Hijos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
@@ -204,7 +204,7 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"RLRL/hijo/estado", {
+                    .post(process.env.BACKEND_URL+"/hijo/estado", {
                       id_hijo: value.id_hijo,
                     })
                     .then((res) => {
@@ -219,7 +219,7 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post(process.env.BACKEND_URL+"RL/hijo/get", {
+                    .post(process.env.BACKEND_URL+"/hijo/get", {
                       id_hijo: value.id_hijo,
                     })
                     .then((res) => {
@@ -309,7 +309,7 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get(process.env.BACKEND_URL+"RLRLRL/caso/report").then((res) => {});
+              axios.get(process.env.BACKEND_URL+"/caso/report").then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={

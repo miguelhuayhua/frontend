@@ -15,6 +15,7 @@ import {
   DatosUbicacion,
 } from "../data";
 import dayjs from "dayjs";
+import { Persona } from "@/app/dashboard/personal/agregar/data";
 
 // Create styles
 //estilos
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 5,
     paddingVertical: 3.5,
-    border: "" 1px solid black",
+    border: "1px solid black",
     borderRadius: 2,
   },
   checker: {
@@ -89,25 +90,49 @@ const MyDocument = () => {
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   };
+  let { persona } = data as { persona: Persona };
   return (
     <Document>
       <Page style={styles.page}>
+        <Text
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 50,
+            color: "gray",
+            fontSize: 8,
+          }}
+        >
+          Generado por:
+          {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
+        </Text>
         <Image
           style={{
             width: 90,
             height: 60,
             position: "absolute",
-            top: 10,
+            top: 15,
             right: 10,
           }}
           src={"/assets/logo-gamea.png"}
         ></Image>
         <Image
           style={{
+            width: 500,
+            height: 100,
+            position: "absolute",
+            top: 0,
+            right: 40,
+            zIndex: -1,
+          }}
+          src={"/assets/linea-aymara.png"}
+        ></Image>
+        <Image
+          style={{
             width: 90,
             height: 60,
             position: "absolute",
-            top: 10,
+            top: 20,
             left: 10,
           }}
           src={"/assets/logo-elalto.png"}
@@ -137,16 +162,16 @@ const MyDocument = () => {
         </View>
         <View style={{ ...styles.horizontal, marginTop: 10 }}>
           <Text style={styles.textInfo}>
-            {"Fecha y hora de registro: "" +
+            {"Fecha y hora de registro: " +
               datosDenuncia.fecha_registro +
               " " +
               datosDenuncia.hora_registro}
           </Text>
           <Text style={styles.textInfo}>
-            {"Tipología: "" + datosDenuncia.tipologia}
+            {"Tipología: " + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: "" + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
           </Text>
         </View>
         <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
@@ -197,7 +222,7 @@ const MyDocument = () => {
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={{ fontSize: 10 }}>FECHA DE NACIMIENTO: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 10 }}>
-                {datosGenerales.fecha_nac}
+                {datosGenerales.f_nacimiento}
               </Text>
             </View>
             <View style={{ width: "50%", ...styles.horizontal }}>

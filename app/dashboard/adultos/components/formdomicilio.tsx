@@ -160,7 +160,7 @@ const FormDomicilio: NextPage<Props> = (props) => {
                 <Input
                   hidden={props.domicilio.area != "Otro"}
                   placeholder="Especifique"
-                  className="" mt-3"
+                  className="mt-3"
                   onChange={(value) =>
                     props.setDomicilio({
                       ...props.domicilio,

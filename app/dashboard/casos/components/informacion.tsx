@@ -7,11 +7,9 @@ import {
   FloatButton,
   Form,
   Input,
-  Progress,
   Row,
   Select,
   Space,
-  Spin,
   Switch,
   Tag,
   Tooltip,
@@ -19,25 +17,19 @@ import {
   notification,
 } from "antd";
 import locale from "antd/es/date-picker/locale/es_ES";
-import { AiFillFilePdf } from "react-icons/ai";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
-  PlusCircleOutlined,
-  CommentOutlined,
-  CustomerServiceOutlined,
   FilterOutlined,
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
-  LoadingOutlined,
 } from "@ant-design/icons";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
 import {
-  AdultoMayor,
   AdultoMayor2,
   dataDatosGenerales,
   dias,
@@ -59,7 +51,6 @@ const Informacion = () => {
 
   const [filtroCaso, setFiltroCaso] = useState("");
   const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
-  const [filtroRangoFecha, setFiltroRangoFecha] = useState("");
   const [denunciado, setDenunciado] = useState<Denunciado>(DatosDenunciado);
   const columns: ColumnsType<Caso> = [
     {
@@ -168,7 +159,8 @@ const Informacion = () => {
   };
 
   const handleFiltroRange = (ev: any) => {
-    let [inicio, final] = ev;
+    if(ev){
+      let [inicio, final] = ev;
     let fechaInicio = dayjs(inicio.$d);
     let fechaFinal = dayjs(final.$d);
     setDisplayCasos(
@@ -179,6 +171,7 @@ const Informacion = () => {
     );
     setFiltroAccionCaso("");
     setFiltroCaso("");
+    }
   };
   return (
     <>
@@ -254,7 +247,7 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"RLRLRL/caso/estado", {
+                    .post(process.env.BACKEND_URL+"/caso/estado", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -274,7 +267,7 @@ const Informacion = () => {
                     .post<{
                       adulto: AdultoMayor2;
                       hijos: Hijo[];
-                    }>(process.env.BACKEND_URL+"RLRLRL/adulto/get", {
+                    }>(process.env.BACKEND_URL+"/adulto/get", {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
@@ -298,7 +291,7 @@ const Informacion = () => {
                   .post<{
                     adulto: AdultoMayor2;
                     hijos: Hijo[];
-                  }>(process.env.BACKEND_URL+"RLRLRL/adulto/get", {
+                  }>(process.env.BACKEND_URL+"/adulto/get", {
                     id_adulto: value.id_adulto,
                   })
                   .then((res) => {
@@ -309,7 +302,7 @@ const Informacion = () => {
                   });
                 axios
                   .post<Denunciado>(
-                    process.env.BACKEND_URL+"RL/denunciado/get",
+                    process.env.BACKEND_URL+"/denunciado/get",
                     {
                       id_caso: value.id_caso,
                     }

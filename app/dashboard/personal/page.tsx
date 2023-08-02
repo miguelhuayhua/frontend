@@ -4,20 +4,21 @@ import { Content } from "antd/es/layout/layout";
 
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
+import Informacion from "./components/informacion";
 const Personal = () => {
   return (
     <main>
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultSelectedKey="personal1.1"
+            defaultSelectedKey="personal1.2"
             defaultOpenKeys={["personal"]}
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
             <Layout>
-              <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Content></Content>
+              <Content style={{ padding: "0 50px" }}>
+                <Informacion></Informacion>{" "}
               </Content>
             </Layout>
           </Content>

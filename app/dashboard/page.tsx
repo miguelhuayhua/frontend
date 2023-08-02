@@ -37,9 +37,6 @@ import {
 import MenuSider from "./components/MenuSider";
 import Navbar from "./components/Navbar";
 export default function Dashboard() {
-  let router = useRouter();
-  const { data: session, status } = useSession();
-  console.log(session, status);
   const data2 = [
     {
       name: "Page A",
@@ -358,7 +355,7 @@ export default function Dashboard() {
                       </Row>
                     </Col>
 
-                    <Col span={24} md={{ span: 6 }}>
+                    <Col span={24} lg={{ span: 6 }}>
                       <Card
                         title="Card title"
                         bordered={false}
@@ -399,7 +396,7 @@ export default function Dashboard() {
                       </Card>
                     </Col>
 
-                    <Col span={18}>
+                    <Col span={24} lg={{ span: 16 }}>
                       <Card
                         title="Card title"
                         bordered={false}
@@ -442,7 +439,7 @@ export default function Dashboard() {
                         </Row>
                       </Card>
                     </Col>
-                    <Col span={6}>
+                    <Col span={24} lg={{ span: 8 }}>
                       <Card
                         title="Card title"
                         bordered={false}
@@ -522,7 +519,7 @@ export default function Dashboard() {
                         />
                       </Card>
                     </Col>
-                    <Col span={24} md={{ span: 12 }}>
+                    <Col span={24} lg={{ span: 12 }}>
                       <ResponsiveContainer width="100%" height={200}>
                         <BarChart
                           data={data3}
@@ -543,7 +540,7 @@ export default function Dashboard() {
                         </BarChart>
                       </ResponsiveContainer>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24} lg={{ span: 12 }}>
                       <ResponsiveContainer width="100%" height={300}>
                         <AreaChart
                           data={data4}

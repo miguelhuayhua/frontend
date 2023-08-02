@@ -12,10 +12,12 @@ import { DataContext } from "./caso";
 import dayjs from "dayjs";
 import {
   AdultoMayor,
+  AdultoMayor2,
   DatosDenuncia,
   DatosDenunciado,
   DatosUbicacion,
 } from "../nuevocaso/data";
+import { Persona } from "../../personal/agregar/data";
 
 // Create styles
 //estilos
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 5,
     paddingVertical: 3.5,
-    border: "" 1px solid black",
+    border: "1px solid black",
     borderRadius: 2,
   },
   checker: {
@@ -82,7 +84,7 @@ const Formulario = () => {
     accionRealizada,
     datosDenuncia,
   } = data as {
-    datosGenerales: AdultoMayor;
+    datosGenerales: AdultoMayor2;
     datosUbicacion: DatosUbicacion;
     descripcionHechos: string;
     descripcionPeticion: string;
@@ -90,15 +92,29 @@ const Formulario = () => {
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   };
+  let { persona } = data as { persona: Persona };
+
   return (
     <Document>
       <Page style={styles.page}>
+        <Text
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 50,
+            color: "gray",
+            fontSize: 8,
+          }}
+        >
+          Generado por:
+          {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
+        </Text>
         <Image
           style={{
             width: 90,
             height: 60,
             position: "absolute",
-            top: 10,
+            top: 15,
             right: 10,
           }}
           src={"/assets/logo-gamea.png"}
@@ -119,7 +135,7 @@ const Formulario = () => {
             width: 90,
             height: 60,
             position: "absolute",
-            top: 10,
+            top: 20,
             left: 10,
           }}
           src={"/assets/logo-elalto.png"}
@@ -149,16 +165,16 @@ const Formulario = () => {
         </View>
         <View style={{ ...styles.horizontal, marginTop: 10 }}>
           <Text style={styles.textInfo}>
-            {"Fecha y hora de registro: "" +
+            {"Fecha y hora de registro: " +
               datosDenuncia.fecha_registro +
               " " +
               datosDenuncia.hora_registro}
           </Text>
           <Text style={styles.textInfo}>
-            {"Tipología: "" + datosDenuncia.tipologia}
+            {"Tipología: " + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: "" + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
           </Text>
         </View>
         <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
@@ -209,7 +225,7 @@ const Formulario = () => {
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={{ fontSize: 10 }}>FECHA DE NACIMIENTO: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 10 }}>
-                {datosGenerales.fecha_nac}
+                {datosGenerales.f_nacimiento}
               </Text>
             </View>
             <View style={{ width: "50%", ...styles.horizontal }}>
@@ -270,15 +286,13 @@ const Formulario = () => {
               {datosGenerales.hijos.length + " hijos(as). "}
               {datosGenerales.hijos.map((hijo, i) => {
                 return i < datosGenerales.hijos.length
-                  ? hijo + ","
-                  : hijo + ". ";
+                  ? hijo.nombres_apellidos + ","
+                  : hijo.nombres_apellidos + ". ";
               })}
             </Text>
           </View>
           <View style={{ width: "100%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>
-              GRADO DE INSTRUCCIÓN: PRIMARIA{" "}
-            </Text>
+            <Text style={{ fontSize: 10 }}>GRADO DE INSTRUCCIÓN: PRIMARIA</Text>
             <View
               style={
                 datosGenerales.grado == "Primaria"

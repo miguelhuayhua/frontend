@@ -8,6 +8,7 @@ import {
   Form,
   Input,
   Row,
+  Segmented,
   Space,
   Spin,
   Switch,
@@ -16,8 +17,7 @@ import {
   message,
   notification,
 } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
-
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
@@ -28,48 +28,50 @@ import {
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
+  AppstoreOutlined,
+  BarsOutlined,
 } from "@ant-design/icons";
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { dias, meses } from "../../casos/nuevocaso/data";
-import { Denunciado, dataDenunciado } from "../data";
-import DenunciadoModal from "./denunciado";
-import { Adulto, dataAdulto } from "../../adultos/data";
-export const DataContext = createContext({});
-//ROUTING
 
+import { useRouter } from "next/navigation";
+import { Persona, dataPersona } from "../agregar/data";
+import PersonaModal from "./personal";
 const Informacion = () => {
-  dayjs.extend(isBeetwen);
-  //estados
-  const [loaded, setLoaded] = useState(false);
-  const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [persona, setPersona] = useState<Persona>(dataPersona);
+  const [personas, setPersonas] = useState<Persona[]>([]);
+  const [displayPersonas, setDisplayPersonas] = useState<Persona[]>();
 
-  const columns: ColumnsType<Denunciado> = [
+  //COLUMNAS
+  const columns: ColumnsType<Persona> = [
     {
-      title: "ID Denunciado",
-      dataIndex: "id_denunciado",
-      key: "id_denunciado",
+      title: "ID Persona",
+      dataIndex: "id_persona",
+      key: "id_persona",
       className: "text-center",
       fixed: "left",
     },
     {
-      title: "Nombres y Apellidos",
+      title: "Persona",
 
-      key: "accion_realizada",
-      render: (_, Denunciado) => {
-        return `${Denunciado.nombres} ${Denunciado.paterno} ${Denunciado.materno}`;
+      key: "Persona",
+      render: (_, persona) => {
+        return persona.nombres;
       },
       className: "text-center",
     },
+
     {
       title: "Estado",
       key: "estado",
       dataIndex: "estado",
       className: "text-center",
-      render: (_, Denunciado) =>
-        Denunciado.estado == 1 ? (
+      render: (_, persona) =>
+        persona.estado == 1 ? (
           <Tag key={_} color="green">
             Activo
           </Tag>
@@ -84,13 +86,13 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
-      render: (_, denunciado) => (
+      render: (_, persona) => (
         <div
-          key={denunciado.id_denunciado + "d"}
+          key={persona.id_persona + "d"}
           className="d-flex align-items-center justify-content-around"
         >
           <Button
-            key={denunciado.id_denunciado}
+            key={persona.id_persona}
             style={{
               fontSize: 20,
               width: 40,
@@ -104,64 +106,90 @@ const Informacion = () => {
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
           <Switch
-            key={denunciado.id_denunciado + "-"}
-            checked={denunciado.estado == 1}
+            key={persona.id_persona + "-"}
+            checked={persona.estado == 1}
           />
         </div>
       ),
     },
   ];
-  const [denunciados, setDenunciados] = useState<Denunciado[]>([]);
-  const [denunciado, setDenunciado] = useState<Denunciado>(dataDenunciado);
-  const [displayDenunciados, setDisplayDenunciados] = useState<Denunciado[]>(
-    []
-  );
 
   //cargado de datos desde la API
   useEffect(() => {
     axios
-      .get<Denunciado[]>(process.env.BACKEND_URL+"/denunciado/all")
+      .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
       .then((res) => {
-        setDenunciados(res.data);
-        setDisplayDenunciados(res.data);
+        setPersonas(res.data);
+        setDisplayPersonas(res.data);
       });
   }, []);
 
-  const { RangePicker } = DatePicker;
-
-  //cambios en los filtros
-
   return (
     <>
-      <h5 className="mt-4">
-        {' Filtros para "Denunciados"'} <FilterOutlined />
-      </h5>
-      <small style={{ color: "#999" }}>
-        Cada filtro realiza búsquedas por separado...
-      </small>
+      <Row>
+        <Col span={8}>
+          <h5 className="mt-4">
+            {' Filtros para "Personas"'} <FilterOutlined />
+          </h5>
+          <small style={{ color: "#999" }}>
+            Cada filtro realiza búsquedas por separado...
+          </small>
+        </Col>
+        <Col span={8}>
+          <div className="accionesPersona">
+            <Button
+              icon={<AiOutlineUserAdd />}
+              title="Crear Persona"
+              className="accionPersonaItem"
+              onClick={() => {
+                router.replace("/dashboard/personas/agregar");
+              }}
+            >
+              Crear Persona
+            </Button>
+          </div>
+        </Col>
+      </Row>
       <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row>
+        <Row gutter={[24, 24]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-              <Input placeholder="Introduzca el ID del Denunciado" />
+            <Form.Item style={{ marginLeft: 10 }} label="ID de persona: ">
+              <Input
+                onChange={(ev) => {
+                  setDisplayPersonas(
+                    personas.filter((persona) => {
+                      return persona.id_persona
+                        .toLocaleLowerCase()
+                        .includes(ev.target.value.toLocaleLowerCase());
+                    })
+                  );
+                }}
+                placeholder="Introduzca el ID del persona"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+            <Form.Item style={{ marginLeft: 10 }} label="Nombre de Persona">
+              <Input
+                onChange={(ev) => {}}
+                placeholder="Introduzca el ID del persona"
+              />
             </Form.Item>
           </Col>
 
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              style={{ marginLeft: 10, width: "100%" }}
-              label="Filtrar por rango de fechas:"
-            >
-              <RangePicker
-                style={{ width: "100%" }}
-                locale={{
-                  ...locale,
-                  lang: {
-                    ...locale.lang,
-                    shortWeekDays: dias,
-                    shortMonths: meses,
-                  },
+          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+            <Form.Item style={{ marginLeft: 10 }} label="ID de persona: ">
+              <Input
+                onChange={(ev) => {
+                  setDisplayPersonas(
+                    personas.filter((persona) => {
+                      return persona.id_persona
+                        .toLocaleLowerCase()
+                        .includes(ev.target.value.toLocaleLowerCase());
+                    })
+                  );
                 }}
+                placeholder="Introduzca el ID de la persona"
               />
             </Form.Item>
           </Col>
@@ -170,7 +198,7 @@ const Informacion = () => {
       <hr />
       <Table
         scroll={{ x: 800, y: 500 }}
-        rowKey={(Denunciado) => Denunciado.id_denunciado + "T"}
+        rowKey={(persona) => persona.id_persona + "T"}
         key="table"
         pagination={{ pageSize: 20, position: ["bottomCenter"] }}
         columns={columns}
@@ -181,46 +209,46 @@ const Informacion = () => {
             </Space>
           ),
         }}
-        dataSource={displayDenunciados}
+        dataSource={displayPersonas}
         onRow={(value, index) => {
           return {
             onClick: (ev: any) => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"/denunciado/estado", {
-                      id_denunciado: value.id_denunciado,
+                    .post(process.env.BACKEND_URL + "/persona/estado", {
+                      id_persona: value.id_persona,
                     })
                     .then((res) => {
-                      message.success("¡Denunciado cambiado con éxito!");
+                      message.success("¡Personal cambiado con éxito!");
                       axios
-                        .get<Denunciado[]>(
-                          process.env.BACKEND_URL+"/denunciado/all"
+                        .get<Persona[]>(
+                          process.env.BACKEND_URL + "/persona/all"
                         )
                         .then((res) => {
-                          setDenunciados(res.data);
-                          setDisplayDenunciados(res.data);
+                          setPersonas(res.data);
+                          setDisplayPersonas(res.data);
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post(process.env.BACKEND_URL+"/denunciado/getById", {
-                      id_denunciado: value.id_denunciado,
+                    .post(process.env.BACKEND_URL + "/persona/get", {
+                      id_persona: value.id_persona,
                     })
                     .then((res) => {
-                      setDenunciado(res.data);
+                      setPersona(res.data);
                       setLoaded(true);
                     });
                 }
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post(process.env.BACKEND_URL+"/denunciado/getById", {
-                    id_denunciado: value.id_denunciado,
+                  .post(process.env.BACKEND_URL + "/persona/get", {
+                    id_persona: value.id_persona,
                   })
                   .then((res) => {
-                    setDenunciado(res.data);
+                    setPersona(res.data);
                     setLoaded(true);
                   });
               }
@@ -228,17 +256,16 @@ const Informacion = () => {
           };
         }}
       />
-      <DenunciadoModal
-        denunciado={denunciado}
+      <PersonaModal
+        persona={persona}
         loaded={loaded}
-        adulto={adulto}
-        setDisplayDenunciados={setDisplayDenunciados}
-        setDenunciado={setDenunciado}
-        setDenunciados={setDenunciados}
-        key="Denunciadomodal"
+        setDisplayPersonas={setDisplayPersonas}
+        setPersona={setPersona}
+        setPersonas={setPersonas}
+        key="personamodal"
         open={open}
         setOpen={setOpen}
-      ></DenunciadoModal>
+      ></PersonaModal>
 
       <FloatButton.Group
         trigger="click"
@@ -269,7 +296,9 @@ const Informacion = () => {
                   </div>
                 ),
               });
-              axios.get(process.env.BACKEND_URL+"RL/caso/report").then((res) => {});
+              axios
+                .get(process.env.BACKEND_URL + "/caso/report")
+                .then((res) => {});
             }}
             style={{ display: "flex", justifyContent: "center" }}
             icon={
@@ -304,4 +333,5 @@ const Informacion = () => {
     </>
   );
 };
+
 export default Informacion;

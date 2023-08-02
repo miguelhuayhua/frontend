@@ -9,9 +9,10 @@ import Link from "next/link";
 export const LoginForm = () => {
   const router = useRouter();
   const [formValues, setFormValues] = useState({
-    usuario:"",
-    password:"",
+    usuario: "",
+    password: "",
   });
+  const [error, setError] = useState(false);
   return (
     <>
       <img
@@ -30,7 +31,7 @@ export const LoginForm = () => {
           <Form
             className="form-styles"
             onFinish={async () => {
-              setFormValues({ usuario:"", password: "" });
+              setFormValues({ usuario: "", password: "" });
               const res = await signIn("credentials", {
                 redirect: false,
                 usuario: formValues.usuario,
@@ -41,26 +42,23 @@ export const LoginForm = () => {
               if (!res?.error) {
                 router.push("/dashboard");
               } else {
-                message.error("Credenciales inválidas...");
+                setError(true);
               }
             }}
           >
             <h1>Iniciar Sesión</h1>
-            <Form.Item className="mt-5">
+            <Form.Item className="mt-5" name={"usuario"}>
               <span>Nombre de usuario:</span>
               <Input
                 type="text"
                 className="input-style"
                 placeholder="Introduzca su nombre de usuario..."
                 onChange={(value) => {
-                  setFormValues((form) => {
-                    return { ...form, usuario: value.target.value };
-                  });
+                  setFormValues({ ...formValues, usuario: value.target.value });
                 }}
-                value={formValues.usuario}
               ></Input>
             </Form.Item>
-            <Form.Item>
+            <Form.Item name={"password"}>
               <span>Contraseña:</span>
               <Input.Password
                 className="input-style"
@@ -69,13 +67,18 @@ export const LoginForm = () => {
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
                 onChange={(value) => {
-                  setFormValues((form) => {
-                    return { ...form, password: value.target.value };
+                  setFormValues({
+                    ...formValues,
+                    password: value.target.value,
                   });
                 }}
-                value={formValues.password}
               />
             </Form.Item>
+            {error ? (
+              <p style={{ color: "red", textAlign: "center" }}>
+                Usuarios y contraseña inválidos...
+              </p>
+            ) : null}
             <Link
               className="py-3"
               style={{

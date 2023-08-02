@@ -126,7 +126,7 @@ const Informacion = () => {
   //cargado de datos desde la API
   useEffect(() => {
     axios
-      .get<Adulto[]>(process.env.BACKEND_URL + "RLRLRL/adulto/all")
+      .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
       .then((res) => {
         setAdultos(res.data);
         setDisplayAdultos(res.data);
@@ -247,7 +247,7 @@ const Informacion = () => {
                   setOpen(true);
                   axios
                     .post<Domicilio[]>(
-                      process.env.BACKEND_URL + "RLRL/domicilio/getByIdAdulto",
+                      process.env.BACKEND_URL + "/domicilio/getByIdAdulto",
                       {
                         id_adulto: value.id_adulto,
                       }

@@ -127,7 +127,6 @@ const Informacion = () => {
       });
   }, []);
 
-  const { RangePicker } = DatePicker;
 
   //cambios en los filtros
   const handleFiltroUsuario = (ev: any) => {

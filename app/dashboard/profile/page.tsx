@@ -1,32 +1,36 @@
 "use client";
 import { Layout } from "antd";
+import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
-
+import { useRouter } from "next/navigation";
+//estilos
+import "./estilos.scss";
+import React from "react";
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
-import { useRouter } from "next/router";
-import Informacion from "./components/informacion";
-const Usuarios = () => {
+
+export default function Profile() {
+  const router = useRouter();
+
   return (
     <main>
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultSelectedKey="usuario1.2"
-            defaultOpenKeys={["personal", "usuarios"]}
+            defaultOpenKeys={["none"]}
+            defaultSelectedKey="none"
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
             <Layout>
-              <Content style={{ padding: "0 50px" }}>
-                <Informacion></Informacion>
-              </Content>
+              <Content
+                className="site-layout"
+                style={{ padding: "0 20px" }}
+              ></Content>
             </Layout>
           </Content>
         </Layout>
       </Layout>
     </main>
   );
-};
-
-export default Usuarios;
+}

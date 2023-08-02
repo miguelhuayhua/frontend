@@ -28,3 +28,34 @@
     font-size: 1.1em;
   }
 }
+
+//no efectos de hover
+
+.nothover {
+  &:hover {
+    cursor: default !important;
+    background-color: white !important;
+  }
+}
+hr {
+  margin: 0 !important;
+  margin-top: 10px;
+}
+
+.custom-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: none;
+  border: none;
+  background-color: white;
+  font-size: 1.1em;
+  padding: 5px 10px !important;
+  margin: 0 !important;
+  span {
+    margin-left: 1em;
+  }
+  &:hover {
+    background-color: transparent !important;
+  }
+}

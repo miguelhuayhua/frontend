@@ -17,7 +17,6 @@ import {
   Badge,
   Button,
   Col,
-  Descriptions,
   Dropdown,
   FloatButton,
   Modal,
@@ -35,14 +34,16 @@ import {
   dataDatosDenuncia,
   dataDatosGenerales,
 } from "../data";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
 import { InfoCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
+import { Persona } from "@/app/dashboard/personal/agregar/data";
 export const DataContext = createContext({});
-//ROUTING
+//
 
 //PDF
 
@@ -59,9 +60,10 @@ const Detalles: NextPage<Props> = (props) => {
     props.getPosicion(0);
     notification.info({ message: "Verifique nuevamente los datos..." });
   };
+  const { data } = useSession();
 
   //referencias
-  const handleEnviar = () => {
+  const handleEnviar = async () => {
     setOpen(true);
     let interval = setInterval(
       () => {
@@ -72,45 +74,66 @@ const Detalles: NextPage<Props> = (props) => {
       250,
       ["counter"]
     );
-    pdf(
-      <DataContext.Provider value={props.datos}>
-        <MyDocument />
-      </DataContext.Provider>
-    )
-      .toBlob()
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        let { nombre, paterno, materno } = dataDatosGenerales;
-
-        link.setAttribute(
-          "download",
-          nombre + paterno + materno + dataDatosDenuncia.fecha_registro + ".pdf"
-        );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        props.router.push("/dashboard/casos");
-      });
-    axios
-      .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos })
-      .then((res) => {
-        setSuccess(true);
-        setCounter(100);
-        setEstado(false);
-
-        if (res.data.status == 1) {
-          notification.success({ message: res.data.response });
-        } else {
-          notification.error({ message: res.data.response });
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      let persona = await axios.post<Persona>(
+        process.env.BACKEND_URL + "/persona/get",
+        {
+          id_persona: usuario.id_persona,
         }
-      })
-      .catch((err) => {
-        clearInterval(interval);
-        setEstado(true);
-        setSuccess(false);
-      });
+      );
+      pdf(
+        <DataContext.Provider value={{ ...props.datos, persona: persona.data }}>
+          <MyDocument />
+        </DataContext.Provider>
+      )
+        .toBlob()
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          let { nombre, paterno, materno } = dataDatosGenerales;
+
+          link.setAttribute(
+            "download",
+            nombre +
+              paterno +
+              materno +
+              dataDatosDenuncia.fecha_registro +
+              ".pdf"
+          );
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          props.router.push("/dashboard/casos");
+        });
+      axios
+        .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos })
+        .then((res) => {
+          setSuccess(true);
+          setCounter(100);
+          setEstado(false);
+
+          if (res.data.status == 1) {
+            notification.success({ message: res.data.response });
+          } else {
+            notification.error({ message: res.data.response });
+          }
+        })
+        .catch((err) => {
+          clearInterval(interval);
+          setEstado(true);
+          setSuccess(false);
+        });
+    }
   };
   const cancel = () => {
     setOpen(false);
@@ -229,7 +252,7 @@ const Detalles: NextPage<Props> = (props) => {
               <div className="d-flex w-100">
                 <p className="titulo">Fecha de nacimiento: </p>
                 <p className="contenido">
-                  {props.datos.datosGenerales.fecha_nac}
+                  {props.datos.datosGenerales.f_nacimiento}
                 </p>
               </div>
             </Col>
@@ -463,7 +486,7 @@ const Detalles: NextPage<Props> = (props) => {
           <Button
             onClick={handleVolver}
             className="my-3"
-            style={{ width: "90%", margin: "" auto 0" }}
+            style={{ width: "90%", margin: "auto 0" }}
           >
             Volver
           </Button>
@@ -471,7 +494,7 @@ const Detalles: NextPage<Props> = (props) => {
         <Col
           sm={{ span: 12, offset: 0 }}
           md={{ span: 8 }}
-          style={{ width: "90%", margin: "" auto 0" }}
+          style={{ width: "90%", margin: "auto 0" }}
         >
           <Button type="primary" onClick={handleEnviar} className="w-100 my-3">
             Enviar y Generar Formulario
@@ -494,7 +517,7 @@ const Detalles: NextPage<Props> = (props) => {
         }
         open={open}
       >
-        <div className={!estado ? "hidden" : "}>
+        <div className={!estado ? "hidden" : ""}>
           <Progress
             type="circle"
             percent={counter}

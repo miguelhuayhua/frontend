@@ -99,7 +99,7 @@ const Formulario: NextPage<Props> = (props) => {
   };
 
   useEffect(() => {
-    axios.get(process.env.BACKEND_URL+"/adulto/npmunicos").then((res) => {
+    axios.get(process.env.BACKEND_URL + "/adulto/npmunicos").then((res) => {
       let data = res.data as {
         nombres: string[];
         apellidos: string[];
@@ -112,7 +112,7 @@ const Formulario: NextPage<Props> = (props) => {
       });
       setNombres({ nombres, apellidos });
     });
-    axios.get(process.env.BACKEND_URL+"RLRLRLRL/caso/getultimo").then((res) => {
+    axios.get(process.env.BACKEND_URL + "/caso/getultimo").then((res) => {
       let caso = res.data;
       if (caso) {
         let [nro, gestion] = caso.nro_caso.split("/");
@@ -231,7 +231,7 @@ const Formulario: NextPage<Props> = (props) => {
       }
       setDatosGenerales({
         ...datosGenerales,
-        fecha_nac: dayjs(value.$d).format("DD/MM/YYYY"),
+        f_nacimiento: dayjs(value.$d).format("DD/MM/YYYY"),
         edad,
       });
     }
@@ -435,7 +435,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
-                      defaultValue={dayjs(datosGenerales.fecha_nac)}
+                      defaultValue={dayjs(datosGenerales.f_nacimiento)}
                       placeholder="Ingrese su fecha de Nacimiento"
                       className="normal-input"
                       locale={{
@@ -474,7 +474,6 @@ const Formulario: NextPage<Props> = (props) => {
                   <Form.Item
                     label="N° de C.I."
                     name={"ci"}
-                    style={{ marginLeft: 5 }}
                     rules={[
                       {
                         required: true,
@@ -541,7 +540,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24}>
                   <hr />
                   <Form.Item
-                    className="normal-input"
+                    className="normal-input mt-3"
                     label="Hijos del adulto mayor"
                   >
                     {itemHijos.map(forMap)}
@@ -558,7 +557,7 @@ const Formulario: NextPage<Props> = (props) => {
                       onPressEnter={handleHijosConfirm}
                     />
                   </Form.Item>
-                  <hr />
+                  <hr className="mb-3" />
                 </Col>
                 <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item
@@ -637,19 +636,22 @@ const Formulario: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 10 }} xl={{ span: 4 }}>
-                  <Form.Item className="normal-input" label="Distrito:">
-                    <Select defaultValue={1} onChange={handleDistrito}>
-                      {Array.from({ length: 14 }, (_, i) => i + 1).map(
-                        (value) => (
-                          <Select.Option key={value} value={value}>
-                            {value}
-                          </Select.Option>
-                        )
-                      )}
-                    </Select>
-                  </Form.Item>
-                </Col>
+                {datosUbicacion.area == "Otro" ||
+                datosUbicacion.area == "Rural" ? null : (
+                  <Col span={24} md={{ span: 10 }} xl={{ span: 4 }}>
+                    <Form.Item className="normal-input" label="Distrito:">
+                      <Select defaultValue={1} onChange={handleDistrito}>
+                        {Array.from({ length: 14 }, (_, i) => i + 1).map(
+                          (value) => (
+                            <Select.Option key={value} value={value}>
+                              {value}
+                            </Select.Option>
+                          )
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                )}
                 <Col span={24} xl={{ span: 12 }}>
                   <Form.Item
                     label="Zona:"
@@ -772,10 +774,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item
-                    label="Apellido Paterno:"
-                    style={{ marginLeft: 5 }}
-                  >
+                  <Form.Item label="Apellido Paterno:">
                     <AutoComplete
                       options={nombres.apellidos}
                       onChange={handlePaternoDenunciado}
@@ -791,7 +790,6 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
                   <Form.Item label="Apellido Materno:">
                     <AutoComplete
-                      style={{ marginLeft: 5 }}
                       options={nombres.apellidos}
                       onChange={handleMaternoDenunciado}
                       placeholder="Introduzca su apellido materno..."
@@ -807,7 +805,6 @@ const Formulario: NextPage<Props> = (props) => {
                   <Form.Item
                     className="normal-input"
                     label="Parentezco con el adulto mayor:"
-                    style={{ marginLeft: 10 }}
                   >
                     <Select
                       defaultValue={dataDatosDenunciado.parentezco}

@@ -1,8 +1,23 @@
+import { Usuario } from "@/app/dashboard/usuarios/data";
 import axios from "axios";
 import bcrypt from 'bcryptjs';
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
+    callbacks: {
+
+        async jwt({ token, user }) {
+            if (user) {
+                let usuario = user as unknown as { id_persona: string, usuario: string; fotografia: string; id_usuario: string; estado: number }
+                token.usuario = usuario;
+            }
+            return token;
+        }
+        , async session({ session, token }) {
+            session.user = token.usuario!;
+            return session;
+        }
+    },
     session: { strategy: 'jwt' },
     providers: [
         CredentialsProvider({
@@ -12,18 +27,17 @@ export const authOptions: AuthOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                let salt = bcrypt.genSaltSync(10);
 
-                axios.post(process.env.BACKEND_URL + 'usuario/auth', {
-
+                let res = await axios.post<Usuario>(process.env.BACKEND_URL + '/usuario/auth', {
                     usuario: credentials?.usuario,
                     password: credentials?.password
-                }).then(res => {
-                    console.log(res.data)
                 })
-                const user = { id: "1", usuario: "Admin", password: bcrypt.hash(credentials?.password!, salt) };
-                return user;
-
+                if (res.data) {
+                    return { id: '', usuario: res.data }
+                }
+                else {
+                    return null;
+                }
             }
         })
     ],
