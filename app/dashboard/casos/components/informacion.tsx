@@ -118,7 +118,7 @@ const Informacion = () => {
           >
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
-          
+
           <Switch key={caso.id_caso + "-"} checked={caso.estado == 1} />
         </div>
       ),
@@ -129,7 +129,7 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Caso[]>(process.env.BACKEND_URL+"/caso/all").then((res) => {
+    axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
       setCasos(res.data);
       setDisplayCasos(res.data);
     });
@@ -159,18 +159,18 @@ const Informacion = () => {
   };
 
   const handleFiltroRange = (ev: any) => {
-    if(ev){
+    if (ev) {
       let [inicio, final] = ev;
-    let fechaInicio = dayjs(inicio.$d);
-    let fechaFinal = dayjs(final.$d);
-    setDisplayCasos(
-      casos.filter((caso) => {
-        dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
-        return dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
-      })
-    );
-    setFiltroAccionCaso("");
-    setFiltroCaso("");
+      let fechaInicio = dayjs(inicio.$d);
+      let fechaFinal = dayjs(final.$d);
+      setDisplayCasos(
+        casos.filter((caso) => {
+          dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
+          return dayjs(caso.fecha_registro).isBetween(fechaInicio, fechaFinal);
+        })
+      );
+      setFiltroAccionCaso("");
+      setFiltroCaso("");
     }
   };
   return (
@@ -247,7 +247,7 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"/caso/estado", {
+                    .post(process.env.BACKEND_URL + "/caso/estado", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -255,7 +255,7 @@ const Informacion = () => {
                         "¡Caso " + value.nro_caso + " cambiado con éxito!"
                       );
                       axios
-                        .get<Caso[]>(process.env.BACKEND_URL+"/caso/all")
+                        .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
                         .then((res) => {
                           setCasos(res.data);
                           setDisplayCasos(res.data);
@@ -267,7 +267,7 @@ const Informacion = () => {
                     .post<{
                       adulto: AdultoMayor2;
                       hijos: Hijo[];
-                    }>(process.env.BACKEND_URL+"/adulto/get", {
+                    }>(process.env.BACKEND_URL + "/adulto/get", {
                       id_adulto: value.id_adulto,
                     })
                     .then((res) => {
@@ -277,7 +277,7 @@ const Informacion = () => {
                       });
                     });
                   axios
-                    .post(process.env.BACKEND_URL+"/denunciado/get", {
+                    .post(process.env.BACKEND_URL + "/denunciado/get", {
                       id_caso: value.id_caso,
                     })
                     .then((res) => {
@@ -291,7 +291,7 @@ const Informacion = () => {
                   .post<{
                     adulto: AdultoMayor2;
                     hijos: Hijo[];
-                  }>(process.env.BACKEND_URL+"/adulto/get", {
+                  }>(process.env.BACKEND_URL + "/adulto/get", {
                     id_adulto: value.id_adulto,
                   })
                   .then((res) => {
@@ -302,7 +302,7 @@ const Informacion = () => {
                   });
                 axios
                   .post<Denunciado>(
-                    process.env.BACKEND_URL+"/denunciado/get",
+                    process.env.BACKEND_URL + "/denunciado/get",
                     {
                       id_caso: value.id_caso,
                     }
@@ -344,7 +344,7 @@ const Informacion = () => {
           <FloatButton
             onClick={() => {
               axios
-                .get(process.env.BACKEND_URL+"/caso/report", {
+                .get(process.env.BACKEND_URL + "/caso/report", {
                   responseType: "blob",
                 })
                 .then((res) => {

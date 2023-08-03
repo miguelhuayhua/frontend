@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
     margin: 5,
     border: "1px solid black",
     borderRadius: 2.5,
-    backgroundColor: "#1a9bcd",
   },
   horizontal: {
     display: "flex",
@@ -240,45 +239,25 @@ const Formulario = () => {
               ESTADO CIVIL:
             </Text>
             <Text style={{ fontSize: 10 }}>SOLTERO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Soltero(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Soltero(a)" ? "X" : null}
+            </View>
             <Text style={{ fontSize: 10 }}> CASADO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Casado(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Casado(a)" ? "X" : null}
+            </View>
             <Text style={{ fontSize: 10 }}> CONCUBINO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Concubino(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Concubino(a)" ? "X" : null}
+            </View>
             <Text style={{ fontSize: 10 }}> DIVORCIADO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Divorciado(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Divorciado(a)" ? "X" : null}
+            </View>
             <Text style={{ fontSize: 10 }}> VIUDO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Viudo(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Viudo(a)" ? "X" : null}
+            </View>
           </View>
           <View style={{ width: "50%", marginTop: 5, ...styles.horizontal }}>
             <Text style={{ fontSize: 10 }}>N° Y NOMBRE DE HIJOS: </Text>
@@ -502,19 +481,13 @@ const Formulario = () => {
               }
             ></View>
             <Text style={{ fontSize: 10 }}>CITACIÓN </Text>
-            <View
-              style={
-                accionRealizada == "Citacion" ? styles.checked : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Citacion" ? "X" : null}
+            </View>
             <Text style={{ fontSize: 10 }}>DERIVACIÓN </Text>
-            <View
-              style={
-                accionRealizada == "Derivacion"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <View style={styles.checker}>
+              {datosGenerales.estado_civil == "Derivacion" ? "X" : null}
+            </View>
           </View>
         </View>
       </Page>

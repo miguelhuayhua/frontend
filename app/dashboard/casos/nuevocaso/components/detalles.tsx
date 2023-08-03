@@ -113,7 +113,6 @@ const Detalles: NextPage<Props> = (props) => {
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          props.router.push("/dashboard/casos");
         });
       axios
         .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos })
@@ -124,6 +123,7 @@ const Detalles: NextPage<Props> = (props) => {
 
           if (res.data.status == 1) {
             notification.success({ message: res.data.response });
+            props.router.push("/dashboard/casos");
           } else {
             notification.error({ message: res.data.response });
           }
@@ -140,9 +140,6 @@ const Detalles: NextPage<Props> = (props) => {
     notification.info({ message: "Modifique si desea..." });
   };
 
-  const savePdf = () => {
-    setOpen(false);
-  };
   return (
     <>
       <Row className="my-4">

@@ -311,7 +311,7 @@ const Formulario: NextPage<Props> = (props) => {
   return (
     <>
       <h2>FORMULARIO DE REGISTRO DE ATENCIÓN</h2>
-      <Row>
+      <Row gutter={[24, 24]}>
         <Col span={24} offset={0} md={{ span: 20, offset: 2 }}>
           <Form onFinish={handleOpenChange} layout="horizontal">
             <Row>
@@ -399,10 +399,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item
-                    label="Apellido Paterno:"
-                    style={{ paddingLeft: 5 }}
-                  >
+                  <Form.Item label="Apellido Paterno:">
                     <AutoComplete
                       options={nombres.apellidos}
                       onChange={handlePaterno}
@@ -416,10 +413,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item
-                    label="Apellido Materno:"
-                    style={{ paddingLeft: 5 }}
-                  >
+                  <Form.Item label="Apellido Materno:">
                     <AutoComplete
                       onChange={handleMaterno}
                       options={nombres.apellidos}
@@ -429,7 +423,7 @@ const Formulario: NextPage<Props> = (props) => {
                           .toUpperCase()
                           .indexOf(inputValue.toUpperCase()) !== -1
                       }
-                    />{" "}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>

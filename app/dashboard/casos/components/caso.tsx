@@ -32,6 +32,8 @@ import Formulario from "./pdf";
 import { Domicilio } from "../../adultos/data";
 import { useSession } from "next-auth/react";
 import { Persona } from "../../personal/agregar/data";
+import "./estilos.scss";
+import SeguimientoModal from "./seguimiento";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -89,7 +91,11 @@ const CasoModal: NextPage<Props> = (props) => {
     <>
       <Modal
         key="modal"
-        title={"EDITE LOS VALORES PARA EL CASO " + props.caso.nro_caso}
+        title={
+          <p style={{ fontSize: 14 }}>
+            EDITE LOS VALORES PARA EL CASO + {props.caso.nro_caso}
+          </p>
+        }
         centered
         style={{ textAlign: "center" }}
         open={props.open}
@@ -98,99 +104,6 @@ const CasoModal: NextPage<Props> = (props) => {
         }}
         width={"90%"}
         footer={[
-          <Button
-            key={"btn-caso"}
-            style={{
-              color: "white",
-              backgroundColor: "#b51308",
-              display: "flex",
-              alignItems: "center",
-              height: 45,
-              fontWeight: "bold",
-            }}
-            /* datosGenerales: AdultoMayor;
-    datosUbicacion: DatosUbicacion;
-    descripcionHechos: string;
-    descripcionPeticion: string;
-    datosDenunciado: DatosDenunciado;
-    accionRealizada: string;
-    datosDenuncia: DatosDenuncia;*/
-            onClick={async () => {
-              notification.info({
-                message: "Generando formulario, espere por favor...",
-              });
-              if (data) {
-                let { usuario } = data?.user as {
-                  usuario: {
-                    usuario: string;
-                    estado: number;
-                    fotografia: string;
-                    id_persona: string;
-                    id_usuario: string;
-                  };
-                };
-                let persona = await axios.post<Persona>(
-                  process.env.BACKEND_URL + "/persona/get",
-                  {
-                    id_persona: usuario.id_persona,
-                  }
-                );
-                axios
-                  .post<Domicilio>(
-                    process.env.BACKEND_URL + "/domicilio/getByIdAdulto",
-                    {
-                      id_adulto: props.adultoMayor.id_adulto,
-                    }
-                  )
-                  .then((res) => {
-                    pdf(
-                      <DataContext.Provider
-                        value={{
-                          datosGenerales: props.adultoMayor,
-                          descripcionHechos: props.caso.descripcion_hechos,
-                          descripcionPeticion: props.caso.peticion,
-                          datosDenunciado: props.denunciado,
-                          accionRealizada: props.caso.accion_realizada,
-                          datosDenuncia: props.caso,
-                          datosUbicacion: res.data,
-                          persona: persona.data,
-                        }}
-                      >
-                        <Formulario />
-                      </DataContext.Provider>
-                    )
-                      .toBlob()
-                      .then((blob) => {
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement("a");
-                        link.href = url;
-                        let { nombre, paterno, materno } = props.adultoMayor;
-
-                        link.setAttribute(
-                          "download",
-                          nombre +
-                            paterno +
-                            materno +
-                            props.caso.fecha_registro +
-                            ".pdf"
-                        );
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        notification.success({
-                          message: "Formulario generado con éxito",
-                        });
-                      })
-                      .catch((e) => {
-                        notification.error({ message: e });
-                      });
-                  });
-              }
-            }}
-          >
-            <AiFillFilePdf style={{ fontSize: 25 }} />
-            Generar Formulario
-          </Button>,
           <Popconfirm
             key="popconfirm"
             title="¿Estás seguro de continuar?"
@@ -207,7 +120,7 @@ const CasoModal: NextPage<Props> = (props) => {
           </Button>,
         ]}
       >
-        <Row>
+        <Row gutter={[24, 0]}>
           <Col span={24}>
             <Row>
               <Col span={8}>
@@ -236,14 +149,20 @@ const CasoModal: NextPage<Props> = (props) => {
             <Form layout="horizontal">
               <Form.Item label="Descripción de los Hechos">
                 <TextArea
-                  style={{ maxHeight: 200, width: "90%" }}
+                  allowClear
+                  showCount
+                  maxLength={200}
+                  style={{ height: 150, resize: "none" }}
                   value={props.caso.descripcion_hechos}
                   onChange={handleDescripcion}
                 />
               </Form.Item>
               <Form.Item label="Petición del adulto">
                 <TextArea
-                  style={{ maxHeight: 200, width: "90%" }}
+                  allowClear
+                  showCount
+                  maxLength={200}
+                  style={{ height: 150, resize: "none" }}
                   value={props.caso.peticion}
                   onChange={handlePeticion}
                 />
@@ -266,6 +185,92 @@ const CasoModal: NextPage<Props> = (props) => {
                 </Select>
               </Form.Item>
             </Form>
+
+            <div className="btn-container">
+              <Button
+                key={"btn-caso"}
+                style={{
+                  backgroundColor: "#b51308",
+                }}
+                onClick={async () => {
+                  notification.info({
+                    message: "Generando formulario, espere por favor...",
+                  });
+                  if (data) {
+                    let { usuario } = data?.user as {
+                      usuario: {
+                        usuario: string;
+                        estado: number;
+                        fotografia: string;
+                        id_persona: string;
+                        id_usuario: string;
+                      };
+                    };
+                    let persona = await axios.post<Persona>(
+                      process.env.BACKEND_URL + "/persona/get",
+                      {
+                        id_persona: usuario.id_persona,
+                      }
+                    );
+                    axios
+                      .post<Domicilio>(
+                        process.env.BACKEND_URL + "/domicilio/getByIdAdulto",
+                        {
+                          id_adulto: props.adultoMayor.id_adulto,
+                        }
+                      )
+                      .then((res) => {
+                        pdf(
+                          <DataContext.Provider
+                            value={{
+                              datosGenerales: props.adultoMayor,
+                              descripcionHechos: props.caso.descripcion_hechos,
+                              descripcionPeticion: props.caso.peticion,
+                              datosDenunciado: props.denunciado,
+                              accionRealizada: props.caso.accion_realizada,
+                              datosDenuncia: props.caso,
+                              datosUbicacion: res.data,
+                              persona: persona.data,
+                            }}
+                          >
+                            <Formulario />
+                          </DataContext.Provider>
+                        )
+                          .toBlob()
+                          .then((blob) => {
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            let { nombre, paterno, materno } =
+                              props.adultoMayor;
+
+                            link.setAttribute(
+                              "download",
+                              nombre +
+                                paterno +
+                                materno +
+                                props.caso.fecha_registro +
+                                ".pdf"
+                            );
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            notification.success({
+                              message: "Formulario generado con éxito",
+                            });
+                          })
+                          .catch((e) => {
+                            notification.error({ message: e });
+                          });
+                      });
+                  }
+                }}
+              >
+                <AiFillFilePdf style={{ fontSize: 25 }} />
+                Generar Formulario
+              </Button>
+              <Button>Realizar seguimiento</Button>
+            </div>
           </Col>
           <Col
             span={24}
@@ -275,50 +280,57 @@ const CasoModal: NextPage<Props> = (props) => {
             <h5 className="text-center">Personas Involucradas</h5>
             <Row>
               <hr />
-              <Col span={12}>
+              <Col span={6}>
+                <Avatar
+                  style={{
+                    backgroundColor:
+                      props.adultoMayor.sexo == "Femenino"
+                        ? "#ff0080"
+                        : "#0041c8",
+                    color: "white",
+                    width: 60,
+                    height: 60,
+                    fontSize: 30,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "0 auto",
+                  }}
+                  icon={<UserOutlined />}
+                ></Avatar>
+              </Col>
+              <Col span={18} style={{ textAlign: "start" }}>
                 <p>
                   <span>
-                    <b>Nombres y Apellidos del adulto mayor:</b>
+                    <b>Nombres y Apellidos del adulto mayor: </b>
                   </span>
-                  <br />
                   {props.adultoMayor.nombre +
                     " " +
                     props.adultoMayor.paterno +
                     " " +
                     props.adultoMayor.materno}
                 </p>
-              </Col>
-              <Col span={12}>
                 <p>
                   <span>
-                    <b>C.I.:</b>
+                    <b>C.I.: </b>
                   </span>
-                  <br />
                   {props.adultoMayor.ci}
-                </p>
-              </Col>
-              <Col span={12}>
-                <p>
+
                   <span>
-                    <b>Edad: </b>
+                    <b> Edad: </b>
                   </span>
-                  <br />
                   {props.adultoMayor.edad}
-                </p>
-              </Col>
-              <Col span={12}>
-                <p>
                   <span>
-                    <b>Número de referencia:</b>
+                    <b> Número de referencia: </b>
                   </span>
-                  <br />
                   {props.adultoMayor.nro_referencia}
                 </p>
               </Col>
+
               <Col span={24}>
                 <hr />
               </Col>
-              <Col span={12}>
+              <Col span={24} md={{ span: 12 }}>
                 <h6>Hijos</h6>
                 <Space direction="vertical">
                   {props.adultoMayor.hijos.length == 0 ? (
@@ -341,6 +353,13 @@ const CasoModal: NextPage<Props> = (props) => {
                                       ? "#ff0080"
                                       : "#0041c8",
                                   color: "white",
+                                  width: 30,
+                                  height: 30,
+                                  fontSize: 15,
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  margin: "0 auto",
                                 }}
                                 icon={<UserOutlined />}
                               ></Avatar>
@@ -354,7 +373,7 @@ const CasoModal: NextPage<Props> = (props) => {
                   )}
                 </Space>
               </Col>
-              <Col style={{ borderLeft: "1px solid #AAA" }} span={12}>
+              <Col span={24} md={{ span: 12 }}>
                 <h6>Denunciado</h6>
                 <Row>
                   <Col span={6}>
@@ -409,6 +428,10 @@ const CasoModal: NextPage<Props> = (props) => {
           </Col>
         </Row>
       </Modal>
+      <SeguimientoModal
+        caso={props.caso}
+        setOpen={props.setOpen}
+      ></SeguimientoModal>
     </>
   );
 };

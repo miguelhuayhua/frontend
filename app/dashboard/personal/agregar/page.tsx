@@ -13,6 +13,7 @@ import {
   Radio,
   Row,
   Select,
+  Space,
   notification,
 } from "antd";
 import MenuSider from "../../components/MenuSider";
@@ -46,7 +47,7 @@ const AgregarPersonal = () => {
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>
-                  <Row gutter={[24, 24]}>
+                  <Row gutter={[24, 24]} className="mt-3">
                     <Col span={24} lg={{ span: 16 }}>
                       <h4 style={{ textAlign: "center", marginTop: 20 }}>
                         Agregar Nuevo Personal
@@ -57,7 +58,7 @@ const AgregarPersonal = () => {
                         }}
                       >
                         <Row gutter={[12, 12]}>
-                          <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                          <Col span={24} sm={{ span: 14 }}>
                             <Form.Item
                               rules={[
                                 {
@@ -66,21 +67,34 @@ const AgregarPersonal = () => {
                                     "Por favor introduzca su nombre paterno",
                                 },
                               ]}
-                              label="Nombres: "
+                              label="Profesión/ Nombres: "
                               name="nombre"
                             >
-                              <Input
-                                placeholder="Introduzca su nombre..."
-                                onChange={(ev) => {
-                                  setPersona({
-                                    ...persona,
-                                    nombres: ev.target.value,
-                                  });
-                                }}
-                              ></Input>
+                              <Space.Compact style={{ width: "100%" }}>
+                                <Input
+                                  style={{ width: "30%" }}
+                                  placeholder="Ej. Lic., Ing., Abog."
+                                  onChange={(ev) => {
+                                    setPersona({
+                                      ...persona,
+                                      profesion: ev.target.value,
+                                    });
+                                  }}
+                                />
+                                <Input
+                                  style={{ width: "70%" }}
+                                  placeholder="Introduzca su nombre..."
+                                  onChange={(ev) => {
+                                    setPersona({
+                                      ...persona,
+                                      nombres: ev.target.value,
+                                    });
+                                  }}
+                                />
+                              </Space.Compact>
                             </Form.Item>
                           </Col>
-                          <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                          <Col span={24} sm={{ span: 10 }}>
                             <Form.Item label="Apellido Paterno: ">
                               <Input
                                 name="paterno"
@@ -93,7 +107,7 @@ const AgregarPersonal = () => {
                               ></Input>
                             </Form.Item>
                           </Col>
-                          <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                          <Col span={24} sm={{ span: 10 }}>
                             <Form.Item label="Apellido Materno: ">
                               <Input
                                 name="materno"
@@ -151,7 +165,7 @@ const AgregarPersonal = () => {
                               ></InputNumber>
                             </Form.Item>
                           </Col>
-                          <Col span={24} md={{ span: 12 }} lg={{ span: 6 }}>
+                          <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
                             <Form.Item label={"Fecha de nacimiento"}>
                               <DatePicker
                                 className="normal-input"
@@ -173,8 +187,8 @@ const AgregarPersonal = () => {
                               />
                             </Form.Item>
                           </Col>
-                          <Col span={24} md={{ span: 12 }} lg={{ span: 6 }}>
-                            <Form.Item label="Cargo:">
+                          <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+                            <Form.Item label="Rol:">
                               <Select
                                 defaultValue={persona.cargo}
                                 value={persona.cargo}
@@ -182,13 +196,17 @@ const AgregarPersonal = () => {
                                   setPersona({ ...persona, cargo: ev });
                                 }}
                               >
-                                <Select.Option value="1">1</Select.Option>
-                                <Select.Option value="2">2</Select.Option>
-                                <Select.Option value="3">3</Select.Option>
+                                <Select.Option value="Operador">
+                                  Operador
+                                </Select.Option>
+                                <Select.Option value="Visitante">
+                                  Visitante
+                                </Select.Option>
                               </Select>
                             </Form.Item>
                           </Col>
-                          <Col span={10} md={{ span: 12 }} xl={{ span: 6 }}>
+
+                          <Col span={10} md={{ span: 12 }} xl={{ span: 8 }}>
                             <Form.Item label="Género:">
                               <Radio.Group
                                 value={persona.genero}
@@ -323,7 +341,7 @@ const AgregarPersonal = () => {
         onOk={() => {
           axios
             .post<{ status: number; id_persona: string }>(
-              process.env.BACKEND_URL+"RLRLRL/persona/insert",
+              process.env.BACKEND_URL + "RLRLRL/persona/insert",
               persona
             )
             .then((res) => {

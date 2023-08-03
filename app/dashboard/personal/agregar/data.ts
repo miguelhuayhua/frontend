@@ -29,6 +29,7 @@ export const meses = [
 
 export interface Persona {
     id_persona: string;
+    profesion: string;
     nombres: string;
     paterno: string;
     materno: string;
@@ -39,18 +40,20 @@ export interface Persona {
     genero: string;
     ult_modificacion: string;
     estado: number;
+
 }
 
 export let dataPersona = {
-    id_persona:"",
-    nombres:"",
-    paterno:"",
-    materno:"",
+    id_persona: "",
+    profesion: "",
+    nombres: "",
+    paterno: "",
+    materno: "",
     ci: 0,
     celular: 0,
     f_nacimiento: dayjs().toISOString(),
-    cargo:"",
+    cargo: "Visitante",
     genero: "Femenino",
-    ult_modificacion:"",
+    ult_modificacion: "",
     estado: 0,
 }

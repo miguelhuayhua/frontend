@@ -120,7 +120,13 @@ const Navbar = () => {
             >
               <span>
                 <FaCalendarAlt style={{ marginRight: 10 }} />
-                {`${dayjs().date()}/${dayjs().month()}/${dayjs().year()}`}
+                {`${
+                  dayjs().date() < 10 ? "0" + dayjs().date() : dayjs().date()
+                }/${
+                  dayjs().month() + 1 < 10
+                    ? "0" + (dayjs().month() + 1)
+                    : dayjs().month() + 1
+                }/${dayjs().year()}`}
               </span>
             </div>
             <div style={{ position: "absolute", right: 180 }}>
