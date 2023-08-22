@@ -27,6 +27,7 @@ import {
   FileExcelFilled,
   FilePdfFilled,
 } from "@ant-design/icons";
+import { SlLayers } from "react-icons/sl";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
 import {
@@ -38,6 +39,7 @@ import {
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Hijo } from "../../hijos/data";
+import { useRouter } from "next/navigation";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -116,9 +118,24 @@ const Informacion = () => {
               zIndex: 0,
             }}
           >
+            <div className="btn-cover"></div>
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
-
+          <Button
+            key={caso.id_caso + "t"}
+            style={{
+              fontSize: 50,
+              width: 52,
+              height: 40,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 0,
+            }}
+          >
+            <div className="btn-redirect"></div>
+            <SlLayers />
+          </Button>
           <Switch key={caso.id_caso + "-"} checked={caso.estado == 1} />
         </div>
       ),
@@ -126,7 +143,8 @@ const Informacion = () => {
   ];
   const [casos, setCasos] = useState<Caso[]>([]);
   const [displayCasos, setDisplayCasos] = useState<Caso[]>([]);
-
+  //router
+  const router = useRouter();
   //cargado de datos desde la API
   useEffect(() => {
     axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
@@ -241,51 +259,26 @@ const Informacion = () => {
           ),
         }}
         dataSource={displayCasos}
-        onRow={(value, index) => {
+        onRow={(value) => {
           return {
             onClick: (ev: any) => {
-              try {
-                if (ev.target.className.includes("switch")) {
-                  axios
-                    .post(process.env.BACKEND_URL + "/caso/estado", {
-                      id_caso: value.id_caso,
-                    })
-                    .then((res) => {
-                      message.success(
-                        "¡Caso " + value.nro_caso + " cambiado con éxito!"
-                      );
-                      axios
-                        .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
-                        .then((res) => {
-                          setCasos(res.data);
-                          setDisplayCasos(res.data);
-                        });
-                    });
-                } else if (ev.target.className.includes("ant-btn")) {
-                  setCaso(value);
-                  axios
-                    .post<{
-                      adulto: AdultoMayor2;
-                      hijos: Hijo[];
-                    }>(process.env.BACKEND_URL + "/adulto/get", {
-                      id_adulto: value.id_adulto,
-                    })
-                    .then((res) => {
-                      setAdultoMayor({
-                        ...res.data.adulto,
-                        hijos: res.data.hijos,
+              if (ev.target.className.includes("switch")) {
+                axios
+                  .post(process.env.BACKEND_URL + "/caso/estado", {
+                    id_caso: value.id_caso,
+                  })
+                  .then((res) => {
+                    message.success(
+                      "¡Caso " + value.nro_caso + " cambiado con éxito!"
+                    );
+                    axios
+                      .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
+                      .then((res) => {
+                        setCasos(res.data);
+                        setDisplayCasos(res.data);
                       });
-                    });
-                  axios
-                    .post(process.env.BACKEND_URL + "/denunciado/get", {
-                      id_caso: value.id_caso,
-                    })
-                    .then((res) => {
-                      setDenunciado(res.data);
-                    });
-                  setOpen(true);
-                }
-              } catch (error) {
+                  });
+              } else if (ev.target.className.includes("btn-cover")) {
                 setCaso(value);
                 axios
                   .post<{
@@ -301,16 +294,17 @@ const Informacion = () => {
                     });
                   });
                 axios
-                  .post<Denunciado>(
-                    process.env.BACKEND_URL + "/denunciado/get",
-                    {
-                      id_caso: value.id_caso,
-                    }
-                  )
+                  .post(process.env.BACKEND_URL + "/denunciado/get", {
+                    id_caso: value.id_caso,
+                  })
                   .then((res) => {
                     setDenunciado(res.data);
                   });
                 setOpen(true);
+              } else if (ev.target.className.includes("btn-redirect")) {
+                router.push(
+                  "/dashboard/casos/accion?id_caso=" + value.id_caso
+                );
               }
             },
           };

@@ -33,7 +33,6 @@ import { Domicilio } from "../../adultos/data";
 import { useSession } from "next-auth/react";
 import { Persona } from "../../personal/agregar/data";
 import "./estilos.scss";
-import SeguimientoModal from "./seguimiento";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -50,6 +49,7 @@ interface Props {
 }
 const CasoModal: NextPage<Props> = (props) => {
   //control del modal
+  const [open2, setOpen2] = useState(false);
   const { data } = useSession();
   const handleConfirm = () => {
     props.setOpen(false);
@@ -269,7 +269,15 @@ const CasoModal: NextPage<Props> = (props) => {
                 <AiFillFilePdf style={{ fontSize: 25 }} />
                 Generar Formulario
               </Button>
-              <Button>Realizar seguimiento</Button>
+              <Button
+                onClick={() => {
+                  setOpen2(true);
+                  props.setOpen(false);
+                }}
+                type="primary"
+              >
+                Realizar seguimiento
+              </Button>
             </div>
           </Col>
           <Col
@@ -330,7 +338,7 @@ const CasoModal: NextPage<Props> = (props) => {
               <Col span={24}>
                 <hr />
               </Col>
-              <Col span={24} md={{ span: 12 }}>
+              <Col span={24} xl={{ span: 12 }}>
                 <h6>Hijos</h6>
                 <Space direction="vertical">
                   {props.adultoMayor.hijos.length == 0 ? (
@@ -373,7 +381,7 @@ const CasoModal: NextPage<Props> = (props) => {
                   )}
                 </Space>
               </Col>
-              <Col span={24} md={{ span: 12 }}>
+              <Col span={24} xl={{ span: 12 }}>
                 <h6>Denunciado</h6>
                 <Row>
                   <Col span={6}>
@@ -428,10 +436,6 @@ const CasoModal: NextPage<Props> = (props) => {
           </Col>
         </Row>
       </Modal>
-      <SeguimientoModal
-        caso={props.caso}
-        setOpen={props.setOpen}
-      ></SeguimientoModal>
     </>
   );
 };

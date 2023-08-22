@@ -110,11 +110,11 @@ const Formulario = () => {
         </Text>
         <Image
           style={{
-            width: 90,
-            height: 60,
+            width: 80,
+            height: 50,
             position: "absolute",
-            top: 15,
-            right: 10,
+            top: 10,
+            right: 5,
           }}
           src={"/assets/logo-gamea.png"}
         ></Image>
@@ -123,38 +123,37 @@ const Formulario = () => {
             width: 500,
             height: 100,
             position: "absolute",
-            top: 0,
-            right: 40,
+            top: -10,
+            right: 35,
             zIndex: -1,
           }}
           src={"/assets/linea-aymara.png"}
         ></Image>
         <Image
           style={{
-            width: 90,
-            height: 60,
+            width: 80,
+            height: 50,
             position: "absolute",
-            top: 20,
-            left: 10,
+            top: 15,
+            left: 5,
           }}
           src={"/assets/logo-elalto.png"}
         ></Image>
         <View style={{ width: "70%", marginHorizontal: "auto" }}>
-          <Text style={{ fontWeight: "light", fontSize: 14, ...styles.title }}>
+          <Text style={{ fontWeight: "light", fontSize: 12, ...styles.title }}>
             GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
           </Text>
           <Text
-            style={{ fontWeight: "extrabold", fontSize: 14, ...styles.title }}
+            style={{ fontWeight: "extrabold", fontSize: 9, ...styles.title }}
           >
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
-          <Text style={{ fontSize: 10, ...styles.title, marginTop: 5 }}>
+          <Text style={{ fontSize: 9, ...styles.title, marginTop: 5 }}>
             DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text
             style={{
               fontSize: 9,
-              paddingHorizontal: 60,
               ...styles.title,
               marginTop: 5,
             }}
@@ -489,6 +488,34 @@ const Formulario = () => {
               {datosGenerales.estado_civil == "Derivacion" ? "X" : null}
             </View>
           </View>
+        </View>
+        <View fixed>
+          <Image
+            fixed
+            style={{
+              width: 800,
+              height: 100,
+              position: "absolute",
+              bottom: 20,
+              right: 15,
+            }}
+            src={"/assets/linea-aymara.png"}
+          ></Image>
+          <Text
+            fixed
+            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+          >
+            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
+            Torres y Hernán Siles.
+          </Text>
+          <Text
+            fixed
+            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+          >
+            {
+              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
+            }
+          </Text>
         </View>
       </Page>
     </Document>

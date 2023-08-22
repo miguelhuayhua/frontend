@@ -11,6 +11,15 @@ export const dias = [
     "Vie",
     "Sab",
 ];
+export const dias2 = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+]
 
 export const meses = [
     "Enero",
@@ -131,3 +140,12 @@ export let dataDatosDenuncia = {
     nro_caso: ""
 
 }
+export interface Citado {
+    id_citado: string;
+    nombres_apellidos: string;
+    genero: string;
+    citado: number;
+}
+export let nro_citacion: string[] = [
+    "Primera", "Segunda", "Tercera", "Cuarta"
+]

@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export interface Caso {
     nro_caso: string;
     fecha_registro: string;
@@ -13,16 +15,16 @@ export interface Caso {
 }
 
 export let datosCaso: Caso = {
-    nro_caso:"",
-    fecha_registro:"",
-    hora_registro:"",
-    peticion:"",
-    ult_modificacion:"",
-    id_adulto:"",
-    id_caso:"",
-    tipologia:"",
-    descripcion_hechos:"",
-    accion_realizada:"",
+    nro_caso: "",
+    fecha_registro: "",
+    hora_registro: "",
+    peticion: "",
+    ult_modificacion: "",
+    id_adulto: "",
+    id_caso: "",
+    tipologia: "",
+    descripcion_hechos: "",
+    accion_realizada: "",
     estado: 1,
 }
 
@@ -42,13 +44,57 @@ export interface Denunciado {
 
 
 export let DatosDenunciado = {
-    nombres:"",
-    paterno:"",
-    materno:"",
-    parentezco:"",
+    nombres: "",
+    paterno: "",
+    materno: "",
+    parentezco: "",
     estado: 1,
-    genero:"",
-    ult_modificacion:"",
-    id_caso:"",
-    id_denunciado:"",
+    genero: "",
+    ult_modificacion: "",
+    id_caso: "",
+    id_denunciado: "",
+}
+
+export interface Seguimiento {
+    id_seguimiento: string;
+    detalle_seguimiento: string;
+    id_caso: string;
+    fecha_seguimiento: string;
+    hora_seguimiento: string;
+    ult_modificacion: string;
+    estado: number;
+}
+
+export let dataSeguimiento: Seguimiento = {
+    detalle_seguimiento: "",
+    estado: 1,
+    fecha_seguimiento: dayjs().format('YYYY-MM-DD'),
+    hora_seguimiento: dayjs().format('HH:mm:ss'),
+    id_caso: "",
+    id_seguimiento: "",
+    ult_modificacion: ""
+
+}
+
+
+export interface Citacion {
+    id_citacion: string;
+    id_caso: string;
+    fecha_citacion: string;
+    hora_citacion: string;
+    fecha_creacion: string;
+    ult_moficacion: string;
+    numero: number;
+    estado: number;
+}
+
+export let dataCitacion: Citacion = {
+    id_citacion: "",
+    id_caso: "",
+    fecha_citacion: dayjs().format("YYYY-MM-DD"),
+    hora_citacion: dayjs().format("HH:mm:ss"),
+    fecha_creacion: dayjs().format("YYYY-MM-DD"),
+    ult_moficacion: "",
+    numero: 0,
+    estado: 1
 }

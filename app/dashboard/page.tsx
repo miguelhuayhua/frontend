@@ -6,14 +6,10 @@ import {
   Col,
   Layout,
   List,
-  Menu,
-  MenuProps,
   Row,
 } from "antd";
-import { getSession, useSession } from "next-auth/react";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
-import { useRouter } from "next/navigation";
 //estilos
 import "./estilos.scss";
 import React from "react";

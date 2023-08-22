@@ -341,7 +341,7 @@ const AgregarPersonal = () => {
         onOk={() => {
           axios
             .post<{ status: number; id_persona: string }>(
-              process.env.BACKEND_URL + "RLRLRL/persona/insert",
+              process.env.BACKEND_URL + "/persona/insert",
               persona
             )
             .then((res) => {

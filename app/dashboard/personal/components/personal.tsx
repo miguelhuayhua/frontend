@@ -10,6 +10,7 @@ import {
   Popconfirm,
   Row,
   Skeleton,
+  Space,
   notification,
 } from "antd";
 import axios from "axios";
@@ -32,7 +33,13 @@ const PersonaModal: NextPage<Props> = (props) => {
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
-            message: ``,
+            message: `Personal ${
+              props.persona.nombres +
+              " " +
+              props.persona.paterno +
+              " " +
+              props.persona.materno
+            } editado con éxito`,
           });
           props.setOpen(false);
           axios
@@ -48,14 +55,17 @@ const PersonaModal: NextPage<Props> = (props) => {
         }
       });
   };
-  const handleHideModal = () => {
-    props.setOpen(false);
-  };
   return (
     <>
       <Modal
         key="modal"
-        title={`EDITE LOS VALORES PARA EL USUARIO`}
+        title={`EDITE LOS VALORES PARA EL PERSONAL ${
+          props.persona.nombres +
+          " " +
+          props.persona.paterno +
+          " " +
+          props.persona.materno
+        }`}
         centered
         style={{ textAlign: "center" }}
         open={props.open}
@@ -66,7 +76,7 @@ const PersonaModal: NextPage<Props> = (props) => {
         footer={[
           <Popconfirm
             key="popconfirm"
-            title="¿Estás seguro de continuar?"
+            title="¿Estás seguro de editar?"
             onConfirm={handleConfirm}
             okText="Sí"
             cancelText="No"
@@ -79,116 +89,120 @@ const PersonaModal: NextPage<Props> = (props) => {
               Aceptar y Modificar
             </Button>
           </Popconfirm>,
-          <Button key="cancel" onClick={() => {}}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              props.setOpen(false);
+            }}
+          >
             Cancelar
           </Button>,
         ]}
       >
         {props.loaded ? (
-          <Row gutter={[24, 24]}>
-            <Col span={24} lg={{ span: 16 }}>
-              <h4 style={{ textAlign: "center", marginTop: 20 }}>
-                Agregar Nuevo Personal
-              </h4>
-              <Form>
-                <Row gutter={[12, 12]}>
-                  <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
-                    <Form.Item
-                      rules={[
-                        {
-                          required: true,
-                          message: "Por favor introduzca su nombre paterno",
-                        },
-                      ]}
-                      label="Nombres: "
-                      name="nombre"
-                    >
-                      <Input
-                        placeholder="Introduzca su nombre..."
-                        onChange={(ev) => {
-                          props.setPersona({
-                            ...props.persona,
-                            nombres: ev.target.value,
-                          });
-                        }}
-                      ></Input>
-                    </Form.Item>
-                  </Col>
-                  <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
-                    <Form.Item label="Apellido Paterno: ">
-                      <Input
-                        name="paterno"
-                        onChange={(ev) => {
-                          props.setPersona({
-                            ...props.persona,
-                            paterno: ev.target.value,
-                          });
-                        }}
-                      ></Input>
-                    </Form.Item>
-                  </Col>
-                  <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
-                    <Form.Item label="Apellido Materno: ">
-                      <Input
-                        name="materno"
-                        onChange={(ev) => {
-                          props.setPersona({
-                            ...props.persona,
-                            materno: ev.target.value,
-                          });
-                        }}
-                      ></Input>
-                    </Form.Item>
-                  </Col>
-                  <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
-                    <Form.Item
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            "Por favor introduzca carnet de identidad...",
-                        },
-                      ]}
-                      label="C.I.: "
-                      name={"ci"}
-                    >
-                      <InputNumber
-                        className="w-100"
-                        name="ci"
-                        onChange={(ev: any) => {
-                          props.setPersona({ ...props.persona, ci: ev });
-                        }}
-                      ></InputNumber>
-                    </Form.Item>
-                  </Col>
-                  <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
-                    <Form.Item
-                      label="Celular: "
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            "Por favor introduzca su número de teléfono o celular...",
-                        },
-                      ]}
-                      name={"celular"}
-                    >
-                      <InputNumber
-                        name="celular"
-                        className="w-100"
-                        onChange={(ev: any) => {
-                          props.setPersona({
-                            ...props.persona,
-                            celular: ev,
-                          });
-                        }}
-                      ></InputNumber>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-            </Col>
-          </Row>
+          <Form>
+            <Row gutter={[12, 12]}>
+              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor introduzca su nombre paterno",
+                    },
+                  ]}
+                  label="Profesión/ Nombres: "
+                  name="nombre"
+                >
+                  <Space.Compact style={{ width: "100%" }}>
+                    <Input
+                      style={{ width: "30%" }}
+                      placeholder="Ej. Lic., Ing., Abog."
+                      onChange={(ev) => {
+                        props.setPersona({
+                          ...props.persona,
+                          profesion: ev.target.value,
+                        });
+                      }}
+                      value={props.persona.profesion}
+                    />
+                    <Input
+                      style={{ width: "70%" }}
+                      placeholder="Introduzca su nombre..."
+                      onChange={(ev) => {
+                        props.setPersona({
+                          ...props.persona,
+                          nombres: ev.target.value,
+                        });
+                      }}
+                      value={props.persona.nombres}
+                    />
+                  </Space.Compact>
+                </Form.Item>
+              </Col>
+              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                <Form.Item label="Apellido Paterno: ">
+                  <Input
+                    name="paterno"
+                    onChange={(ev) => {
+                      props.setPersona({
+                        ...props.persona,
+                        paterno: ev.target.value,
+                      });
+                    }}
+                    value={props.persona.paterno}
+                  ></Input>
+                </Form.Item>
+              </Col>
+              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+                <Form.Item label="Apellido Materno: ">
+                  <Input
+                    name="materno"
+                    onChange={(ev) => {
+                      props.setPersona({
+                        ...props.persona,
+                        materno: ev.target.value,
+                      });
+                    }}
+                    value={props.persona.materno}
+                  ></Input>
+                </Form.Item>
+              </Col>
+              <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor introduzca carnet de identidad...",
+                    },
+                  ]}
+                  label="C.I.: "
+                >
+                  <InputNumber
+                    className="w-100"
+                    onChange={(ev: any) => {
+                      props.setPersona({ ...props.persona, ci: ev });
+                    }}
+                    value={props.persona.ci}
+                  ></InputNumber>
+                </Form.Item>
+              </Col>
+              <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
+                <Form.Item label="Celular: ">
+                  <InputNumber
+                    name="celular"
+                    className="w-100"
+                    onChange={(ev: any) => {
+                      props.setPersona({
+                        ...props.persona,
+                        celular: ev,
+                      });
+                    }}
+                    value={props.persona.celular}
+                  ></InputNumber>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
         ) : (
           <Skeleton avatar active paragraph={{ rows: 4 }}></Skeleton>
         )}
