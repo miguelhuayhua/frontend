@@ -22,9 +22,8 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { Hijo } from "../../hijos/data";
 import { AiOutlineFilePdf } from "react-icons/ai";
-import Paragraph from "antd/es/skeleton/Paragraph";
 export const DataContext = createContext({});
-
+import "./estilos.scss";
 interface Props {
   caso: Caso;
   adulto: Adulto;
@@ -56,11 +55,12 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
   return (
     <>
       <Row gutter={[24, 24]}>
-        <Col span={24} lg={{ span: 12 }}>
+        <Col span={24} xl={{ span: 12 }}>
           <div className="detalle-seguimiento">
             <p style={{ textAlign: "start", display: "flex" }}>
               <b>Fecha de seguimiento: </b>{" "}
               {props.seguimiento.fecha_seguimiento}
+              <br />
               <b style={{ marginLeft: 20 }}>Adulto mayor implicado: </b>
               {props.adulto.nombre +
                 " " +
@@ -92,79 +92,79 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                   });
                 }}
               ></TextArea>
-              <Popconfirm
-                key="popconfirm"
-                title="¿Estás seguro de continuar?"
-                onConfirm={() => {
-                  notification.info({ message: "Guardando y generando..." });
-                  axios
-                    .post(process.env.BACKEND_URL + "/caso/seguimiento/add", {
-                      ...props.seguimiento,
-                      id_caso: props.caso.id_caso,
-                    })
-                    .then((res) => {
-                      if (res.data.status == 1) {
-                        pdf(
-                          <DataContext.Provider
-                            value={{
-                              adulto: props.adulto,
-                              caso: props.caso,
-                              seguimiento: props.seguimiento,
-                              persona: props.persona,
-                            }}
-                          >
-                            <FormularioSeguimiento />
-                          </DataContext.Provider>
-                        )
-                          .toBlob()
-                          .then((blob) => {
-                            notification.success({
-                              message: "¡Guardado y generado con éxito!",
-                            });
-                            getData();
-                            const url = URL.createObjectURL(blob);
-                            const link = document.createElement("a");
-                            link.href = url;
-                            let { nombre, paterno, materno } = props.adulto;
-
-                            link.setAttribute(
-                              "download",
-                              nombre +
-                                paterno +
-                                materno +
-                                props.seguimiento.fecha_seguimiento +
-                                ".pdf"
-                            );
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                          });
-                      }
-                    });
-                }}
-                okText="Sí"
-                cancelText="No"
-              >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ marginTop: 20 }}
-                >
-                  Guardar y generar
-                </Button>
-              </Popconfirm>
-              <Button
-                style={{ marginTop: 20, marginLeft: 20 }}
-                onClick={() => {
-                  setOpen(true);
-                }}
-              >
-                Vista Previa PDF
-              </Button>
             </Form.Item>
+            <Popconfirm
+              key="popconfirm"
+              title="¿Estás seguro de continuar?"
+              onConfirm={() => {
+                notification.info({ message: "Guardando y generando..." });
+                axios
+                  .post(process.env.BACKEND_URL + "/caso/seguimiento/add", {
+                    ...props.seguimiento,
+                    id_caso: props.caso.id_caso,
+                  })
+                  .then((res) => {
+                    if (res.data.status == 1) {
+                      pdf(
+                        <DataContext.Provider
+                          value={{
+                            adulto: props.adulto,
+                            caso: props.caso,
+                            seguimiento: props.seguimiento,
+                            persona: props.persona,
+                          }}
+                        >
+                          <FormularioSeguimiento />
+                        </DataContext.Provider>
+                      )
+                        .toBlob()
+                        .then((blob) => {
+                          notification.success({
+                            message: "¡Guardado y generado con éxito!",
+                          });
+                          getData();
+                          const url = URL.createObjectURL(blob);
+                          const link = document.createElement("a");
+                          link.href = url;
+                          let { nombre, paterno, materno } = props.adulto;
+
+                          link.setAttribute(
+                            "download",
+                            nombre +
+                              paterno +
+                              materno +
+                              props.seguimiento.fecha_seguimiento +
+                              ".pdf"
+                          );
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        });
+                    }
+                  });
+              }}
+              okText="Sí"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginTop: 20 }}
+              >
+                Guardar y generar
+              </Button>
+            </Popconfirm>
+            <Button
+              style={{ marginTop: 20, marginLeft: 20 }}
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              Vista Previa PDF
+            </Button>
           </Form>
         </Col>
-        <Col span={24} lg={{ span: 12}}>
+        <Col span={24} xl={{ span: 12 }}>
           <List
             header={<b>Historial de seguimientos</b>}
             pagination={{

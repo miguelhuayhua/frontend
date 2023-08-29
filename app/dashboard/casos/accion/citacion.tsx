@@ -1,7 +1,7 @@
 "use client";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import locale from "antd/es/date-picker/locale/es_ES";
-import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -11,30 +11,31 @@ import {
   Popconfirm,
   Row,
   notification,
-  Typography,
   DatePicker,
   TimePicker,
-  Transfer,
   Input,
   Avatar,
   Switch,
   message,
   Space,
   Card,
+  Tag,
 } from "antd";
 import { NextPage } from "next";
 import { Adulto } from "../../adultos/data";
 import { Caso, Citacion, dataCitacion } from "../data";
 import { Persona } from "../../personal/agregar/data";
 import { createContext, useEffect, useState } from "react";
+import { PiListMagnifyingGlassFill } from "react-icons/pi";
 import Formulariocitacion from "./pdf-citacion";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { Hijo } from "../../hijos/data";
 import { AiOutlineFilePdf } from "react-icons/ai";
 import dayjs, { Dayjs } from "dayjs";
-import { dias, meses, nro_citacion } from "../nuevocaso/data";
+import { Citado, dias, meses, nro_citacion } from "../nuevocaso/data";
 import moment, { now } from "moment";
+import "./estilos.scss";
+import ModalAudienciaSuspendida from "./audiencia";
 export const DataContext2 = createContext({});
 
 interface Props {
@@ -51,8 +52,12 @@ interface Props {
 const CitacionOptions: NextPage<Props> = (props) => {
   const [open, setOpen] = useState(false);
   const [citado, setCitado] = useState("");
+  const [open2, setOpen2] = useState(false);
+  const [citacion, setCitacion] = useState<Citacion>(dataCitacion);
   const [citados, setCitados] = useState<any[]>([]);
   //cambio del estado de caso
+  const [citados2, setCitados2] = useState<any[]>([]);
+
   const params = useSearchParams();
 
   useEffect(() => {
@@ -66,7 +71,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
   return (
     <>
       <Row gutter={[24, 24]}>
-        <Col span={24} lg={{ span: 12 }}>
+        <Col span={24} xl={{ span: 12 }}>
           <div className="detalle-citacion">
             <p>
               <b style={{ marginRight: 10 }}>Adulto mayor implicado: </b>
@@ -144,6 +149,18 @@ const CitacionOptions: NextPage<Props> = (props) => {
                   <hr />
                   <List
                     className="demo-loadmore-list"
+                    locale={{
+                      emptyText: (
+                        <>
+                          <PiListMagnifyingGlassFill
+                            width={50}
+                            height={50}
+                            fontSize={50}
+                          />
+                          <p>Sin datos</p>
+                        </>
+                      ),
+                    }}
                     header={
                       <div
                         style={{
@@ -199,10 +216,11 @@ const CitacionOptions: NextPage<Props> = (props) => {
                     itemLayout="horizontal"
                     dataSource={citados}
                     rowKey={(item) => item.nombres_apellidos}
-                    renderItem={(item: any) => (
+                    renderItem={(item: any, index) => (
                       <List.Item
                         actions={[
                           <Switch
+                            key={index + "s"}
                             checked={item.citado == 1}
                             checkedChildren="Citar"
                             unCheckedChildren="No citar"
@@ -341,84 +359,142 @@ const CitacionOptions: NextPage<Props> = (props) => {
             <h3>Límite de citaciones excedida...</h3>
           )}
         </Col>
-        <Col span={24} lg={{ span: 12 }}>
+        <Col span={24} xl={{ span: 12 }}>
+          <hr />
           <List
             header={<b>Historial de citaciones</b>}
-            grid={{ gutter: 16, column: 2 }}
+            locale={{
+              emptyText: (
+                <>
+                  <PiListMagnifyingGlassFill
+                    width={50}
+                    height={50}
+                    fontSize={50}
+                  />
+                  <p>Sin historial de citaciones...</p>
+                </>
+              ),
+            }}
             dataSource={props.citaciones}
             rowKey={(citacion) => citacion.id_citacion}
             renderItem={(item, index) => (
               <List.Item>
                 <>
                   <Card
+                    style={{ width: "100%" }}
                     bordered={false}
-                    title={<b>{nro_citacion[item.numero]} Citación</b>}
+                    title={
+                      <>
+                        <span className="number">{index + 1}</span>
+                        <b>{nro_citacion[item.numero]} Citación</b>
+                      </>
+                    }
                   >
-                    <p style={{ fontSize: 10, paddingRight: 20 }}>
-                      <b>
-                        Fecha y hora:{" "}
-                        {item.fecha_citacion + " " + item.hora_citacion}
-                      </b>
-                    </p>
-                    <Button
-                      onClick={() => {
-                        let caso: any = {};
-                        axios
-                          .post<Caso>(process.env.BACKEND_URL + "/caso/get", {
-                            id_caso: props.caso.id_caso,
-                          })
-                          .then((res) => {
-                            caso = res.data;
-                            axios
-                              .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                                process.env.BACKEND_URL + "/adulto/get",
-                                {
-                                  id_adulto: caso.id_adulto,
-                                }
-                              )
-                              .then((res) => {
-                                pdf(
-                                  <DataContext2.Provider
-                                    value={{
-                                      adulto: res.data.adulto,
-                                      caso: caso,
-                                      nro_citacion: item,
-                                      persona: props.persona,
-                                      citados: citados,
-                                    }}
-                                  >
-                                    <Formulariocitacion />
-                                  </DataContext2.Provider>
-                                )
-                                  .toBlob()
-                                  .then((blob) => {
-                                    const url = URL.createObjectURL(blob);
-                                    const link = document.createElement("a");
-                                    link.href = url;
-                                    let { nombre, paterno, materno } =
-                                      props.adulto;
-
-                                    link.setAttribute(
-                                      "download",
-                                      nombre + paterno + materno + ".pdf"
+                    <Row>
+                      <Col span={8}>
+                        <p style={{ fontSize: 10, paddingRight: 20 }}>
+                          <b>
+                            Fecha y hora de citación:{" "}
+                            {item.fecha_citacion + " " + item.hora_citacion}
+                          </b>
+                          <br />
+                          <b>Creado el: </b>
+                          {item.fecha_creacion}
+                        </p>
+                      </Col>
+                      {item.suspendido == 1 ? (
+                        <Col span={16}>
+                          <Tag color="#f50">Suspendido</Tag>
+                        </Col>
+                      ) : (
+                        <>
+                          <Col span={8}>
+                            <Button
+                              onClick={() => {
+                                axios
+                                  .post<Citado[]>(
+                                    process.env.BACKEND_URL +
+                                      "/caso/citados/get",
+                                    {
+                                      id_citacion: item.id_citacion,
+                                    }
+                                  )
+                                  .then((res) => {
+                                    let citados: Citado[] = res.data.map(
+                                      (value) => {
+                                        return { ...value, citado: 1 };
+                                      }
                                     );
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
+                                    pdf(
+                                      <DataContext2.Provider
+                                        value={{
+                                          adulto: props.adulto,
+                                          caso: props.caso,
+                                          nro_citacion:
+                                            nro_citacion[item.numero],
+                                          citacion: item,
+                                          persona: props.persona,
+                                          citados: citados,
+                                        }}
+                                      >
+                                        <Formulariocitacion />
+                                      </DataContext2.Provider>
+                                    )
+                                      .toBlob()
+                                      .then((blob) => {
+                                        const url = URL.createObjectURL(blob);
+                                        const link =
+                                          document.createElement("a");
+                                        link.href = url;
+                                        let { nombre, paterno, materno } =
+                                          props.adulto;
+
+                                        link.setAttribute(
+                                          "download",
+                                          nombre + paterno + materno + ".pdf"
+                                        );
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                      });
                                   });
-                              });
-                          });
-                      }}
-                      style={{ height: 45, margin: "0 auto" }}
-                    >
-                      Generar Citación
-                      <AiOutlineFilePdf
-                        style={{
-                          color: "#b51308",
-                          fontSize: 30,
-                        }}
-                      />
-                    </Button>
+                              }}
+                              style={{ height: 45, margin: "0 auto" }}
+                            >
+                              Generar
+                              <AiOutlineFilePdf
+                                style={{
+                                  color: "#b51308",
+                                  fontSize: 25,
+                                }}
+                              />
+                            </Button>
+                          </Col>
+                          <Col span={8}>
+                            <Button
+                              onClick={() => {
+                                setOpen2(true);
+                                setCitacion(item);
+                                axios
+                                  .post<Citado[]>(
+                                    process.env.BACKEND_URL +
+                                      "/caso/citados/get",
+                                    {
+                                      id_citacion: item.id_citacion,
+                                    }
+                                  )
+                                  .then((res) => {
+                                    setCitados2(res.data);
+                                  });
+                              }}
+                              style={{ marginLeft: 10, height: 45 }}
+                            >
+                              Suspender
+                            </Button>
+                          </Col>
+                        </>
+                      )}
+                    </Row>
                   </Card>
                 </>
               </List.Item>
@@ -450,6 +526,17 @@ const CitacionOptions: NextPage<Props> = (props) => {
           </DataContext2.Provider>
         </PDFViewer>
       </Drawer>
+
+      <ModalAudienciaSuspendida
+        citados={citados2}
+        adulto={props.adulto}
+        caso={props.caso}
+        citacion={citacion}
+        open2={open2}
+        setOpen2={setOpen2}
+        persona={props.persona}
+      ></ModalAudienciaSuspendida>
+      
     </>
   );
 };

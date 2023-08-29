@@ -19,27 +19,38 @@ import dayjs from "dayjs";
 // Create styles
 //estilos
 const styles = StyleSheet.create({
-  title: {
-    width: "100%",
-    textAlign: "center",
-    marginTop: 10,
+  textBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 12,
   },
-  page: {
+  textCenter: {
+    textAlign: "center",
+  },
+  textEnd: {
+    textAlign: "right",
+  },
+  parraf: {
+    lineHeight: 1.3,
     fontFamily: "Helvetica",
     fontSize: 12,
-    padding: 20,
-    position: "relative",
+    marginTop: 12,
   },
-  textContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    border: "1px solid black",
-    borderRadius: 3,
-    fontSize: 10,
+  page: {
+    paddingLeft: 25,
+    paddingRight: 30,
+    paddingVertical: 25,
   },
-
-  textInfo: { width: "33%", color: "#999", textAlign: "center", fontSize: 8 },
-
+  listItem: {
+    marginLeft: 40,
+  },
+  bigTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  underline: {
+    textDecoration: "underline",
+  },
   horizontal: {
     display: "flex",
     flexDirection: "row",
@@ -97,8 +108,12 @@ const FormularioSeguimiento = () => {
             }}
             src={"/assets/logo-elalto.png"}
           ></Image>
-
-          <Svg style={{ marginHorizontal: "center" }} height="3" width="600">
+          <Text
+            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 20 }}
+          >
+            GOBIERNO AUTÓNOMO DE EL ALTO
+          </Text>
+          <Svg height="3" width="600">
             <Line
               x1="90"
               y1="2"
@@ -108,73 +123,43 @@ const FormularioSeguimiento = () => {
               stroke="rgb(0,0,0)"
             />
           </Svg>
-          <Text
-            style={{
-              fontSize: 9,
-              ...styles.title,
-            }}
-          >
+          <Text style={{ ...styles.textCenter, ...styles.textBold }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
-          <Text style={{ fontSize: 9, ...styles.title, marginTop: 5 }}>
-            DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
+          <Text style={{ ...styles.textCenter, ...styles.textBold }}>
+            DIRECCCIÓN DE DESARROLLO INTEGRAL
           </Text>
-          <Text
-            style={{
-              fontSize: 9,
-              ...styles.title,
-              marginTop: 5,
-            }}
-          >
+          <Text style={{ ...styles.textCenter, ...styles.textBold }}>
+            UNIDAD DE ADULTOS MAYORES
+          </Text>
+          <Text style={{ ...styles.textCenter, ...styles.textBold }}>
             PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
-          <Text
-            style={{
-              fontWeight: "bold",
-              marginLeft: 20,
-              marginTop: 20,
-              fontSize: 10,
-              lineHeight: 1.5,
-            }}
-          >
-            TIPOLOGÍA: {caso.tipologia}
-            N° CASO: {caso.nro_caso}
-          </Text>
-
-          <Text
-            style={{
-              width: "100%",
-              textAlign: "center",
-              fontSize: 15,
-              marginVertical: 20,
-            }}
-          >
+          <Text style={styles.parraf}>TIPOLOGÍA: {caso.tipologia}</Text>
+          <Text style={styles.parraf}>N° CASO: {caso.nro_caso}</Text>
+          <Text style={{ ...styles.bigTitle, ...styles.underline }}>
             {nro_citacion.toUpperCase() + " CITACIÓN"}
           </Text>
-          <Text style={{ fontSize: 12 }}>
+          <Text style={styles.parraf}>
             La unidad de Adultos Mayores, en el marco de sus atribuciones y
             competencias conferidas por la normativa vigente, cita a:
           </Text>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignContent: "center",
-              justifyContent: "center",
-            }}
-          >
-            {citados.map((citado, index) =>
-              citado.citado == 1 ? (
-                <Text
-                  key={index}
-                  style={{ textAlign: "center", marginTop: 10 }}
-                >
-                  {citado.nombres_apellidos.toUpperCase()}
-                </Text>
-              ) : null
-            )}
-          </View>
-          <Text style={{ fontSize: 12, marginTop: 20, lineHeight: 1.5 }}>
+
+          {citados.map((citado, index) =>
+            citado.citado == 1 ? (
+              <Text
+                key={index}
+                style={{
+                  ...styles.parraf,
+                  ...styles.textCenter,
+                  ...styles.textBold,
+                }}
+              >
+                {citado.nombres_apellidos.toUpperCase()}
+              </Text>
+            ) : null
+          )}
+          <Text style={styles.parraf}>
             Apersonarse ante estas dependencias Unidad de Adultos Mayores,
             PLANTA BAJA JACHA UTA,(Alcaldía Municipal) para el día{" "}
             {dias2[fecha.day()]} {fecha.date()} de {meses[fecha.month()]} DE{" "}
@@ -184,121 +169,60 @@ const FormularioSeguimiento = () => {
             {adulto.edad} años de edad.
           </Text>
 
-          <Text style={{ fontSize: 12, marginTop: 10, lineHeight: 1.5 }}>
+          <Text style={styles.parraf}>
             El equipo multidisiciplinario de la Unidad de Adultos Mayores le
             informa que queda terminantemente PROHIBIDO EJERCER CUALQUIER TIPO
             DE MALTRATATO CONTRA EL/LA ADULTA/O MAYOR, y se le hace conocer que
             debe respetar sus derechos sin argüir desconocimiento.
           </Text>
-          <Text
-            style={{
-              marginTop: 10,
-              lineHeight: 1.5,
-              fontSize: 12,
-              fontWeight: "bold",
-            }}
-          >
+          <Text style={{ ...styles.parraf, ...styles.textBold }}>
             DEBE PORTAR TODAS LAS MEDIDAS DE BIOSEGURIDAD AL MOMENTO DE ASITIR A
             NUESTRAS DEPENDENCIAS, ESTO CON EL FIN DE EVITAR LA PROPAGACIÓN DEL
             COVID-19
           </Text>
           <Text
             style={{
-              marginTop: 10,
-              lineHeight: 1.5,
-              fontSize: 12,
-              fontWeight: "bold",
-              textDecoration: "underline",
+              ...styles.parraf,
+              ...styles.textBold,
+              ...styles.underline,
             }}
           >
             Se insinua puntualidad, portar su cédula de identidad y fotocopia
             del mismo.
           </Text>
-          <Text
-            style={{
-              marginTop: 10,
-              color: "#555",
-              width: "100%",
-              textAlign: "right",
-            }}
-          >
+          <Text style={{ ...styles.parraf, ...styles.textEnd }}>
             El Alto, {fecha_creacion.date()} de {meses[fecha_creacion.month()]}{" "}
             de {fecha_creacion.year()}
           </Text>
-          <View style={{ ...styles.horizontal, marginTop: 100 }}>
-            <View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontSize: 10 }}>Firma:</Text>
-                <View
-                  style={{
-                    height: 10,
-                    borderBottom: "0.5px solid black",
-                    width: 150,
-                    marginLeft: 10,
-                  }}
-                ></View>
-              </View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 10 }}>
-                  Nombre Completo:
-                </Text>
-                <Text
-                  style={{
-                    borderBottom: "0.5px solid black",
-                    paddingHorizontal: 10,
-                    fontSize: 10,
-                    marginLeft: 10,
-                  }}
-                >
-                  {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
-                </Text>
-              </View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 10 }}>
-                  N° Celular:
-                </Text>
-                <Text
-                  style={{
-                    borderBottom: "0.5px solid black",
-                    fontSize: 10,
-                    paddingHorizontal: 10,
-                    marginLeft: 10,
-                  }}
-                >
-                  {adulto.nro_referencia}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.signatureBox}>
-              <Text style={{ borderTop: "0.5px solid black", paddingTop: 10 }}>
-                {persona.profesion +
-                  " " +
-                  persona.nombres +
-                  " " +
-                  persona.paterno +
-                  " " +
-                  persona.materno}
-              </Text>
-              <Text>Sello y Firma del (la) profesional</Text>
-            </View>
+
+          <View
+            style={{
+              width: 200,
+              marginHorizontal: "auto",
+              borderTop: "1px solid black",
+              marginTop: 150,
+            }}
+          >
+            <Text
+              style={{
+                ...styles.parraf,
+                ...styles.textCenter,
+                ...styles.textBold,
+              }}
+            >
+              {persona.profesion +
+                " " +
+                persona.nombres +
+                " " +
+                persona.paterno +
+                " " +
+                persona.materno}
+            </Text>
+            <Text
+              style={{ ...styles.parraf, ...styles.textCenter, marginTop: 0 }}
+            >
+              {"Sello y Firma del (la) profesional"}{" "}
+            </Text>
           </View>
         </View>
         <View

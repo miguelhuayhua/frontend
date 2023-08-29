@@ -8,16 +8,20 @@ export interface Denunciado {
   id_caso: string;
   parentezco: string;
   genero: string;
+  ci?: number;
+  expedido?: string;
 }
 
 export let dataDenunciado: Denunciado = {
-  id_denunciado:"",
-  nombres:"",
-  paterno:"",
-  materno:"",
+  id_denunciado: "",
+  nombres: "",
+  paterno: "",
+  materno: "",
   estado: 0,
-  ult_modificacion:"",
-  id_caso:"",
-  parentezco:"",
-  genero:"",
+  ult_modificacion: "",
+  id_caso: "",
+  parentezco: "",
+  genero: "",
+  ci: 0,
+  expedido: "",
 };

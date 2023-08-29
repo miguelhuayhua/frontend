@@ -12,6 +12,9 @@ export interface Caso {
     descripcion_hechos: string;
     accion_realizada: string;
     estado: number;
+    nombre?: string;
+    paterno?: string;
+    materno?: string;
 }
 
 export let datosCaso: Caso = {
@@ -40,6 +43,8 @@ export interface Denunciado {
     ult_modificacion: string;
     id_caso: string;
     id_denunciado: string;
+    expedido?: string;
+    ci?: number
 }
 
 
@@ -53,6 +58,8 @@ export let DatosDenunciado = {
     ult_modificacion: "",
     id_caso: "",
     id_denunciado: "",
+    expedido: "",
+    ci: 0
 }
 
 export interface Seguimiento {
@@ -82,6 +89,7 @@ export interface Citacion {
     id_caso: string;
     fecha_citacion: string;
     hora_citacion: string;
+    suspendido: number;
     fecha_creacion: string;
     ult_moficacion: string;
     numero: number;
@@ -95,6 +103,24 @@ export let dataCitacion: Citacion = {
     hora_citacion: dayjs().format("HH:mm:ss"),
     fecha_creacion: dayjs().format("YYYY-MM-DD"),
     ult_moficacion: "",
+    suspendido: 0,
     numero: 0,
+    estado: 1
+}
+
+
+export interface Compromiso {
+    id_compromiso: string;
+    compromiso: string;
+    id_caso: string;
+    ult_modificacion: string;
+    estado: number;
+}
+
+export let dataCompromiso = {
+    id_compromiso: "",
+    compromiso: "",
+    id_caso: "",
+    ult_modificacion: "",
     estado: 1
 }

@@ -50,7 +50,8 @@ const Informacion = () => {
   const [caso, setCaso] = useState<Caso>(datosCaso);
   const [adultoMayor, setAdultoMayor] =
     useState<AdultoMayor2>(dataDatosGenerales);
-
+  const [adultos, setAdultos] = useState<AdultoMayor2[]>([]);
+  const [filtroAdulto, setFiltroAdulto] = useState("");
   const [filtroCaso, setFiltroCaso] = useState("");
   const [filtroAccionCaso, setFiltroAccionCaso] = useState("");
   const [denunciado, setDenunciado] = useState<Denunciado>(DatosDenunciado);
@@ -61,6 +62,18 @@ const Informacion = () => {
       key: "nro_caso",
       className: "text-center",
       fixed: "left",
+      render: (_, caso) => {
+        let adulto = adultos.find((value) => {
+          return value.id_adulto == caso.id_adulto;
+        });
+        return (
+          <>
+            <b>{caso.nro_caso}</b>
+            <br />
+            {adulto?.nombre + " " + adulto?.paterno + " " + adulto?.materno}
+          </>
+        );
+      },
     },
     {
       title: "Acción Realizada",
@@ -151,6 +164,11 @@ const Informacion = () => {
       setCasos(res.data);
       setDisplayCasos(res.data);
     });
+    axios
+      .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
+      .then((res) => {
+        setAdultos(res.data);
+      });
   }, []);
 
   const { RangePicker } = DatePicker;
@@ -163,12 +181,13 @@ const Informacion = () => {
         return caso.nro_caso.includes(ev.target.value);
       })
     );
+    setFiltroAdulto("");
     setFiltroAccionCaso("");
   };
   const handleFiltroAccion = (ev: any) => {
     setFiltroAccionCaso(ev);
     setFiltroCaso("");
-
+    setFiltroAdulto("");
     setDisplayCasos(
       casos.filter((caso) => {
         return caso.accion_realizada == ev;
@@ -199,9 +218,9 @@ const Informacion = () => {
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
       </small>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
+      <Form layout={"horizontal"} style={{ marginTop: 10}}>
         <Row>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+          <Col span={24} md={{ span: 12 }} xl={{ span: 5 }}>
             <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
               <Input
                 placeholder="Introduzca el número de caso..."
@@ -210,7 +229,42 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
+          <Col span={24} md={{ span: 12 }} xl={{ span: 7 }}>
+            <Form.Item style={{ marginLeft: 10 }} label="Adulto implicado: ">
+              <Input
+                placeholder="Adulto Implicado"
+                value={filtroAdulto}
+                onChange={(ev) => {
+                  setFiltroCaso("");
+                  setFiltroAdulto(ev.target.value);
+                  setFiltroAccionCaso("");
+                  if (ev.target.value == "") {
+                    setDisplayCasos(casos);
+                  } else {
+                    let adulto = adultos.filter((value) => {
+                      return (
+                        value.nombre +
+                        " " +
+                        value.paterno +
+                        " " +
+                        value.materno
+                      )
+                        .toLowerCase()
+                        .includes(ev.target.value.toLowerCase());
+                    });
+                    setDisplayCasos(
+                      casos.filter((caso) => {
+                        return adulto.some(
+                          (value) => value.id_adulto == caso.id_adulto
+                        );
+                      })
+                    );
+                  }
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={{ span: 8 }} xl={{ span: 5 }}>
             <Form.Item
               label="Tipo de acción realizada: "
               style={{ marginLeft: 10 }}
@@ -223,7 +277,7 @@ const Informacion = () => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
+          <Col span={24} lg={{ span: 8 }} xl={{ span: 7 }}>
             <Form.Item
               style={{ marginLeft: 10, width: "100%" }}
               label="Filtrar por rango de fechas:"
@@ -302,9 +356,7 @@ const Informacion = () => {
                   });
                 setOpen(true);
               } else if (ev.target.className.includes("btn-redirect")) {
-                router.push(
-                  "/dashboard/casos/accion?id_caso=" + value.id_caso
-                );
+                router.push("/dashboard/casos/accion?id_caso=" + value.id_caso);
               }
             },
           };

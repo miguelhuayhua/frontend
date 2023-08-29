@@ -71,6 +71,7 @@ export interface AdultoMayor2 {
     ocupacion: string;
     beneficios: string;
     id_adulto: string;
+    expedido?: string;
 
 }
 export interface DatosUbicacion {
@@ -149,3 +150,21 @@ export interface Citado {
 export let nro_citacion: string[] = [
     "Primera", "Segunda", "Tercera", "Cuarta"
 ]
+
+export interface Audiencia {
+    id_audiencia_suspendida: string;
+    causa: string;
+    observacion: string;
+    ult_modificacion: string;
+    estado: number;
+    id_citacion: string;
+}
+
+export let dataAudiencia = {
+    id_audiencia_suspendida: "",
+    causa: "ina_adulto",
+    observacion: "",
+    ult_modificacion: "",
+    estado: 1,
+    id_citacion: "",
+}
