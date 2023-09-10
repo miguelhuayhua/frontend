@@ -168,9 +168,9 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
           <List
             header={<b>Historial de seguimientos</b>}
             pagination={{
-              defaultPageSize: 5,
+              defaultPageSize: 8,
               size: "small",
-              pageSize: 5,
+              pageSize: 8,
               position: "bottom",
               align: "center",
             }}
@@ -270,7 +270,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
         }}
         open={open}
       >
-        <PDFViewer showToolbar={false} style={{ width: "100%", height: 700 }}>
+        <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
           <DataContext.Provider
             value={{
               adulto: props.adulto,

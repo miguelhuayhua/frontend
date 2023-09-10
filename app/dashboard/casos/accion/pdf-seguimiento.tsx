@@ -7,6 +7,7 @@ import ReactPDF, {
   View,
   Image,
   Line,
+  Svg,
 } from "@react-pdf/renderer";
 
 import { Persona } from "../../personal/agregar/data";
@@ -17,27 +18,47 @@ import { DataContext } from "./seguimiento";
 // Create styles
 //estilos
 const styles = StyleSheet.create({
-  title: {
-    width: "100%",
-    textAlign: "center",
-    marginTop: 10,
+  textBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 12,
   },
-  page: {
+  textCenter: {
+    textAlign: "center",
+  },
+  textEnd: {
+    textAlign: "right",
+  },
+  parraf: {
+    lineHeight: 1.3,
     fontFamily: "Helvetica",
     fontSize: 12,
-    padding: 20,
-    position: "relative",
+    marginTop: 12,
   },
-  textContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+  page: {
+    paddingLeft: 25,
+    paddingRight: 30,
+    paddingVertical: 25,
+  },
+  textBox: {
     border: "1px solid black",
-    borderRadius: 3,
-    fontSize: 10,
+    borderRadius: 5,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 7.5,
+    paddingVertical: 2,
   },
-
-  textInfo: { width: "33%", color: "#999", textAlign: "center", fontSize: 8 },
-
+  listItem: {
+    marginLeft: 40,
+  },
+  bigTitle: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  underline: {
+    textDecoration: "underline",
+  },
   horizontal: {
     display: "flex",
     flexDirection: "row",
@@ -56,7 +77,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
 });
-
 // Create Document Component
 const FormularioSeguimiento = () => {
   const data = useContext(DataContext);
@@ -74,8 +94,8 @@ const FormularioSeguimiento = () => {
           <Text
             style={{
               position: "absolute",
-              top: 0,
-              right: 50,
+              top: -10,
+              left: 20,
               color: "gray",
               fontSize: 8,
             }}
@@ -85,96 +105,101 @@ const FormularioSeguimiento = () => {
           </Text>
           <Image
             style={{
-              width: 80,
-              height: 50,
+              width: 70,
+              height: 40,
               position: "absolute",
-              top: 10,
-              right: 5,
+              top: 0,
+              right: 0,
             }}
             src={"/assets/logo-gamea.png"}
           ></Image>
+
           <Image
             style={{
-              width: 500,
-              height: 100,
+              width: 70,
+              height: 40,
               position: "absolute",
-              top: -20,
-              right: 35,
-              zIndex: -1,
-            }}
-            src={"/assets/linea-aymara.png"}
-          ></Image>
-          <Image
-            style={{
-              width: 80,
-              height: 50,
-              position: "absolute",
-              top: 15,
-              left: 5,
+              top: 0,
+              left: 0,
             }}
             src={"/assets/logo-elalto.png"}
           ></Image>
-          <View style={{ width: "70%", marginHorizontal: "auto" }}>
-            <Text
-              style={{ fontWeight: "light", fontSize: 12, ...styles.title }}
-            >
-              GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-            </Text>
-            <Text
-              style={{ fontWeight: "extrabold", fontSize: 9, ...styles.title }}
-            >
-              SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
-            </Text>
-            <Text style={{ fontSize: 9, ...styles.title, marginTop: 5 }}>
-              DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
-            </Text>
-            <Text
-              style={{
-                fontSize: 9,
-                ...styles.title,
-                marginTop: 5,
-              }}
-            >
-              PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
-            </Text>
-          </View>
+          <Text
+            style={{ ...styles.parraf, ...styles.textCenter, marginTop: 20 }}
+          >
+            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
+          </Text>
+          <Svg height="3" width="600">
+            <Line
+              x1="90"
+              y1="2"
+              x2="470"
+              y2="2"
+              strokeWidth={1}
+              stroke="rgb(0,0,0)"
+            />
+          </Svg>
+          <Text
+            style={{
+              ...styles.textCenter,
+              ...styles.textBold,
+              marginTop: 10,
+            }}
+          >
+            SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
+          </Text>
+          <Text
+            style={{
+              ...styles.textCenter,
+              ...styles.textBold,
+            }}
+          >
+            DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
+          </Text>
+          <Text
+            style={{
+              ...styles.textCenter,
+              ...styles.textBold,
+            }}
+          >
+            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+          </Text>
           <View style={{ ...styles.horizontal, marginTop: 10 }}>
-            <Text style={styles.textInfo}>
+            <Text style={{ ...styles.parraf, color: "gray", fontSize: 8 }}>
               {"Fecha y hora de registro: " +
                 seguimiento.fecha_seguimiento +
                 " " +
                 seguimiento.hora_seguimiento}
             </Text>
-            <Text style={{ fontWeight: "bold", marginLeft: 30, fontSize: 10 }}>
-              TIPOLOGÍA:
+            <Text style={styles.textBold}>TIPOLOGÍA:</Text>
+            <Text style={{ ...styles.textBox, ...styles.parraf }}>
+              {caso.tipologia}
             </Text>
-            <Text style={styles.textContainer}>{caso.tipologia}</Text>
-            <Text
-              style={{ fontWeight: "bold", marginHorizontal: 30, fontSize: 10 }}
-            >
-              N° CASO:
+            <Text style={styles.textBold}>N° CASO:</Text>
+            <Text style={{ ...styles.textBox, ...styles.parraf }}>
+              {caso.nro_caso}
             </Text>
-            <Text style={styles.textContainer}>{caso.nro_caso}</Text>
           </View>
-          <Text style={{ fontWeight: "bold", fontSize: 10 }}>
-            I. NOMBRES Y APELLIDOS DE LA PERSONA ADULTA MAYOR
+          <Text style={styles.textBold}>
+            I. NOMBRES Y APELLIDOS DE LA PERSONA ADULTA MAYOR:
           </Text>
-          <Text style={styles.textContainer}>
+          <Text style={{ ...styles.textBox, ...styles.parraf, marginTop: 2 }}>
             {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
           </Text>
-          <Text style={{ fontWeight: "bold", fontSize: 10, marginTop: 20 }}>
-            II. DETALLES DEL SEGUIMIENTO DEL CASO{" "}
+          <Text style={{ ...styles.textBold, marginTop: 20 }}>
+            II. DETALLES DEL SEGUIMIENTO DEL CASO:
           </Text>
           <Text
             style={{
-              ...styles.textContainer,
-
-              fontStyle: "italic",
+              ...styles.textBox,
+              ...styles.parraf,
+              marginTop: 2,
+              fontFamily: "Helvetica-Oblique",
             }}
           >
             {seguimiento.detalle_seguimiento}
           </Text>
-          <View style={{ ...styles.horizontal, marginTop: 100 }}>
+          <View style={{ ...styles.horizontal, marginTop: 50 }}>
             <View>
               <View
                 style={{
@@ -252,18 +277,34 @@ const FormularioSeguimiento = () => {
         </View>
         <View
           fixed
-          style={{ position: "absolute", bottom: 15, marginLeft: 35 }}
+          style={{
+            position: "absolute",
+            bottom: 15,
+            width: "100%",
+            marginLeft: 35,
+          }}
         >
           <Text
             fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+            style={{
+              ...styles.parraf,
+              ...styles.textCenter,
+              fontSize: 8,
+              width: "100%",
+            }}
           >
             Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
             Torres y Hernán Siles.
           </Text>
           <Text
             fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+            style={{
+              ...styles.parraf,
+              ...styles.textCenter,
+              fontSize: 8,
+              marginTop: 2,
+              width: "100%",
+            }}
           >
             {
               "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."

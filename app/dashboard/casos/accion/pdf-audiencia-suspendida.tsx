@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   parraf: {
-    lineHeight: 1.3,
+    lineHeight: 1.4,
     fontFamily: "Helvetica",
     fontSize: 12,
     marginTop: 12,

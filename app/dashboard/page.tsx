@@ -2,258 +2,103 @@
 import {
   Affix,
   Avatar,
+  Breadcrumb,
+  Button,
   Card,
   Col,
+  FloatButton,
   Layout,
   List,
+  Progress,
   Row,
+  Segmented,
+  Tooltip,
 } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
 //estilos
 import "./estilos.scss";
-import React from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-} from "recharts";
-
+import React, { useEffect, useState } from "react";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { CgHello } from "react-icons/cg";
 import MenuSider from "./components/MenuSider";
 import Navbar from "./components/Navbar";
+import GraficoPastel from "./graficos/Pastel";
+import { FaBalanceScaleLeft } from "react-icons/fa";
+import { MdCallReceived, MdOutlineElderlyWoman } from "react-icons/md";
+import GraficoLinea from "./graficos/Linea";
+import { AiFillEye } from "react-icons/ai";
+import { BsFillArrowUpCircleFill } from "react-icons/bs";
+import { PiListMagnifyingGlassFill } from "react-icons/pi";
+import { GrView } from "react-icons/gr";
+import {
+  AiOutlineDash,
+  AiOutlinePlus,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
+import GraficoBarra from "./graficos/Barra";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { meses } from "./casos/nuevocaso/data";
+import axios from "axios";
+import { Caso } from "./casos/data";
+import { useRouter } from "next/navigation";
+import GraficoBarraHorizontal from "./graficos/BarraHorizontal";
+import { dataUsuario } from "./usuarios/data";
+import { useSession } from "next-auth/react";
 export default function Dashboard() {
-  const data2 = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  const [dashboardData, setDashboardData] = useState<{
+    acciones_x_casos: { accion: string[]; cantidad: number[] };
+    caso_x_distrito: { distrito: number[]; cantidad: number[] };
+    casos_x_dia: number;
+    casos_x_mes_actual: number;
+    suspendidos_x_mes: number;
+    citaciones_x_mes: number;
+    casos_x_mes: { mes: number[]; cantidad: number[] };
+    casos_x_genero: { genero: string[]; cantidad: number[] };
+    proximas_citaciones: {
+      id_citacion: string;
+      fecha_citacion: string;
+      id_caso: string;
+    }[];
+    conteo_tipologia: {
+      tipologia: string[];
+      cantidad: number[];
+    };
+  }>();
+  const [casos, setCasos] = useState<Caso[]>([]);
+  const { data } = useSession();
+  const [usuario, setUsuario] = useState<{
+    usuario: string;
+    estado: number;
+    fotografia: string;
+    id_persona: string;
+    id_usuario: string;
+  }>(dataUsuario);
+  const router = useRouter();
 
-  const data3 = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  useEffect(() => {
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      setUsuario({ ...usuario });
+      axios.get(process.env.BACKEND_URL + "/charts/dashboard").then((res) => {
+        setDashboardData(res.data);
+      });
+      axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
+        let casosLimitados = res.data.slice(0, 4);
+        setCasos(casosLimitados);
+      });
+    }
+  }, [data]);
 
-  const data4 = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
-
-  const data01 = [
-    {
-      name: "Group A",
-      value: 400,
-    },
-    {
-      name: "Group B",
-      value: 300,
-    },
-    {
-      name: "Group C",
-      value: 300,
-    },
-    {
-      name: "Group D",
-      value: 200,
-    },
-    {
-      name: "Group E",
-      value: 278,
-    },
-    {
-      name: "Group F",
-      value: 189,
-    },
-  ];
-
-  const dataTiny = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
-
-  const dataList = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
   return (
     <main>
       <Layout>
@@ -262,323 +107,421 @@ export default function Dashboard() {
             defaultSelectedKey="dashboard"
             defaultOpenKeys={[]}
           ></MenuSider>
-          <Content>
+          <Content style={{ backgroundColor: "#f4f7fa" }}>
             <Navbar></Navbar>
-            <Layout>
-              <Content className="site-layout" style={{ padding: "0 50px" }}>
-                <Content>
-                  <Row>
-                    <Col span={24} lg={{ span: 18 }}>
-                      <Row>
-                        <Col span={8}>
-                          <Card
-                            title="Card title"
-                            bordered={false}
-                            className="card-styled"
-                          >
-                            <p>Card content</p>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                          </Card>
-                        </Col>
-                        <Col span={8}>
-                          <Card
-                            title="Card title"
-                            bordered={false}
-                            className="card-styled"
-                          >
-                            <p>Card content</p>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                          </Card>
-                        </Col>
-                        <Col span={8}>
-                          <Card
-                            title="Card title"
-                            bordered={false}
-                            className="card-styled"
-                          >
-                            <p>Card content</p>
-                            <p>Card content</p>
-                            <p>Card content</p>
-                          </Card>
-                        </Col>
-
-                        <Col span={24}>
-                          <Card
-                            title="Card title"
-                            bordered={false}
-                            className="card-styled"
-                          >
-                            <Row>
-                              <Col span={24}>
-                                <ResponsiveContainer
-                                  width={"100%"}
-                                  height={350}
-                                >
-                                  <LineChart
-                                    className="w-100"
-                                    data={data2}
-                                    margin={{
-                                      top: 5,
-                                      right: 30,
-                                      left: 20,
-                                      bottom: 5,
-                                    }}
-                                  >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line
-                                      type="monotone"
-                                      dataKey="pv"
-                                      stroke="#8884d8"
-                                      activeDot={{ r: 8 }}
-                                    />
-                                    <Line
-                                      type="monotone"
-                                      dataKey="uv"
-                                      stroke="#82ca9d"
-                                    />
-                                  </LineChart>
-                                </ResponsiveContainer>
-                              </Col>
-                            </Row>
-                          </Card>
-                        </Col>
-                      </Row>
-                    </Col>
-
-                    <Col span={24} lg={{ span: 6 }}>
-                      <Card
-                        title="Card title"
-                        bordered={false}
-                        className="card-styled"
+            <Layout style={{ backgroundColor: "#f4f7fa" }}>
+              <Breadcrumb
+                separator={<b style={{ fontSize: 18 }}>/</b>}
+                className="m-4"
+                items={[
+                  {
+                    href: "/dashboard",
+                    title: <HomeOutlined />,
+                  },
+                  {
+                    title: (
+                      <Link
+                        style={{ marginTop: 2.5, fontSize: 15 }}
+                        href={"/dashboard"}
                       >
-                        <ResponsiveContainer width="100%" height={200}>
-                          <PieChart>
-                            <Pie
-                              data={data01}
-                              dataKey="value"
-                              nameKey="name"
-                              cx="50%"
-                              cy="50%"
-                              outerRadius={50}
-                              fill="#8884d8"
-                            />
-                          </PieChart>
-                        </ResponsiveContainer>
-                        <List
-                          itemLayout="horizontal"
-                          dataSource={dataList}
-                          renderItem={(item, index) => (
-                            <List.Item>
-                              <List.Item.Meta
-                                avatar={
-                                  <Avatar
-                                    src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                                  />
-                                }
-                                title={
-                                  <a href="https://ant.design">{item.title}</a>
-                                }
-                                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                              />
-                            </List.Item>
-                          )}
+                        Dashboard
+                      </Link>
+                    ),
+                  },
+                ]}
+              />
+              <Content className="px-4">
+                <Row gutter={[20, 10]}>
+                  <Col span={24}>
+                    <Row>
+                      <Col span={10} className="vertical-center">
+                        <CgHello
+                          style={{ margin: "0 10px" }}
+                          color="#1a2d44"
+                          fontSize={35}
                         />
-                      </Card>
-                    </Col>
-
-                    <Col span={24} lg={{ span: 16 }}>
-                      <Card
-                        title="Card title"
-                        bordered={false}
-                        className="card-styled"
-                      >
-                        <Row>
-                          <Col span={8}>
-                            <Card
-                              title="Card title"
-                              bordered={false}
-                              className="card-styled"
+                        <span style={{ fontSize: 18, color: "GrayText" }}>
+                          Hola {usuario.usuario}, me alegra verte hoy...
+                        </span>
+                      </Col>
+                      <Col span={8} offset={6}>
+                        <div className="d-flex">
+                          <Link
+                            className="custom-btn-dash"
+                            href={"/dashboard/casos"}
+                          >
+                            <Button
+                              style={{ height: 60 }}
+                              className="vertical "
                             >
-                              <p>Card content</p>
-                              <p>Card content</p>
-                              <p>Card content</p>
-                            </Card>
-                          </Col>
-                          <Col span={8}>
-                            <Card
-                              title="Card title"
-                              bordered={false}
-                              className="card-styled"
-                            >
-                              <p>Card content</p>
-                              <p>Card content</p>
-                              <p>Card content</p>
-                            </Card>
-                          </Col>
-                          <Col span={8}>
-                            <Card
-                              title="Card title"
-                              bordered={false}
-                              className="card-styled"
-                            >
-                              <p>Card content</p>
-                              <p>Card content</p>
-                              <p>Card content</p>
-                            </Card>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </Col>
-                    <Col span={24} lg={{ span: 8 }}>
-                      <Card
-                        title="Card title"
-                        bordered={false}
-                        className="card-styled"
-                      >
-                        <List
-                          itemLayout="horizontal"
-                          dataSource={dataList}
-                          renderItem={(item, index) => (
-                            <List.Item>
-                              <List.Item.Meta
-                                avatar={
-                                  <Avatar
-                                    src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                                  />
-                                }
-                                title={
-                                  <a href="https://ant.design">{item.title}</a>
-                                }
-                                description={
-                                  <>
-                                    <Row>
-                                      <Col span={12}></Col>
-                                      <Col span={12}>
-                                        <ResponsiveContainer
-                                          width="100%"
-                                          height={100}
-                                        >
-                                          <AreaChart
-                                            width={200}
-                                            height={60}
-                                            data={dataTiny}
-                                            margin={{
-                                              top: 5,
-                                              right: 0,
-                                              left: 0,
-                                              bottom: 5,
-                                            }}
-                                          >
-                                            <defs>
-                                              <linearGradient
-                                                id="colorUv"
-                                                x1="0"
-                                                y1="0"
-                                                x2="0"
-                                                y2="1"
-                                              >
-                                                <stop
-                                                  offset="5%"
-                                                  stopColor="#129a74"
-                                                  stopOpacity={0.1}
-                                                />
-                                                <stop
-                                                  offset="95%"
-                                                  stopColor="#FFFFFF"
-                                                  stopOpacity={0.1}
-                                                />
-                                              </linearGradient>
-                                            </defs>
-                                            <Area
-                                              strokeWidth={2}
-                                              fillOpacity={1}
-                                              fill="url(#colorUv)"
-                                              type="linear"
-                                              dataKey="uv"
-                                              stroke="#8884d8"
-                                            />
-                                          </AreaChart>
-                                        </ResponsiveContainer>
-                                      </Col>
-                                    </Row>
-                                  </>
-                                }
+                              <AiFillEye fontSize={40} />
+                              <p>Ver casos</p>
+                            </Button>
+                          </Link>
+                          <Link
+                            className="custom-btn-dash"
+                            href={"/dashboard/adultos"}
+                          >
+                            <Button style={{ height: 60 }} className="vertical">
+                              <MdOutlineElderlyWoman fontSize={40} />
+                              <p>Ver Adultos</p>
+                            </Button>
+                          </Link>
+                          <Link
+                            className="custom-btn-dash"
+                            href={"/dashboard/casos/nuevocaso"}
+                          >
+                            <Button style={{ height: 60 }} className="vertical">
+                              <AiOutlinePlusCircle
+                                size={40}
+                                className="vertical-center"
                               />
-                            </List.Item>
-                          )}
-                        />
-                      </Card>
-                    </Col>
-                    <Col span={24} lg={{ span: 12 }}>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <BarChart
-                          data={data3}
-                          margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                          }}
+                              <p>Nuevo Caso</p>
+                            </Button>
+                          </Link>
+                          <Link
+                            className="custom-btn-dash"
+                            href={"/dashboard/casos"}
+                          >
+                            <Button style={{ height: 60 }} className="vertical">
+                              <AiFillEye fontSize={40} />
+                              <p>Acción 2</p>
+                            </Button>
+                          </Link>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={24}>
+                    <Row gutter={[24, 24]}>
+                      <Col span={24} lg={{ span: 8 }}>
+                        <Card
+                          title={
+                            <p style={{ fontSize: 14 }}>
+                              {"DENUNCIAS DE ESTE MES (" +
+                                meses[dayjs().month()] +
+                                ")"}
+                            </p>
+                          }
+                          bordered={false}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="name" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="pv" fill="#8884d8" />
-                          <Bar dataKey="uv" fill="#82ca9d" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </Col>
-                    <Col span={24} lg={{ span: 12 }}>
-                      <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart
-                          data={data4}
-                          margin={{
-                            top: 10,
-                            right: 30,
-                            left: 0,
-                            bottom: 0,
-                          }}
+                          <Row>
+                            <Col span={18} className="vertical-center">
+                              {dashboardData?.casos_x_mes_actual == 0 ? (
+                                <AiOutlineDash size={30} className="mx-3" />
+                              ) : (
+                                <BsFillArrowUpCircleFill
+                                  size={30}
+                                  className="mx-3"
+                                  color="#52c41a"
+                                />
+                              )}
+                              <span className="card-text">
+                                {dashboardData?.casos_x_mes_actual +
+                                  " DENUNCIAS"}
+                              </span>
+                            </Col>
+                            <Col span={6} className="vertical-center">
+                              <AiOutlinePlus color="gray" size={20} />
+                              <span
+                                className="card-text"
+                                style={{ color: "gray" }}
+                              >
+                                {`${dashboardData?.casos_x_dia} (${
+                                  dashboardData?.casos_x_mes_actual != 0
+                                    ? (dashboardData?.casos_x_dia! * 100) /
+                                      dashboardData?.casos_x_mes_actual!
+                                    : 0
+                                }%)`}
+                              </span>
+                            </Col>
+                          </Row>
+                        </Card>
+                      </Col>
+                      <Col span={24} lg={{ span: 8 }}>
+                        <Card
+                          title={
+                            <p style={{ fontSize: 14 }}>
+                              {"AUDIENCIAS SUSPENDIDAS DE ESTE MES (" +
+                                meses[dayjs().month()] +
+                                ")"}
+                            </p>
+                          }
+                          bordered={false}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="name" />
-                          <YAxis />
-                          <Tooltip />
-                          <Area
-                            type="monotone"
-                            dataKey="uv"
-                            stackId="1"
-                            stroke="#8884d8"
-                            fill="#8884d8"
+                          <Row>
+                            <Col span={22}>
+                              {dashboardData?.suspendidos_x_mes == 0 ? (
+                                <AiOutlineDash size={30} className="mx-3" />
+                              ) : (
+                                <BsFillArrowUpCircleFill
+                                  size={30}
+                                  className="mx-3"
+                                />
+                              )}
+                              <span className="card-text">
+                                {dashboardData?.suspendidos_x_mes +
+                                  " SUSPENCIONES"}
+                              </span>
+                            </Col>
+                          </Row>
+                        </Card>
+                      </Col>
+                      <Col span={24} lg={{ span: 8 }}>
+                        <Card
+                          title={
+                            "Total citaciones de este mes " +
+                            meses[dayjs().month()]
+                          }
+                          bordered={false}
+                        >
+                          <Row>
+                            <Col span={22}>
+                              {dashboardData?.citaciones_x_mes == 0 ? (
+                                <AiOutlineDash size={30} className="mx-3" />
+                              ) : (
+                                <BsFillArrowUpCircleFill
+                                  size={30}
+                                  className="mx-3"
+                                  color="#52c41a"
+                                />
+                              )}
+                              <span className="card-text">
+                                {dashboardData?.citaciones_x_mes +
+                                  " citaciones"}
+                              </span>
+                            </Col>
+                          </Row>
+                          <Col span={24}>
+                            <Tooltip
+                              title={`${
+                                dashboardData?.suspendidos_x_mes == 0
+                                  ? dashboardData.suspendidos_x_mes
+                                  : (dashboardData?.suspendidos_x_mes! * 100) /
+                                    dashboardData?.citaciones_x_mes!
+                              }% citaciones suspendidas / ${
+                                dashboardData?.citaciones_x_mes == 0
+                                  ? dashboardData.citaciones_x_mes
+                                  : 100 -
+                                    (dashboardData?.suspendidos_x_mes! * 100) /
+                                      dashboardData?.citaciones_x_mes!
+                              }% citaciones en proceso`}
+                            >
+                              <Progress
+                                status="normal"
+                                percent={
+                                  dashboardData?.suspendidos_x_mes == 0
+                                    ? dashboardData.suspendidos_x_mes
+                                    : (dashboardData?.suspendidos_x_mes! *
+                                        100) /
+                                      dashboardData?.citaciones_x_mes!
+                                }
+                                format={() => ""}
+                                success={{
+                                  percent:
+                                    dashboardData?.citaciones_x_mes == 0
+                                      ? dashboardData.citaciones_x_mes
+                                      : 100 -
+                                        (dashboardData?.suspendidos_x_mes! *
+                                          100) /
+                                          dashboardData?.citaciones_x_mes!,
+                                }}
+                              />{" "}
+                            </Tooltip>
+                          </Col>
+                        </Card>
+                      </Col>
+                      <Col span={24} xl={{ span: 6 }}>
+                        <Card
+                          title="NÚMERO DE CASOS POR GÉNERO"
+                          bordered={false}
+                        >
+                          <GraficoBarra
+                            data={dashboardData?.casos_x_genero.cantidad}
+                            keys={dashboardData?.casos_x_genero.genero}
+                            keyTitle="Genero"
+                          ></GraficoBarra>
+                        </Card>
+                      </Col>
+                      <Col span={24} xl={{ span: 10 }}>
+                        <Card
+                          title={
+                            "CANTIDAD DE CASOS POR MES - " + dayjs().year()
+                          }
+                          bordered={false}
+                        >
+                          <GraficoLinea
+                            data={dashboardData?.casos_x_mes.cantidad}
+                            keys={dashboardData?.casos_x_mes.mes.map(
+                              (value) => {
+                                return meses[value - 1];
+                              }
+                            )}
+                            keyTitle="Mes"
+                          ></GraficoLinea>
+                        </Card>
+                      </Col>
+                      <Col span={24} xl={{ span: 8 }}>
+                        <Card
+                          title="Últimos casos añadidos"
+                          extra={
+                            <Button
+                              style={{ height: 40 }}
+                              onClick={() => {
+                                router.push("/dashboard/casos/nuevocaso");
+                              }}
+                            >
+                              <AiOutlinePlusCircle
+                                size={24}
+                                className="vertical-center"
+                              />
+                            </Button>
+                          }
+                          bordered={false}
+                        >
+                          <List
+                            itemLayout="horizontal"
+                            dataSource={casos}
+                            renderItem={(item, index) => (
+                              <List.Item
+                                actions={[
+                                  <Tooltip title="Entrar al caso">
+                                    <Link
+                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                    >
+                                      <Button>
+                                        <GrView />
+                                      </Button>
+                                    </Link>
+                                  </Tooltip>,
+                                ]}
+                              >
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar
+                                      style={{ backgroundColor: "#9c8fd4" }}
+                                      icon={<FaBalanceScaleLeft />}
+                                    />
+                                  }
+                                  title={
+                                    <Link
+                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                    >
+                                      {item.nro_caso}
+                                    </Link>
+                                  }
+                                  description={
+                                    <>
+                                      <p>{`Caso que inició el ${item.fecha_registro}`}</p>
+                                      <p>Tipología: {item.tipologia}</p>
+                                    </>
+                                  }
+                                />
+                              </List.Item>
+                            )}
                           />
-                          <Area
-                            type="monotone"
-                            dataKey="pv"
-                            stackId="1"
-                            stroke="#82ca9d"
-                            fill="#82ca9d"
+                        </Card>
+                      </Col>
+                      <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
+                        <Card
+                          title={
+                            <>
+                              <Row className="py-4">
+                                <Col span={4}>
+                                  <MdCallReceived color="#1677ff" size={40} />
+                                </Col>
+                                <Col span={20}>
+                                  <span style={{ fontSize: 20, color: "gray" }}>
+                                    Total:{" "}
+                                    {dashboardData?.proximas_citaciones.length}
+                                  </span>
+                                  <p style={{ fontSize: 20 }}>
+                                    Citaciones para los próximos 7 días
+                                  </p>
+                                </Col>
+                              </Row>
+                            </>
+                          }
+                          bordered={false}
+                        >
+                          <List
+                            locale={{
+                              emptyText: (
+                                <>
+                                  <PiListMagnifyingGlassFill
+                                    width={50}
+                                    height={50}
+                                    fontSize={50}
+                                  />
+                                  <p>Sin citaciones cercanas...</p>
+                                </>
+                              ),
+                            }}
+                            dataSource={dashboardData?.proximas_citaciones}
+                            renderItem={(item, index) => (
+                              <List.Item
+                                actions={[
+                                  <Tooltip title="Entrar al caso">
+                                    <Link
+                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                    >
+                                      <Button>
+                                        <GrView />
+                                      </Button>
+                                    </Link>
+                                  </Tooltip>,
+                                ]}
+                              >
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar
+                                      style={{ backgroundColor: "#1677ff" }}
+                                      icon={<FaBalanceScaleLeft />}
+                                    />
+                                  }
+                                  title={
+                                    <Link
+                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                    >
+                                      <p>{`Para el ${item.fecha_citacion}`}</p>
+                                    </Link>
+                                  }
+                                />
+                              </List.Item>
+                            )}
                           />
-                          <Area
-                            type="monotone"
-                            dataKey="amt"
-                            stackId="1"
-                            stroke="#ffc658"
-                            fill="#ffc658"
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </Col>
-                  </Row>
-                </Content>
+                        </Card>
+                      </Col>
+                      <Col span={24} lg={{ span: 8 }}>
+                        <Card
+                          title="Cantidad de caso por tipologías"
+                          bordered={false}
+                        >
+                          <GraficoBarraHorizontal
+                            data={dashboardData?.conteo_tipologia.cantidad}
+                            keyTitle="Tipologia"
+                            keys={dashboardData?.conteo_tipologia.tipologia}
+                          ></GraficoBarraHorizontal>
+                        </Card>
+                      </Col>
+                      <Col span={8}>
+                        <Card
+                          title="Cantidad de acciones tomadas"
+                          bordered={false}
+                        >
+                          <GraficoPastel
+                            data={dashboardData?.acciones_x_casos.cantidad}
+                            keyTitle="name"
+                            keys={dashboardData?.acciones_x_casos.accion}
+                          ></GraficoPastel>
+                        </Card>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
               </Content>
             </Layout>
+            <FloatButton.BackTop />
           </Content>
         </Layout>
       </Layout>

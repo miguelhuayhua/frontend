@@ -164,16 +164,21 @@ const FormularioSeguimiento = () => {
             PLANTA BAJA JACHA UTA,(Alcaldía Municipal) para el día{" "}
             {dias2[fecha.day()]} {fecha.date()} de {meses[fecha.month()]} DE{" "}
             {fecha.year()} a horas {citacion.hora_citacion}, a objeto de tratar
-            la situación del/la Adulta/o Mayor{" "}
-            {adulto.nombre + " " + adulto.paterno + " " + adulto.materno} de{" "}
-            {adulto.edad} años de edad.
+            la situación{" "}
+            {adulto.sexo == "Masculino" ? "del Adulto" : "la Adulta "}Mayor{" "}
+            <Text style={styles.textBold}>
+              {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
+            </Text>{" "}
+            de {adulto.edad} años de edad.
           </Text>
 
           <Text style={styles.parraf}>
             El equipo multidisiciplinario de la Unidad de Adultos Mayores le
             informa que queda terminantemente PROHIBIDO EJERCER CUALQUIER TIPO
-            DE MALTRATATO CONTRA EL/LA ADULTA/O MAYOR, y se le hace conocer que
-            debe respetar sus derechos sin argüir desconocimiento.
+            DE MALTRATATO CONTRA{" "}
+            {adulto.sexo == "Masculino" ? "EL ADULTO" : "LA ADULTA"} MAYOR, y se
+            le hace conocer que debe respetar sus derechos sin argüir
+            desconocimiento.
           </Text>
           <Text style={{ ...styles.parraf, ...styles.textBold }}>
             DEBE PORTAR TODAS LAS MEDIDAS DE BIOSEGURIDAD AL MOMENTO DE ASITIR A
@@ -227,18 +232,34 @@ const FormularioSeguimiento = () => {
         </View>
         <View
           fixed
-          style={{ position: "absolute", bottom: 15, marginLeft: 35 }}
+          style={{
+            position: "absolute",
+            bottom: 15,
+            width: "100%",
+            marginLeft: 35,
+          }}
         >
           <Text
             fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+            style={{
+              ...styles.parraf,
+              ...styles.textCenter,
+              fontSize: 8,
+              width: "100%",
+            }}
           >
             Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
             Torres y Hernán Siles.
           </Text>
           <Text
             fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+            style={{
+              ...styles.parraf,
+              ...styles.textCenter,
+              fontSize: 8,
+              marginTop: 2,
+              width: "100%",
+            }}
           >
             {
               "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."

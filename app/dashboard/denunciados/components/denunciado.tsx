@@ -12,6 +12,7 @@ import {
   Skeleton,
   Slider,
   message,
+  notification,
 } from "antd";
 import { NextPage } from "next";
 
@@ -42,10 +43,26 @@ const DenunciadoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL + "/denunciado/update", {
-        ...props.denunciado,
-      })
-      .then((res) => {});
+      .post<{ status: number; message: string }>(
+        process.env.BACKEND_URL + "/denunciado/update",
+        {
+          ...props.denunciado,
+        }
+      )
+      .then((res) => {
+        if (res.data.status == 1) {
+          notification.success({ message: res.data.message });
+          props.setOpen(false);
+          axios
+            .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
+            .then((res) => {
+              props.setDenunciados(res.data);
+              props.setDisplayDenunciados(res.data);
+            });
+        } else {
+          notification.error({ message: res.data.message });
+        }
+      });
   };
   const handleHideModal = () => {
     props.setOpen(false);
@@ -145,7 +162,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
                     </Form.Item>
                   </Col>
                   <Col span={24} md={{ span: 8 }}>
-                    <Form.Item label="Nombres: ">
+                    <Form.Item label="Apellido Paterno: ">
                       <Input
                         name="nombre"
                         value={props.denunciado.paterno}
@@ -159,7 +176,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
                     </Form.Item>
                   </Col>
                   <Col span={24} md={{ span: 8 }}>
-                    <Form.Item label="Nombres: ">
+                    <Form.Item label="Apellido Materno: ">
                       <Input
                         name="nombre"
                         value={props.denunciado.materno}

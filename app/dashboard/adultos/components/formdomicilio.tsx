@@ -34,9 +34,6 @@ const FormDomicilio: NextPage<Props> = (props) => {
   //cambio del estado de domicilio
   return (
     <>
-      <Col span={24}>
-        <hr />
-      </Col>
       <Col span={24} style={{ marginBottom: 20 }}>
         <HomeFilled
           style={{
@@ -183,12 +180,12 @@ const FormDomicilio: NextPage<Props> = (props) => {
                     ...props.domicilio,
                     tipo_domicilio: "Propio",
                     distrito: 1,
-                    zona:"",
-                    calle_av:"",
+                    zona: "",
+                    calle_av: "",
                     nro_vivienda: null,
                     area: "urbano",
-                    otra_area:"",
-                    otro_tipo:"",
+                    otra_area: "",
+                    otro_tipo: "",
                     actual: 0,
                   });
 

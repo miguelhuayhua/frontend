@@ -27,6 +27,7 @@ import {
   FileExcelFilled,
   FilePdfFilled,
 } from "@ant-design/icons";
+import { AiOutlineReload } from "react-icons/ai";
 import { SlLayers } from "react-icons/sl";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
@@ -212,13 +213,22 @@ const Informacion = () => {
   };
   return (
     <>
+      <Button
+        type="primary"
+        style={{ position: "absolute", top: 20, right: 20 }}
+        onClick={()=>{
+          
+        }}
+      >
+        <AiOutlineReload fontSize={20} />
+      </Button>
       <h5 className="mt-4">
         {'Filtros para "Casos"'} <FilterOutlined />
       </h5>
       <small style={{ color: "#999" }}>
         Cada filtro realiza búsquedas por separado...
       </small>
-      <Form layout={"horizontal"} style={{ marginTop: 10}}>
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row>
           <Col span={24} md={{ span: 12 }} xl={{ span: 5 }}>
             <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">

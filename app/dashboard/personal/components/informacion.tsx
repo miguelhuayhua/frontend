@@ -27,13 +27,8 @@ import {
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
-  LoadingOutlined,
-  AppstoreOutlined,
-  BarsOutlined,
+  LoadingOutlined
 } from "@ant-design/icons";
-
-import dayjs from "dayjs";
-import isBeetwen from "dayjs/plugin/isBetween";
 
 import { useRouter } from "next/navigation";
 import { Persona, dataPersona } from "../agregar/data";

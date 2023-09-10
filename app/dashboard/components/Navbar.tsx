@@ -94,25 +94,19 @@ const Navbar = () => {
   return (
     <Affix>
       <Row>
-        <Col
-          span={24}
-          style={{
-            borderRadius: 10,
-          }}
-        >
+        <Col span={24}>
           <Header
             style={{
               position: "sticky",
               top: 0,
-              margin: "4px auto",
-
               zIndex: 1000,
-              width: "99.6%",
               display: "flex",
               alignItems: "center",
-              borderRadius: 10,
               padding: "35px 0",
+              backgroundColor: "white",
+              boxShadow: "0 5px 5px rgba(0,0,0,0.05)",
             }}
+            role="navigation"
           >
             <div
               className="fecha-container"
@@ -132,7 +126,11 @@ const Navbar = () => {
             <div style={{ position: "absolute", right: 180 }}>
               <Dropdown placement="bottom" menu={{ items }}>
                 <Badge count={99} overflowCount={10} style={{ border: "none" }}>
-                  <Avatar icon={<BellOutlined />} size="large" />
+                  <Avatar
+                    style={{ backgroundColor: "transparent", color: "gray" }}
+                    icon={<BellOutlined />}
+                    size="large"
+                  />
                 </Badge>
               </Dropdown>
             </div>
@@ -160,7 +158,6 @@ const Navbar = () => {
                           </Col>
                           <Col span={16}>
                             <b> {usuario.usuario}</b>
-
                             <p
                               style={{ color: "graytext" }}
                             >{`${persona.nombres} ${persona.paterno} ${persona.materno}`}</p>
@@ -222,8 +219,8 @@ const Navbar = () => {
                     height: "100%",
                     margin: 0,
                     marginRight: 10,
-                    color: "white",
-                    borderRight: "1px solid #666",
+                    color: "gray",
+                    borderRight: "1px solid #AAA",
                   }}
                 >
                   {usuario.usuario}
@@ -235,6 +232,7 @@ const Navbar = () => {
                     width: 45,
                     height: 45,
                     fontSize: 25,
+                    margin: "0 10px",
                   }}
                   src={process.env.BACKEND_URL + usuario.fotografia}
                   icon={<UserOutlined />}

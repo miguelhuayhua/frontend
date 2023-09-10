@@ -1,5 +1,5 @@
 "use client";
-import { Layout } from "antd";
+import { Col, Layout, Row } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
 import { useRouter } from "next/navigation";
@@ -23,10 +23,11 @@ export default function Profile() {
           <Content>
             <Navbar></Navbar>
             <Layout>
-              <Content
-                className="site-layout"
-                style={{ padding: "0 20px" }}
-              ></Content>
+              <Content className="site-layout" style={{ padding: "0 20px" }}>
+                <Row>
+                  <Col>jejeje</Col>
+                </Row>
+              </Content>
             </Layout>
           </Content>
         </Layout>

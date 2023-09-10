@@ -157,6 +157,7 @@ export interface Audiencia {
     observacion: string;
     ult_modificacion: string;
     estado: number;
+    
     id_citacion: string;
 }
 

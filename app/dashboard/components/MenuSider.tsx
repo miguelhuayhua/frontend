@@ -166,15 +166,18 @@ const MenuSider: NextPage<Props> = (props) => {
             width: 200,
             position: "sticky",
             left: 0,
+            backgroundColor: "#1a2d44",
+            zIndex: 100,
+            boxShadow: "0 0 10px #1a2d44",
           }}
         >
-          <div className="demo-logo-vertical" />
           <Menu
             theme="dark"
             selectedKeys={[props.defaultSelectedKey]}
             mode="inline"
             defaultOpenKeys={props.defaultOpenKeys}
             items={items}
+            style={{ backgroundColor: "#1a2d44" }}
           />
         </Sider>
       </Affix>

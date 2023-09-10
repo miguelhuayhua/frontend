@@ -318,6 +318,7 @@ const FormAdulto: NextPage<Props> = (props) => {
           border: "1px solid #CCC",
           padding: 10,
           borderRadius: 10,
+          margin: "15px 0",
         }}
       >
         <Row>
