@@ -37,6 +37,8 @@ import isBeetwen from "dayjs/plugin/isBetween";
 import { Adulto, Domicilio, dataAdulto, dataDomicilio } from "../data";
 import { dias, meses } from "../../casos/nuevocaso/data";
 import { Hijo } from "../../hijos/data";
+import Link from "next/link";
+import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -96,6 +98,7 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
+      width: 150,
       render: (_, adulto) => (
         <div
           key={adulto.id_adulto + "d"}
@@ -125,54 +128,132 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios
-      .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
-      .then((res) => {
-        setAdultos(res.data);
-        setDisplayAdultos(res.data);
-      });
+    axios.get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all").then((res) => {
+      setAdultos(res.data);
+      setDisplayAdultos(res.data);
+    });
   }, []);
 
-  const { RangePicker } = DatePicker;
-
-  //cambios en los filtros
-  const handleFiltroAdulto = (ev: any) => {
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        return adulto.id_adulto.includes(ev.target.value);
-      })
-    );
-  };
-  const handleFiltroAccion = (ev: any) => {
-    setDisplayAdultos(adultos.filter((adulto) => {}));
-  };
-
-  const handleFiltroRange = (ev: any) => {
-    let [inicio, final] = ev;
-    let fechaInicio = dayjs(inicio.$d);
-    let fechaFinal = dayjs(final.$d);
-    setDisplayAdultos(
-      adultos.filter((adulto) => {
-        dayjs(adulto.ult_modificacion).isBetween(fechaInicio, fechaFinal);
-        return dayjs(adulto.ult_modificacion).isBetween(
-          fechaInicio,
-          fechaFinal
-        );
-      })
-    );
-  };
   return (
     <>
-      <h5 className="mt-4">
-        {'Filtros para "Adultos"'} <FilterOutlined />
-      </h5>
-      <small style={{ color: "#999" }}>
-        Cada filtro realiza búsquedas por separado...
-      </small>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row>
+      <Row>
+        <Col span={24} lg={{ span: 10 }}>
+          <h5 className="mt-4">
+            {' Filtros para "Adultos"'} <FilterOutlined />
+          </h5>
+          <small style={{ color: "#999" }}>
+            Cada filtro realiza búsquedas por separado...
+          </small>
+        </Col>
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/adulto/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Adultos-" +
+                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                        ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Adultos-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
+                .then((res) => {
+                  setAdultos(res.data);
+                  setDisplayAdultos(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
+        </Col>
+      </Row>
+
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
+        <Row gutter={[12, 0]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="ID del adulto: ">
+            <Form.Item label="ID del adulto: ">
               <Input
                 placeholder="Introduzca el ID del adulto"
                 onChange={(value) => {
@@ -186,7 +267,7 @@ const Informacion = () => {
             </Form.Item>
           </Col>
           <Col span={24} lg={{ span: 8 }}>
-            <Form.Item label="Nombres o Apellidos: " style={{ marginLeft: 10 }}>
+            <Form.Item label="Nombres o Apellidos: ">
               <Input
                 placeholder="Buscar por nombres o apellidos"
                 onChange={(value) => {

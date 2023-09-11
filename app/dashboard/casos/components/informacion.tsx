@@ -10,6 +10,7 @@ import {
   Row,
   Select,
   Space,
+  Spin,
   Switch,
   Tag,
   Tooltip,
@@ -26,8 +27,12 @@ import {
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
+  LoadingOutlined,
+  AppstoreOutlined,
+  BarsOutlined,
 } from "@ant-design/icons";
-import { AiOutlineReload } from "react-icons/ai";
+
+import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
 import { SlLayers } from "react-icons/sl";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
@@ -41,6 +46,7 @@ import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Hijo } from "../../hijos/data";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -213,25 +219,122 @@ const Informacion = () => {
   };
   return (
     <>
-      <Button
-        type="primary"
-        style={{ position: "absolute", top: 20, right: 20 }}
-        onClick={()=>{
-          
-        }}
-      >
-        <AiOutlineReload fontSize={20} />
-      </Button>
-      <h5 className="mt-4">
-        {'Filtros para "Casos"'} <FilterOutlined />
-      </h5>
-      <small style={{ color: "#999" }}>
-        Cada filtro realiza búsquedas por separado...
-      </small>
+      <Row>
+        <Col span={24} lg={{ span: 10 }}>
+          <h5 className="mt-4">
+            {'Filtros para "Casos"'} <FilterOutlined />
+          </h5>
+          <small style={{ color: "#999" }}>
+            Cada filtro realiza búsquedas por separado...
+          </small>
+        </Col>
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/caso/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Casos-" + dayjs().format("DD-MM-YYYY_HH:mm:ss") + ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Casos-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
+                .then((res) => {
+                  setCasos(res.data);
+                  setDisplayCasos(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
+        </Col>
+      </Row>
+
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
-        <Row>
-          <Col span={24} md={{ span: 12 }} xl={{ span: 5 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
+        <Row gutter={[12, 0]}>
+          <Col span={24} lg={{ span: 12 }} xxl={{ span: 5 }}>
+            <Form.Item label="Nro. de Caso: ">
               <Input
                 placeholder="Introduzca el número de caso..."
                 value={filtroCaso}
@@ -239,8 +342,8 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} md={{ span: 12 }} xl={{ span: 7 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Adulto implicado: ">
+          <Col span={24} lg={{ span: 12 }} xxl={{ span: 7 }}>
+            <Form.Item label="Adulto implicado: ">
               <Input
                 placeholder="Adulto Implicado"
                 value={filtroAdulto}
@@ -274,11 +377,8 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }} xl={{ span: 5 }}>
-            <Form.Item
-              label="Tipo de acción realizada: "
-              style={{ marginLeft: 10 }}
-            >
+          <Col span={24} lg={{ span: 12 }} xxl={{ span: 5 }}>
+            <Form.Item label="Tipo de acción realizada: ">
               <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
                 <Select.Option value="Apertura">Apertura de Caso</Select.Option>
                 <Select.Option value="Orientacion">Orientación</Select.Option>
@@ -287,13 +387,9 @@ const Informacion = () => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }} xl={{ span: 7 }}>
-            <Form.Item
-              style={{ marginLeft: 10, width: "100%" }}
-              label="Filtrar por rango de fechas:"
-            >
+          <Col span={24} lg={{ span: 12 }} xxl={{ span: 7 }}>
+            <Form.Item label="Filtrar por rango de fechas:">
               <RangePicker
-                style={{ width: "100%" }}
                 locale={{
                   ...locale,
                   lang: {
@@ -383,77 +479,6 @@ const Informacion = () => {
         setCasos={setCasos}
         setDisplayCasos={setDisplayCasos}
       ></CasoModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              axios
-                .get(process.env.BACKEND_URL + "/caso/report", {
-                  responseType: "blob",
-                })
-                .then((res) => {
-                  const url = URL.createObjectURL(res.data);
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.setAttribute(
-                    "download",
-                    "Casos-" + dayjs().format("DD-MM-YYYY_HH:mm:ss") + ".xlsx"
-                  );
-                  link.click();
-                  link.remove();
-                  notification.success({
-                    message: (
-                      <p style={{ fontSize: 14 }}>
-                        {"¡Excel: Casos-" +
-                          dayjs().format("DD-MM-YYYY_HH:mm:ss") +
-                          ".xlsx, generado con éxito!"}
-                      </p>
-                    ),
-                  });
-                });
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

@@ -2,13 +2,10 @@
 import {
   Button,
   Col,
-  DatePicker,
   Empty,
-  FloatButton,
   Form,
   Input,
   Row,
-  Segmented,
   Space,
   Spin,
   Switch,
@@ -17,19 +14,16 @@ import {
   message,
   notification,
 } from "antd";
-import { AiOutlineUserAdd } from "react-icons/ai";
-import { createContext, useEffect, useRef, useState } from "react";
+import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
   FilterOutlined,
-  FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
-  AppstoreOutlined,
-  BarsOutlined,
 } from "@ant-design/icons";
 
 import dayjs from "dayjs";
@@ -40,6 +34,7 @@ import { useRouter } from "next/navigation";
 export const DataContext = createContext({});
 //ROUTING
 import "./estilos.scss";
+import Link from "next/link";
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
@@ -49,7 +44,6 @@ const Informacion = () => {
   const [open, setOpen] = useState(false);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [displayUsuarios, setDisplayUsuarios] = useState<Usuario[]>([]);
-  const router = useRouter();
   const columns: ColumnsType<Usuario> = [
     {
       title: "ID Usuario",
@@ -57,6 +51,7 @@ const Informacion = () => {
       key: "id_usuario",
       className: "text-center",
       fixed: "left",
+      width: 120,
     },
     {
       title: "Usuario",
@@ -89,6 +84,7 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
+      width: 150,
       render: (_, usuario) => (
         <div
           key={usuario.id_usuario + "d"}
@@ -127,20 +123,10 @@ const Informacion = () => {
       });
   }, []);
 
-
-  //cambios en los filtros
-  const handleFiltroUsuario = (ev: any) => {
-    setDisplayUsuarios(
-      usuarios.filter((usuario) => {
-        return usuario.id_usuario.includes(ev.target.value);
-      })
-    );
-  };
-
   return (
     <>
       <Row>
-        <Col span={8}>
+        <Col span={24} lg={{ span: 10 }}>
           <h5 className="mt-4">
             {' Filtros para "Usuarios"'} <FilterOutlined />
           </h5>
@@ -148,25 +134,128 @@ const Informacion = () => {
             Cada filtro realiza búsquedas por separado...
           </small>
         </Col>
-        <Col span={8}>
-          <div className="accionesUsuario">
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Link
+            href="/dashboard/usuario/agregar"
+            style={{ textDecoration: "none" }}
+          >
             <Button
+              className="center info-button"
               icon={<AiOutlineUserAdd />}
               title="Crear Usuario"
-              className="accionUsuarioItem"
-              onClick={() => {
-                router.replace("/dashboard/usuarios/agregar");
-              }}
+              style={{ height: 50 }}
             >
               Crear Usuario
             </Button>
-          </div>
+          </Link>
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/usuario/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Usuarios-" +
+                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                        ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Usuarios-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
+                .then((res) => {
+                  setUsuarios(res.data);
+                  setDisplayUsuarios(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
         </Col>
       </Row>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row gutter={[24, 24]}>
+
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
+        <Row gutter={[12, 0]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="ID de usuario: ">
+            <Form.Item label="ID de usuario: ">
               <Input
                 onChange={(ev) => {
                   setDisplayUsuarios(
@@ -182,7 +271,7 @@ const Informacion = () => {
             </Form.Item>
           </Col>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nombre de Usuario">
+            <Form.Item label="Nombre de Usuario">
               <Input
                 onChange={(ev) => {
                   setDisplayUsuarios(
@@ -199,7 +288,7 @@ const Informacion = () => {
           </Col>
 
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="ID de persona: ">
+            <Form.Item label="ID de persona: ">
               <Input
                 onChange={(ev) => {
                   setDisplayUsuarios(
@@ -218,7 +307,7 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
-        scroll={{ x: 800, y: 500 }}
+        scroll={{ x: 800, y: 600 }}
         rowKey={(usuario) => usuario.id_usuario + "T"}
         key="table"
         pagination={{ pageSize: 20, position: ["bottomCenter"] }}
@@ -287,70 +376,6 @@ const Informacion = () => {
         open={open}
         setOpen={setOpen}
       ></UsuarioModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios
-                .get(process.env.BACKEND_URL + "/caso/report")
-                .then((res) => {});
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

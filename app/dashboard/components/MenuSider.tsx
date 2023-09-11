@@ -59,29 +59,7 @@ const MenuSider: NextPage<Props> = (props) => {
             router.push("/dashboard/casos");
           },
         },
-        {
-          label: "Personas Adultas",
-          key: "caso1.3",
-          icon: <MdElderly></MdElderly>,
-          children: [
-            {
-              label: "Ver Adultos",
-              key: "caso1.3.1",
-              icon: <EyeOutlined />,
-              onClick: () => {
-                router.push("/dashboard/adultos");
-              },
-            },
-            {
-              label: "Ver Hijos",
-              key: "caso1.3.2",
-              icon: <EyeOutlined />,
-              onClick: () => {
-                router.push("/dashboard/hijos");
-              },
-            },
-          ],
-        },
+
         {
           label: "Ver Denunciados",
           key: "caso1.4",
@@ -90,16 +68,48 @@ const MenuSider: NextPage<Props> = (props) => {
             router.push("/dashboard/denunciados");
           },
         },
+        {
+          key: "caso1.5",
+          label: "Reportes",
+          icon: <TbReportAnalytics />,
+          onClick: () => {
+            router.push("/dashboard/caso/reportes");
+          },
+        },
       ],
     },
     {
-      key: "reportes",
-      label: "Reportes",
-      icon: <TbReportAnalytics />,
-      onClick: () => {
-        router.push("/dashboard/reportes");
-      },
+      label: "Personas Adultas",
+      key: "adultos1",
+      icon: <MdElderly></MdElderly>,
+      children: [
+        {
+          label: "Ver Adultos",
+          key: "adultos1.1",
+          icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/adultos");
+          },
+        },
+        {
+          label: "Ver Hijos",
+          key: "adultos1.2",
+          icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/hijos");
+          },
+        },
+        {
+          key: "adultos1.3",
+          label: "Reportes",
+          icon: <TbReportAnalytics />,
+          onClick: () => {
+            router.push("/dashboard/adultos/reportes");
+          },
+        },
+      ],
     },
+
     {
       key: "personal",
       label: "Personal",
@@ -122,27 +132,43 @@ const MenuSider: NextPage<Props> = (props) => {
           },
         },
         {
-          label: "Usuarios",
-          key: "usuarios",
-          icon: <UserOutlined />,
-          children: [
-            {
-              label: "Registrar Usuario",
-              key: "usuario1.1",
-              icon: <UserAddOutlined />,
-              onClick: () => {
-                router.push("/dashboard/usuarios/agregar");
-              },
-            },
-            {
-              label: "Ver Usuarios",
-              key: "usuario1.2",
-              icon: <EyeOutlined />,
-              onClick: () => {
-                router.push("/dashboard/usuarios");
-              },
-            },
-          ],
+          key: "personal1.3",
+          label: "Reportes",
+          icon: <TbReportAnalytics />,
+          onClick: () => {
+            router.push("/dashboard/personal/reportes");
+          },
+        },
+      ],
+    },
+    {
+      label: "Usuarios",
+      key: "usuario1",
+      icon: <UserOutlined />,
+      children: [
+        {
+          label: "Registrar Usuario",
+          key: "usuario1.1",
+          icon: <UserAddOutlined />,
+          onClick: () => {
+            router.push("/dashboard/usuarios/agregar");
+          },
+        },
+        {
+          label: "Ver Usuarios",
+          key: "usuario1.2",
+          icon: <EyeOutlined />,
+          onClick: () => {
+            router.push("/dashboard/usuarios");
+          },
+        },
+        {
+          key: "usuario1.3",
+          label: "Reportes",
+          icon: <TbReportAnalytics />,
+          onClick: () => {
+            router.push("/dashboard/reportes");
+          },
         },
       ],
     },

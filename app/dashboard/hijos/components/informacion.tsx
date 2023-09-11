@@ -32,10 +32,11 @@ import {
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { dias, meses } from "../../casos/nuevocaso/data";
 import { Hijo, dataHijo } from "../data";
 import HijoModal from "./hijo";
 import { Adulto, dataAdulto } from "../../adultos/data";
+import { AiOutlineReload } from "react-icons/ai";
+import { get } from "http";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -53,6 +54,7 @@ const Informacion = () => {
       key: "id_hijo",
       className: "text-center",
       fixed: "left",
+      width: 120,
     },
     {
       title: "Nombres y Apellidos",
@@ -69,6 +71,7 @@ const Informacion = () => {
       key: "estado",
       dataIndex: "estado",
       className: "text-center",
+      width: 120,
       render: (_, hijo) =>
         hijo.estado == 1 ? (
           <Tag key={_} color="green">
@@ -85,6 +88,7 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
+      width: 150,
       render: (_, hijo) => (
         <div
           key={hijo.id_hijo + "d"}
@@ -115,70 +119,158 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   useEffect(() => {
-    axios.get<Hijo[]>(process.env.BACKEND_URL+"/hijo/all").then((res) => {
+    axios.get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all").then((res) => {
       setHijos(res.data);
       setDisplayHijos(res.data);
     });
   }, []);
 
-  const { RangePicker } = DatePicker;
-
-  //cambios en los filtros
-  const handleFiltrohijo = (ev: any) => {
-    setDisplayHijos(
-      hijos.filter((hijo) => {
-        return hijo.id_hijo.includes(ev.target.value);
-      })
-    );
-  };
-  const handleFiltroAccion = (ev: any) => {
-    setDisplayHijos(hijos.filter((hijo) => {}));
-  };
-
-  const handleFiltroRange = (ev: any) => {
-    let [inicio, final] = ev;
-    let fechaInicio = dayjs(inicio.$d);
-    let fechaFinal = dayjs(final.$d);
-    setDisplayHijos(
-      hijos.filter((hijo) => {
-        dayjs(hijo.ult_modificacion).isBetween(fechaInicio, fechaFinal);
-        return dayjs(hijo.ult_modificacion).isBetween(fechaInicio, fechaFinal);
-      })
-    );
-  };
   return (
     <>
-      <h5 className="mt-4">
-        {' Filtros para "Hijos"'} <FilterOutlined />
-      </h5>
-      <small style={{ color: "#999" }}>
-        Cada filtro realiza búsquedas por separado...
-      </small>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row>
+      <Row>
+        <Col span={24} lg={{ span: 10 }}>
+          <h5 className="mt-4">
+            {' Filtros para "Hijos"'} <FilterOutlined />
+          </h5>
+          <small style={{ color: "#999" }}>
+            Cada filtro realiza búsquedas por separado...
+          </small>
+        </Col>
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/hijo/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Hijos-" + dayjs().format("DD-MM-YYYY_HH:mm:ss") + ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Hijos-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all")
+                .then((res) => {
+                  setHijos(res.data);
+                  setDisplayHijos(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
+        </Col>
+      </Row>
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
+        <Row gutter={[12, 0]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-              <Input placeholder="Introduzca el ID del hijo" />
+            <Form.Item label="ID Hijo: ">
+              <Input
+                placeholder="Introduzca el ID del hijo"
+                onChange={(ev) => {
+                  setDisplayHijos(
+                    hijos.filter((value) => {
+                      return value.id_hijo.includes(
+                        ev.target.value.toUpperCase()
+                      );
+                    })
+                  );
+                }}
+              />
             </Form.Item>
           </Col>
 
           <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              style={{ marginLeft: 10, width: "100%" }}
-              label="Filtrar por rango de fechas:"
-            >
-              <RangePicker
-                style={{ width: "100%" }}
-                locale={{
-                  ...locale,
-                  lang: {
-                    ...locale.lang,
-                    shortWeekDays: dias,
-                    shortMonths: meses,
-                  },
+            <Form.Item label="Filtrar por nombres y apellidos:">
+              <Input
+                placeholder="Introduzca el nombre del hijo..."
+                onChange={(ev) => {
+                  setDisplayHijos(
+                    hijos.filter((value) => {
+                      return value.nombres_apellidos
+                        .toLowerCase()
+                        .includes(ev.target.value.toLowerCase());
+                    })
+                  );
                 }}
-                onChange={handleFiltroRange}
-              />
+              ></Input>
             </Form.Item>
           </Col>
         </Row>
@@ -204,13 +296,13 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"/hijo/estado", {
+                    .post(process.env.BACKEND_URL + "/hijo/estado", {
                       id_hijo: value.id_hijo,
                     })
                     .then((res) => {
                       message.success("¡Caso cambiado con éxito!");
                       axios
-                        .get<Hijo[]>(process.env.BACKEND_URL+"/hijo/all")
+                        .get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all")
                         .then((res) => {
                           setHijos(res.data);
                           setDisplayHijos(res.data);
@@ -219,14 +311,14 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post(process.env.BACKEND_URL+"/hijo/get", {
+                    .post(process.env.BACKEND_URL + "/hijo/get", {
                       id_hijo: value.id_hijo,
                     })
                     .then((res) => {
                       setHijo(res.data);
                       axios
                         .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                          process.env.BACKEND_URL+"/adulto/get",
+                          process.env.BACKEND_URL + "/adulto/get",
                           {
                             id_adulto: value.id_adulto,
                           }
@@ -243,14 +335,14 @@ const Informacion = () => {
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post(process.env.BACKEND_URL+"/hijo/get", {
+                  .post(process.env.BACKEND_URL + "/hijo/get", {
                     id_hijo: value.id_hijo,
                   })
                   .then((res) => {
                     setHijo(res.data);
                     axios
                       .post<{ adulto: Adulto; hijos: Hijo[] }>(
-                        process.env.BACKEND_URL+"/adulto/get",
+                        process.env.BACKEND_URL + "/adulto/get",
                         {
                           id_adulto: value.id_adulto,
                         }
@@ -279,68 +371,6 @@ const Informacion = () => {
         open={open}
         setOpen={setOpen}
       ></HijoModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios.get(process.env.BACKEND_URL+"/caso/report").then((res) => {});
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

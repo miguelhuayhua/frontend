@@ -269,15 +269,6 @@ const CasoModal: NextPage<Props> = (props) => {
                 <AiFillFilePdf style={{ fontSize: 25 }} />
                 Generar Formulario
               </Button>
-              <Button
-                onClick={() => {
-                  setOpen2(true);
-                  props.setOpen(false);
-                }}
-                type="primary"
-              >
-                Realizar seguimiento
-              </Button>
             </div>
           </Col>
           <Col

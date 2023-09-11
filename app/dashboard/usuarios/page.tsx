@@ -13,7 +13,7 @@ const Usuarios = () => {
         <Layout hasSider>
           <MenuSider
             defaultSelectedKey="usuario1.2"
-            defaultOpenKeys={["personal", "usuarios"]}
+            defaultOpenKeys={["usuario1"]}
           ></MenuSider>
           <Content>
             <Navbar></Navbar>

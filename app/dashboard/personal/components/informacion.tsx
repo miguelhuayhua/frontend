@@ -17,7 +17,7 @@ import {
   message,
   notification,
 } from "antd";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
 import { createContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
@@ -27,12 +27,14 @@ import {
   FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
-  LoadingOutlined
+  LoadingOutlined,
 } from "@ant-design/icons";
 
 import { useRouter } from "next/navigation";
 import { Persona, dataPersona } from "../agregar/data";
 import PersonaModal from "./personal";
+import dayjs from "dayjs";
+import Link from "next/link";
 const Informacion = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -49,13 +51,14 @@ const Informacion = () => {
       key: "id_persona",
       className: "text-center",
       fixed: "left",
+      width: 120,
     },
     {
       title: "Persona",
 
       key: "Persona",
       render: (_, persona) => {
-        return persona.nombres;
+        return `${persona.profesion} ${persona.nombres} ${persona.paterno} ${persona.materno}`;
       },
       className: "text-center",
     },
@@ -79,6 +82,7 @@ const Informacion = () => {
     {
       title: "Acción",
       key: "accion",
+      width: 150,
       className: "text-center",
       fixed: "right",
       render: (_, persona) => (
@@ -122,58 +126,136 @@ const Informacion = () => {
   return (
     <>
       <Row>
-        <Col span={8}>
+        <Col span={24} lg={{ span: 10 }}>
           <h5 className="mt-4">
-            {' Filtros para "Personas"'} <FilterOutlined />
+            {' Filtros para "Personal"'} <FilterOutlined />
           </h5>
           <small style={{ color: "#999" }}>
             Cada filtro realiza búsquedas por separado...
           </small>
         </Col>
-        <Col span={8}>
-          <div className="accionesPersona">
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Link
+            href="/dashboard/personal/agregar"
+            style={{ textDecoration: "none" }}
+          >
             <Button
+              className="center info-button"
               icon={<AiOutlineUserAdd />}
-              title="Crear Persona"
-              className="accionPersonaItem"
-              onClick={() => {
-                router.replace("/dashboard/personas/agregar");
-              }}
+              title="Agregar Personal"
+              style={{ height: 50 }}
             >
-              Crear Persona
+              Agregar Personal
             </Button>
-          </div>
+          </Link>
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/persona/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Personal-" +
+                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                        ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Personal-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
+                .then((res) => {
+                  setPersonas(res.data);
+                  setDisplayPersonas(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
         </Col>
       </Row>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row gutter={[24, 24]}>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="ID de persona: ">
-              <Input
-                onChange={(ev) => {
-                  setDisplayPersonas(
-                    personas.filter((persona) => {
-                      return persona.id_persona
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
-                }}
-                placeholder="Introduzca el ID del persona"
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nombre de Persona">
-              <Input
-                onChange={(ev) => {}}
-                placeholder="Introduzca el ID del persona"
-              />
-            </Form.Item>
-          </Col>
 
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
+        <Row gutter={[12, 0]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="ID de persona: ">
+            <Form.Item label="ID de persona: ">
               <Input
                 onChange={(ev) => {
                   setDisplayPersonas(
@@ -184,7 +266,23 @@ const Informacion = () => {
                     })
                   );
                 }}
-                placeholder="Introduzca el ID de la persona"
+                placeholder="Introduzca el ID del persona"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+            <Form.Item label="Nombre de Persona">
+              <Input
+                onChange={(ev) => {
+                  setDisplayPersonas(
+                    personas.filter((value) => {
+                      return `${value.nombres} ${value.paterno} ${value.materno}`
+                        .toLocaleLowerCase()
+                        .includes(ev.target.value.toLocaleLowerCase());
+                    })
+                  );
+                }}
+                placeholder="Introduzca el ID del persona"
               />
             </Form.Item>
           </Col>
@@ -261,70 +359,6 @@ const Informacion = () => {
         open={open}
         setOpen={setOpen}
       ></PersonaModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios
-                .get(process.env.BACKEND_URL + "/caso/report")
-                .then((res) => {});
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

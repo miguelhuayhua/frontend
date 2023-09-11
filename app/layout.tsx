@@ -1,8 +1,5 @@
 import "./globals.scss";
-import { Inter } from "next/font/google";
 import { NextAuthProvider } from "./NextAuthProvider";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Gamea",
@@ -16,7 +13,7 @@ interface Props {
 const RootLayout: React.FC<Props> = async ({ children }) => {
   return (
     <html lang="es">
-      <body className={inter.className}>
+      <body>
         <NextAuthProvider>{children}</NextAuthProvider>
       </body>
     </html>

@@ -33,8 +33,8 @@ export default function NuevoCaso() {
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultOpenKeys={["caso1", "caso1.3"]}
-            defaultSelectedKey="caso1.3.2"
+            defaultOpenKeys={["adultos1"]}
+            defaultSelectedKey="adultos1.2"
           ></MenuSider>
           <Content>
             <Navbar></Navbar>

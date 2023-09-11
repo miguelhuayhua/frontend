@@ -16,9 +16,7 @@ import {
   message,
   notification,
 } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
-
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
@@ -32,10 +30,11 @@ import {
 
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
-import { dias, meses } from "../../casos/nuevocaso/data";
 import { Denunciado, dataDenunciado } from "../data";
 import DenunciadoModal from "./denunciado";
 import { Adulto, dataAdulto } from "../../adultos/data";
+import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
+import Link from "next/link";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -53,10 +52,10 @@ const Informacion = () => {
       key: "id_denunciado",
       className: "text-center",
       fixed: "left",
+      width: 130,
     },
     {
       title: "Nombres y Apellidos",
-
       key: "accion_realizada",
       render: (_, Denunciado) => {
         return `${Denunciado.nombres} ${Denunciado.paterno} ${Denunciado.materno}`;
@@ -67,6 +66,7 @@ const Informacion = () => {
       title: "Estado",
       key: "estado",
       dataIndex: "estado",
+      width: 120,
       className: "text-center",
       render: (_, Denunciado) =>
         Denunciado.estado == 1 ? (
@@ -84,6 +84,7 @@ const Informacion = () => {
       key: "accion",
       className: "text-center",
       fixed: "right",
+      width: 160,
       render: (_, denunciado) => (
         <div
           key={denunciado.id_denunciado + "d"}
@@ -120,7 +121,7 @@ const Informacion = () => {
   //cargado de datos desde la API
   useEffect(() => {
     axios
-      .get<Denunciado[]>(process.env.BACKEND_URL+"/denunciado/all")
+      .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
       .then((res) => {
         setDenunciados(res.data);
         setDisplayDenunciados(res.data);
@@ -133,41 +134,156 @@ const Informacion = () => {
 
   return (
     <>
-      <h5 className="mt-4">
-        {' Filtros para "Denunciados"'} <FilterOutlined />
-      </h5>
-      <small style={{ color: "#999" }}>
-        Cada filtro realiza búsquedas por separado...
-      </small>
-      <Form layout={"horizontal"} style={{ marginTop: 10, width: "90%" }}>
-        <Row>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item style={{ marginLeft: 10 }} label="Nro. de Caso: ">
-              <Input placeholder="Introduzca el ID del Denunciado" />
-            </Form.Item>
-          </Col>
+      <Row>
+        <Col span={24} lg={{ span: 10 }}>
+          <h5 className="mt-4">
+            {' Filtros para "Denunciados"'} <FilterOutlined />
+          </h5>
+          <small style={{ color: "#999" }}>
+            Cada filtro realiza búsquedas por separado...
+          </small>
+        </Col>
+        <Col
+          span={24}
+          offset={0}
+          lg={{ span: 8, offset: 6 }}
+          className="center"
+        >
+          <Tooltip
+            title="Generar PDF"
+            placement={"right"}
+            color={"#b51308"}
+            key={"pdf"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              icon={
+                <FilePdfFilled
+                  style={{
+                    color: "#b51308",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            title="Generar EXCEL"
+            placement={"right"}
+            color={"#107840"}
+            key={"excel"}
+          >
+            <Button
+              className="center info-button"
+              style={{ height: 50, width: 50, minWidth: 50 }}
+              onClick={() => {
+                notification.info({
+                  message: (
+                    <div>
+                      Generando Excel...
+                      <Spin
+                        indicator={
+                          <LoadingOutlined
+                            style={{ marginLeft: 10, fontSize: 24 }}
+                          />
+                        }
+                      />
+                    </div>
+                  ),
+                });
+                axios
+                  .get(process.env.BACKEND_URL + "/denunciado/report", {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const url = URL.createObjectURL(res.data);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.setAttribute(
+                      "download",
+                      "Denunciados-" +
+                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                        ".xlsx"
+                    );
+                    link.click();
+                    link.remove();
+                    notification.success({
+                      message: (
+                        <p style={{ fontSize: 14 }}>
+                          {"¡Excel: Denunciados-" +
+                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            ".xlsx, generado con éxito!"}
+                        </p>
+                      ),
+                    });
+                  });
+              }}
+              icon={
+                <FileExcelFilled
+                  style={{
+                    color: "#107840",
+                    fontSize: 30,
+                  }}
+                />
+              }
+            />
+          </Tooltip>
+          <Button
+            className="info-button"
+            type="primary"
+            style={{ height: 50, width: 50 }}
+            onClick={() => {
+              axios
+                .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
+                .then((res) => {
+                  setDenunciados(res.data);
+                  setDisplayDenunciados(res.data);
+                  message.info("Datos actualizados...");
+                });
+            }}
+          >
+            <AiOutlineReload fontSize={20} />
+          </Button>
+        </Col>
+      </Row>
 
-          <Col span={24} lg={{ span: 8 }}>
-            <Form.Item
-              style={{ marginLeft: 10, width: "100%" }}
-              label="Filtrar por rango de fechas:"
-            >
-              <RangePicker
-                style={{ width: "100%" }}
-                locale={{
-                  ...locale,
-                  lang: {
-                    ...locale.lang,
-                    shortWeekDays: dias,
-                    shortMonths: meses,
-                  },
+      <Form layout={"horizontal"} style={{ marginTop: 10 }}>
+        <Row gutter={[12, 0]}>
+          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+            <Form.Item label="ID de denunciado ">
+              <Input
+                placeholder="Introduzca el ID del Denunciado"
+                onChange={(ev) => {
+                  setDisplayDenunciados(
+                    denunciados.filter((value) => {
+                      return value.id_denunciado.includes(
+                        ev.target.value.toLocaleUpperCase()
+                      );
+                    })
+                  );
                 }}
               />
             </Form.Item>
           </Col>
+          <Col span={24} lg={{ span: 8 }}>
+            <Form.Item label="Nombres y apellidos:">
+              <Input
+                placeholder="Por favor, ingrese el nombre y apellidos a buscar"
+                onChange={(ev) => {
+                  setDisplayDenunciados(
+                    denunciados.filter((value) => {
+                      return `${value.nombres} ${value.paterno} ${value.materno}`
+                        .toLocaleLowerCase()
+                        .includes(ev.target.value);
+                    })
+                  );
+                }}
+              ></Input>
+            </Form.Item>
+          </Col>
         </Row>
       </Form>
-      <hr />
       <Table
         scroll={{ x: 800, y: 500 }}
         rowKey={(Denunciado) => Denunciado.id_denunciado + "T"}
@@ -188,14 +304,14 @@ const Informacion = () => {
               try {
                 if (ev.target.className.includes("switch")) {
                   axios
-                    .post(process.env.BACKEND_URL+"/denunciado/estado", {
+                    .post(process.env.BACKEND_URL + "/denunciado/estado", {
                       id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
                       message.success("¡Denunciado cambiado con éxito!");
                       axios
                         .get<Denunciado[]>(
-                          process.env.BACKEND_URL+"/denunciado/all"
+                          process.env.BACKEND_URL + "/denunciado/all"
                         )
                         .then((res) => {
                           setDenunciados(res.data);
@@ -205,7 +321,7 @@ const Informacion = () => {
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post(process.env.BACKEND_URL+"/denunciado/getById", {
+                    .post(process.env.BACKEND_URL + "/denunciado/getById", {
                       id_denunciado: value.id_denunciado,
                     })
                     .then((res) => {
@@ -216,7 +332,7 @@ const Informacion = () => {
               } catch (error) {
                 setOpen(true);
                 axios
-                  .post(process.env.BACKEND_URL+"/denunciado/getById", {
+                  .post(process.env.BACKEND_URL + "/denunciado/getById", {
                     id_denunciado: value.id_denunciado,
                   })
                   .then((res) => {
@@ -239,68 +355,6 @@ const Informacion = () => {
         open={open}
         setOpen={setOpen}
       ></DenunciadoModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios.get(process.env.BACKEND_URL+"RL/caso/report").then((res) => {});
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

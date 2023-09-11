@@ -81,7 +81,7 @@ const AgregarUsuarios = () => {
         <Layout hasSider>
           <MenuSider
             defaultSelectedKey="usuario1.1"
-            defaultOpenKeys={["personal", "usuarios"]}
+            defaultOpenKeys={["usuario1"]}
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
