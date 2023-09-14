@@ -1,6 +1,7 @@
 "use client";
 import {
   Avatar,
+  Breadcrumb,
   Button,
   Card,
   Col,
@@ -19,7 +20,11 @@ import {
 import MenuSider from "../../components/MenuSider";
 import { Content } from "antd/es/layout/layout";
 import Navbar from "../../components/Navbar";
-import { UserOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  QuestionCircleOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 
 import Meta from "antd/es/card/Meta";
 import locale from "antd/es/date-picker/locale/es_ES";
@@ -30,6 +35,7 @@ import "./estilos.scss";
 import { now } from "moment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const AgregarPersonal = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [open, setOpen] = useState(false);
@@ -44,6 +50,46 @@ const AgregarPersonal = () => {
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
+            <Breadcrumb
+              separator={<b style={{ fontSize: 18 }}>/</b>}
+              className="mx-4 my-2"
+              items={[
+                {
+                  href: "/dashboard",
+                  title: <HomeOutlined />,
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard"}
+                    >
+                      Dashboard
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/personal"}
+                    >
+                      Personal
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/personal/agregar"}
+                    >
+                      Agregar
+                    </Link>
+                  ),
+                },
+              ]}
+            />
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>

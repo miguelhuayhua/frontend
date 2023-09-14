@@ -2,13 +2,10 @@
 import {
   Button,
   Col,
-  DatePicker,
   Empty,
-  FloatButton,
   Form,
   Input,
   Row,
-  Select,
   Space,
   Spin,
   Switch,
@@ -17,7 +14,6 @@ import {
   message,
   notification,
 } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
 
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -25,7 +21,6 @@ import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
   FilterOutlined,
-  FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
@@ -35,12 +30,13 @@ import AdultoModal from "./adulto";
 import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Adulto, Domicilio, dataAdulto, dataDomicilio } from "../data";
-import { dias, meses } from "../../casos/nuevocaso/data";
 import { Hijo } from "../../hijos/data";
-import Link from "next/link";
-import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
-export const DataContext = createContext({});
-//ROUTING
+import { AiOutlineReload } from "react-icons/ai";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import PdfAdultos from "./pdf-listado";
+import { useSession } from "next-auth/react";
+import { Persona, dataPersona } from "../../personal/agregar/data";
+export const context1 = createContext({});
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
@@ -51,7 +47,6 @@ const Informacion = () => {
   const [open, setOpen] = useState(false);
   const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
   const [domicilio, setDomicilio] = useState<Domicilio>(dataDomicilio);
-  const [filtroNombre, setFiltroNombre] = useState("");
   const columns: ColumnsType<Adulto> = [
     {
       title: "ID Adulto",
@@ -125,14 +120,37 @@ const Informacion = () => {
   ];
   const [adultos, setAdultos] = useState<Adulto[]>([]);
   const [displayAdultos, setDisplayAdultos] = useState<Adulto[]>([]);
+  const [persona, setPersona] = useState<Persona>(dataPersona);
 
   //cargado de datos desde la API
+  const { data } = useSession();
+
   useEffect(() => {
-    axios.get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all").then((res) => {
-      setAdultos(res.data);
-      setDisplayAdultos(res.data);
-    });
-  }, []);
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      axios
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+          id_persona: usuario.id_persona,
+        })
+        .then((res) => {
+          setPersona(res.data);
+        });
+      axios
+        .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
+        .then((res) => {
+          setAdultos(res.data);
+          setDisplayAdultos(res.data);
+        });
+    }
+  }, [data]);
 
   return (
     <>
@@ -168,6 +186,35 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context1.Provider
+                    value={{
+                      adultos: displayAdultos,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfAdultos />
+                  </context1.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Adultos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
           <Tooltip
@@ -417,70 +464,6 @@ const Informacion = () => {
         setDisplayAdultos={setDisplayAdultos}
         setDomicilios={setDomicilios}
       ></AdultoModal>
-
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        shape="square"
-        style={{ right: 50, bottom: 15 }}
-        icon={<FileDoneOutlined style={{ fontSize: 25 }} />}
-      >
-        <Tooltip
-          title="Generar EXCEL"
-          placement={"right"}
-          color={"#107840"}
-          key={"excel"}
-        >
-          <FloatButton
-            onClick={() => {
-              notification.info({
-                message: (
-                  <div>
-                    Generando Excel...
-                    <Spin
-                      indicator={
-                        <LoadingOutlined
-                          style={{ marginLeft: 10, fontSize: 24 }}
-                        />
-                      }
-                    />
-                  </div>
-                ),
-              });
-              axios
-                .get(process.env.BACKEND_URL + "/caso/report")
-                .then((res) => {});
-            }}
-            style={{ display: "flex", justifyContent: "center" }}
-            icon={
-              <FileExcelFilled
-                style={{
-                  color: "#107840",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip
-          title="Generar PDF"
-          placement={"right"}
-          color={"#b51308"}
-          key={"pdf"}
-        >
-          <FloatButton
-            icon={
-              <FilePdfFilled
-                style={{
-                  color: "#b51308",
-                  fontSize: 25,
-                }}
-              />
-            }
-          />
-        </Tooltip>
-      </FloatButton.Group>
     </>
   );
 };

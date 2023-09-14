@@ -1,5 +1,6 @@
 "use client";
 import {
+  Breadcrumb,
   Button,
   Col,
   DatePicker,
@@ -31,6 +32,7 @@ import {
   AppstoreOutlined,
   BarsOutlined,
 } from "@ant-design/icons";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 
 import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
 import { SlLayers } from "react-icons/sl";
@@ -46,8 +48,11 @@ import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Hijo } from "../../hijos/data";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-export const DataContext = createContext({});
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { Persona, dataPersona } from "../../personal/agregar/data";
+import { useSession } from "next-auth/react";
+import PdfCasos from "./pdf-listado";
+export const context = createContext({});
 //ROUTING
 
 const Informacion = () => {
@@ -166,17 +171,43 @@ const Informacion = () => {
   //router
   const router = useRouter();
   //cargado de datos desde la API
+  const [persona, setPersona] = useState<Persona>(dataPersona);
+
+  //cargado de datos desde la API
+  const { data } = useSession();
+
   useEffect(() => {
-    axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
-      setCasos(res.data);
-      setDisplayCasos(res.data);
-    });
-    axios
-      .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
-      .then((res) => {
-        setAdultos(res.data);
-      });
-  }, []);
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      axios
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+          id_persona: usuario.id_persona,
+        })
+        .then((res) => {
+          setPersona(res.data);
+
+          axios
+            .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
+            .then((res) => {
+              setCasos(res.data);
+              setDisplayCasos(res.data);
+            });
+          axios
+            .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
+            .then((res) => {
+              setAdultos(res.data);
+            });
+        });
+    }
+  }, [data]);
 
   const { RangePicker } = DatePicker;
 
@@ -251,6 +282,35 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context.Provider
+                    value={{
+                      casos: displayCasos,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfCasos />
+                  </context.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Adultos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
           <Tooltip
@@ -468,6 +528,16 @@ const Informacion = () => {
           };
         }}
       />
+      <PDFViewer width={"100%"} height={500}>
+        <context.Provider
+          value={{
+            casos: displayCasos,
+            persona: persona,
+          }}
+        >
+          <PdfCasos />
+        </context.Provider>
+      </PDFViewer>
       <CasoModal
         key="casomodal"
         adultoMayor={adultoMayor}

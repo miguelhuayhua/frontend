@@ -10,7 +10,6 @@ import {
   List,
   Progress,
   Row,
-  Segmented,
   Tooltip,
 } from "antd";
 import "moment/locale/es";
@@ -24,7 +23,11 @@ import MenuSider from "./components/MenuSider";
 import Navbar from "./components/Navbar";
 import GraficoPastel from "./graficos/Pastel";
 import { FaBalanceScaleLeft } from "react-icons/fa";
-import { MdCallReceived, MdOutlineElderlyWoman } from "react-icons/md";
+import {
+  MdCallReceived,
+  MdOutlineElderlyWoman,
+  MdOutlineVerticalAlignTop,
+} from "react-icons/md";
 import GraficoLinea from "./graficos/Linea";
 import { AiFillEye } from "react-icons/ai";
 import { BsFillArrowUpCircleFill } from "react-icons/bs";
@@ -113,7 +116,7 @@ export default function Dashboard() {
             <Layout style={{ backgroundColor: "#f4f7fa" }}>
               <Breadcrumb
                 separator={<b style={{ fontSize: 18 }}>/</b>}
-                className="m-4"
+                className="mx-4 my-2"
                 items={[
                   {
                     href: "/dashboard",
@@ -427,7 +430,7 @@ export default function Dashboard() {
                           />
                         </Card>
                       </Col>
-                      <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
+                      <Col span={24} lg={{ span: 6 }}>
                         <Card
                           title={
                             <>
@@ -538,7 +541,10 @@ export default function Dashboard() {
                 </Row>
               </Content>
             </Layout>
-            <FloatButton.BackTop />
+            <FloatButton.BackTop
+              className="float-btn"
+              icon={<MdOutlineVerticalAlignTop />}
+            />
           </Content>
         </Layout>
       </Layout>

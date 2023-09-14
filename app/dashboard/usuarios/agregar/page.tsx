@@ -8,12 +8,12 @@ import {
   Input,
   Layout,
   Modal,
-  Radio,
   Row,
   message,
   notification,
   Image,
   Progress,
+  Breadcrumb,
 } from "antd";
 import MenuSider from "../../components/MenuSider";
 import { Content } from "antd/es/layout/layout";
@@ -24,6 +24,7 @@ import {
   QuestionCircleOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { FaRegImage } from "react-icons/fa";
 import bcrypt from "bcryptjs";
@@ -39,6 +40,7 @@ import dayjs from "dayjs";
 import { now } from "moment";
 import Search from "antd/es/input/Search";
 import Dragger from "antd/es/upload/Dragger";
+import Link from "next/link";
 const AgregarUsuarios = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -59,13 +61,15 @@ const AgregarUsuarios = () => {
   const [file, setFile] = useState<any>(null);
   const params = useSearchParams();
   useEffect(() => {
-    axios.get<Persona[]>(process.env.BACKEND_URL+"/persona/all").then((res) => {
-      setPersonas(res.data);
-    });
+    axios
+      .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
+      .then((res) => {
+        setPersonas(res.data);
+      });
     let id_persona = params.get("id_persona");
     if (id_persona) {
       axios
-        .post<Persona>(process.env.BACKEND_URL+"/persona/get", { id_persona })
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona })
         .then((res) => {
           if (res.data) {
             setPersona(res.data);
@@ -85,6 +89,46 @@ const AgregarUsuarios = () => {
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
+            <Breadcrumb
+              separator={<b style={{ fontSize: 18 }}>/</b>}
+              className="mx-4 my-2"
+              items={[
+                {
+                  href: "/dashboard",
+                  title: <HomeOutlined />,
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard"}
+                    >
+                      Dashboard
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/usuarios"}
+                    >
+                      Usuarios
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/usuarios/agregar"}
+                    >
+                      Agregar
+                    </Link>
+                  ),
+                },
+              ]}
+            />
             <Layout>
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>
@@ -108,7 +152,7 @@ const AgregarUsuarios = () => {
                             } else {
                               axios
                                 .post<{ status: number }>(
-                                  process.env.BACKEND_URL+"/usuario/verify",
+                                  process.env.BACKEND_URL + "/usuario/verify",
                                   {
                                     ...usuario,
                                   }
@@ -403,7 +447,7 @@ const AgregarUsuarios = () => {
                           title={<h5>Personal asociado a la cuenta</h5>}
                           description={
                             <>
-                              {persona.id_persona != ""? (
+                              {persona.id_persona != "" ? (
                                 <Row>
                                   <Col span={12}>
                                     <p>
@@ -488,7 +532,7 @@ const AgregarUsuarios = () => {
           formData.append("id_persona", persona.id_persona);
           axios
             .post<{ status: number }>(
-              process.env.BACKEND_URL+"/usuario/insert",
+              process.env.BACKEND_URL + "/usuario/insert",
               formData,
               {
                 headers: {

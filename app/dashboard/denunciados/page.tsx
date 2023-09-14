@@ -1,19 +1,19 @@
 "use client";
-import {  Col, Layout, MenuProps, Row } from "antd";
+import { Breadcrumb, Col, Layout, MenuProps, Row } from "antd";
 import "moment/locale/es";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 //estilos
 import "./estilos.scss";
 //env
-import dotenv from "dotenv";
-dotenv.config();
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+
 import React from "react";
 
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
 import Informacion from "./components/informacion";
+import Link from "next/link";
 export default function NuevoCaso() {
-
   //cargado de casos desde la API
 
   return (
@@ -26,7 +26,36 @@ export default function NuevoCaso() {
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
-
+            <Breadcrumb
+              separator={<b style={{ fontSize: 18 }}>/</b>}
+              className="mx-4 my-2"
+              items={[
+                {
+                  href: "/dashboard",
+                  title: <HomeOutlined />,
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard"}
+                    >
+                      Dashboard
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/denunciados"}
+                    >
+                      Denunciados
+                    </Link>
+                  ),
+                },
+              ]}
+            />
             <Layout>
               <Content
                 className="site-layout"

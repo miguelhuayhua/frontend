@@ -35,7 +35,11 @@ import DenunciadoModal from "./denunciado";
 import { Adulto, dataAdulto } from "../../adultos/data";
 import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
 import Link from "next/link";
-export const DataContext = createContext({});
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import PdfDenunciado from "./pdf-listado";
+import { useSession } from "next-auth/react";
+import { Persona, dataPersona } from "../../personal/agregar/data";
+export const context3 = createContext({});
 //ROUTING
 
 const Informacion = () => {
@@ -118,17 +122,37 @@ const Informacion = () => {
     []
   );
 
-  //cargado de datos desde la API
-  useEffect(() => {
-    axios
-      .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
-      .then((res) => {
-        setDenunciados(res.data);
-        setDisplayDenunciados(res.data);
-      });
-  }, []);
+  const [persona, setPersona] = useState<Persona>(dataPersona);
 
-  const { RangePicker } = DatePicker;
+  //cargado de datos desde la API
+  const { data } = useSession();
+
+  useEffect(() => {
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      axios
+        .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
+        .then((res) => {
+          setDenunciados(res.data);
+          setDisplayDenunciados(res.data);
+        });
+      axios
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+          id_persona: usuario.id_persona,
+        })
+        .then((res) => {
+          setPersona(res.data);
+        });
+    }
+  }, [data]);
 
   //cambios en los filtros
 
@@ -166,6 +190,35 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context3.Provider
+                    value={{
+                      denunciados: displayDenunciados,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfDenunciado />
+                  </context3.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Denunciados-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
           <Tooltip
@@ -344,6 +397,17 @@ const Informacion = () => {
           };
         }}
       />
+
+      <PDFViewer width={"100%"} height={500}>
+        <context3.Provider
+          value={{
+            denunciados: displayDenunciados,
+            persona: persona,
+          }}
+        >
+          <PdfDenunciado />
+        </context3.Provider>
+      </PDFViewer>
       <DenunciadoModal
         denunciado={denunciado}
         loaded={loaded}

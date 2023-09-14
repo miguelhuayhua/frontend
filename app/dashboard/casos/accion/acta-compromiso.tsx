@@ -8,14 +8,9 @@ import {
   Input,
   List,
   Modal,
-  Popconfirm,
-  Radio,
   Row,
   Select,
   Skeleton,
-  Slider,
-  message,
-  notification,
 } from "antd";
 import { NextPage } from "next";
 import { BsTextParagraph, BsFillTrash3Fill, BsPlus } from "react-icons/bs";
@@ -197,7 +192,9 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                         height={50}
                         fontSize={50}
                       />
-                      <p>Listado de compromisos vacío...</p>
+                      <p style={{ textAlign: "center" }}>
+                        Listado de compromisos vacío...
+                      </p>
                     </>
                   ),
                 }}

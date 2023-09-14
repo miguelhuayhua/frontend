@@ -1,8 +1,10 @@
 "use client";
-import { Layout } from "antd";
+import { Breadcrumb, Layout } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
 //estilos
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+
 import "./estilos.scss";
 //env
 import dotenv from "dotenv";
@@ -12,6 +14,7 @@ import React from "react";
 import Informacion from "./components/informacion";
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
+import Link from "next/link";
 export default function NuevoCaso() {
   return (
     <main>
@@ -23,7 +26,36 @@ export default function NuevoCaso() {
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
-
+            <Breadcrumb
+              separator={<b style={{ fontSize: 18 }}>/</b>}
+              className="mx-4 my-2"
+              items={[
+                {
+                  href: "/dashboard",
+                  title: <HomeOutlined />,
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard"}
+                    >
+                      Dashboard
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/casos"}
+                    >
+                      Casos
+                    </Link>
+                  ),
+                },
+              ]}
+            />
             <Layout>
               <Content
                 className="site-layout"

@@ -2,9 +2,7 @@
 import {
   Button,
   Col,
-  DatePicker,
   Empty,
-  FloatButton,
   Form,
   Input,
   Row,
@@ -16,9 +14,8 @@ import {
   message,
   notification,
 } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
 
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
 import {
@@ -36,8 +33,11 @@ import { Hijo, dataHijo } from "../data";
 import HijoModal from "./hijo";
 import { Adulto, dataAdulto } from "../../adultos/data";
 import { AiOutlineReload } from "react-icons/ai";
-import { get } from "http";
-export const DataContext = createContext({});
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { Persona, dataPersona } from "../../personal/agregar/data";
+import { useSession } from "next-auth/react";
+import PdfHijos from "./pdf-listado";
+export const context2 = createContext({});
 //ROUTING
 
 const Informacion = () => {
@@ -116,14 +116,40 @@ const Informacion = () => {
   const [hijos, setHijos] = useState<Hijo[]>([]);
   const [displayHijos, setDisplayHijos] = useState<Hijo[]>([]);
   const [hijo, setHijo] = useState<Hijo>(dataHijo);
+  const [persona, setPersona] = useState<Persona>(dataPersona);
 
   //cargado de datos desde la API
+  const { data } = useSession();
+
   useEffect(() => {
-    axios.get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all").then((res) => {
-      setHijos(res.data);
-      setDisplayHijos(res.data);
-    });
-  }, []);
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      axios
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+          id_persona: usuario.id_persona,
+        })
+        .then((res) => {
+          setPersona(res.data);
+
+          axios
+            .get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all")
+            .then((res) => {
+              setHijos(res.data);
+              setDisplayHijos(res.data);
+            });
+        });
+    }
+  }, [data]);
+
+  //cargado de datos desde la API
 
   return (
     <>
@@ -159,8 +185,38 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context2.Provider
+                    value={{
+                      hijos: displayHijos,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfHijos />
+                  </context2.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Adultos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
+
           <Tooltip
             title="Generar EXCEL"
             placement={"right"}
@@ -360,6 +416,7 @@ const Informacion = () => {
           };
         }}
       />
+     
       <HijoModal
         hijo={hijo}
         loaded={loaded}

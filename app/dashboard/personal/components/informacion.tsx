@@ -24,7 +24,6 @@ import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
   FilterOutlined,
-  FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
@@ -35,13 +34,16 @@ import { Persona, dataPersona } from "../agregar/data";
 import PersonaModal from "./personal";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import PdfPersonal from "./pdf-listado";
+import { useSession } from "next-auth/react";
+export const context4 = createContext({});
 const Informacion = () => {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [personas, setPersonas] = useState<Persona[]>([]);
-  const [displayPersonas, setDisplayPersonas] = useState<Persona[]>();
+  const [displayPersonas, setDisplayPersonas] = useState<Persona[]>([]);
 
   //COLUMNAS
   const columns: ColumnsType<Persona> = [
@@ -114,14 +116,38 @@ const Informacion = () => {
   ];
 
   //cargado de datos desde la API
+
+  const [persona1, setPersona1] = useState<Persona>(dataPersona);
+
+  //cargado de datos desde la API
+  const { data } = useSession();
+
   useEffect(() => {
-    axios
-      .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
-      .then((res) => {
-        setPersonas(res.data);
-        setDisplayPersonas(res.data);
-      });
-  }, []);
+    if (data) {
+      let { usuario } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+      };
+      axios
+        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+          id_persona: usuario.id_persona,
+        })
+        .then((res) => {
+          setPersona1(res.data);
+        });
+      axios
+        .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
+        .then((res) => {
+          setPersonas(res.data);
+          setDisplayPersonas(res.data);
+        });
+    }
+  }, [data]);
 
   return (
     <>
@@ -170,6 +196,35 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context4.Provider
+                    value={{
+                      personas: displayPersonas,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfPersonal />
+                  </context4.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Personal-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
           <Tooltip
@@ -349,6 +404,16 @@ const Informacion = () => {
           };
         }}
       />
+      <PDFViewer width={"100%"} height={500}>
+        <context4.Provider
+          value={{
+            personas: displayPersonas,
+            persona: persona1,
+          }}
+        >
+          <PdfPersonal />
+        </context4.Provider>
+      </PDFViewer>
       <PersonaModal
         persona={persona}
         loaded={loaded}

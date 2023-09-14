@@ -1,11 +1,11 @@
 "use client";
-import { Button, FloatButton, Layout, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Button, FloatButton, Layout, Tabs, TabsProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useSearchParams } from "next/navigation";
-
 import { useEffect, useState } from "react";
 import MenuSider from "../../components/MenuSider";
 import Navbar from "../../components/Navbar";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import {
   Caso,
@@ -25,13 +25,13 @@ import { BiHappyAlt } from "react-icons/bi";
 import CitacionOptions from "./citacion";
 import ModalActaCompromiso from "./acta-compromiso";
 import { dataDenunciado } from "../../denunciados/data";
+import Link from "next/link";
 const AccionCaso = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
   const [caso, setCaso] = useState<Caso>(datosCaso);
   const [citaciones, setCitaciones] = useState<Citacion[]>([]);
   const [denunciado, setDenunciado] = useState<Denunciado>(dataDenunciado);
-
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const [citacion, setCitacion] = useState<{
@@ -138,12 +138,52 @@ const AccionCaso = () => {
     <main>
       <Layout>
         <Layout hasSider>
-          <MenuSider
-            defaultOpenKeys={[""]}
-            defaultSelectedKey=""
-          ></MenuSider>
+          <MenuSider defaultOpenKeys={[""]} defaultSelectedKey=""></MenuSider>
           <Content>
             <Navbar></Navbar>
+            <Breadcrumb
+              separator={<b style={{ fontSize: 18 }}>/</b>}
+              className="mx-4 my-2"
+              items={[
+                {
+                  href: "/dashboard",
+                  title: <HomeOutlined />,
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard"}
+                    >
+                      Dashboard
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={"/dashboard/casos"}
+                    >
+                      Casos
+                    </Link>
+                  ),
+                },
+                {
+                  title: (
+                    <Link
+                      style={{ marginTop: 2.5, fontSize: 15 }}
+                      href={
+                        "/dashboard/casos/accion?id_caso=" +
+                        params.get("id_caso")
+                      }
+                    >
+                      {params.get("id_caso")}
+                    </Link>
+                  ),
+                },
+              ]}
+            />
             <Layout>
               <Content
                 className="site-layout"

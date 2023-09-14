@@ -1,5 +1,6 @@
 "use client";
 import {
+  Avatar,
   Button,
   Col,
   Empty,
@@ -58,7 +59,15 @@ const Informacion = () => {
 
       key: "Usuario",
       render: (_, usuario) => {
-        return usuario.usuario;
+        return (
+          <>
+            <Avatar
+              className="me-2"
+              src={process.env.BACKEND_URL + usuario.fotografia}
+            ></Avatar>
+            {usuario.usuario}
+          </>
+        );
       },
       className: "text-center",
     },
