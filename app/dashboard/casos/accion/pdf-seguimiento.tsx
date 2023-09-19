@@ -35,9 +35,10 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   page: {
-    paddingLeft: 25,
-    paddingRight: 30,
-    paddingVertical: 25,
+    fontFamily: "Helvetica",
+    fontSize: 12,
+    padding: 20,
+    position: "relative",
   },
   textBox: {
     border: "1px solid black",
@@ -94,8 +95,8 @@ const FormularioSeguimiento = () => {
           <Text
             style={{
               position: "absolute",
-              top: -10,
-              left: 20,
+              top: -15,
+              right: 20,
               color: "gray",
               fontSize: 8,
             }}
@@ -108,24 +109,24 @@ const FormularioSeguimiento = () => {
               width: 70,
               height: 40,
               position: "absolute",
-              top: 0,
-              right: 0,
+              top: -2.5,
+              right: 2,
             }}
             src={"/assets/logo-gamea.png"}
           ></Image>
 
           <Image
             style={{
-              width: 70,
-              height: 40,
+              width: 65,
+              height: 50,
               position: "absolute",
-              top: 0,
-              left: 0,
+              top: -2.5,
+              left: 2,
             }}
             src={"/assets/logo-elalto.png"}
           ></Image>
           <Text
-            style={{ ...styles.parraf, ...styles.textCenter, marginTop: 20 }}
+            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 20 }}
           >
             GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
           </Text>
@@ -139,29 +140,13 @@ const FormularioSeguimiento = () => {
               stroke="rgb(0,0,0)"
             />
           </Svg>
-          <Text
-            style={{
-              ...styles.textCenter,
-              ...styles.textBold,
-              marginTop: 10,
-            }}
-          >
+          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
-          <Text
-            style={{
-              ...styles.textCenter,
-              ...styles.textBold,
-            }}
-          >
+          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
           </Text>
-          <Text
-            style={{
-              ...styles.textCenter,
-              ...styles.textBold,
-            }}
-          >
+          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
           <View style={{ ...styles.horizontal, marginTop: 10 }}>

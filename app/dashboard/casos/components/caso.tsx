@@ -49,7 +49,6 @@ interface Props {
 }
 const CasoModal: NextPage<Props> = (props) => {
   //control del modal
-  const [open2, setOpen2] = useState(false);
   const { data } = useSession();
   const handleConfirm = () => {
     props.setOpen(false);
@@ -93,7 +92,7 @@ const CasoModal: NextPage<Props> = (props) => {
         key="modal"
         title={
           <p style={{ fontSize: 14 }}>
-            EDITE LOS VALORES PARA EL CASO + {props.caso.nro_caso}
+            EDITE LOS VALORES PARA EL CASO {props.caso.nro_caso}
           </p>
         }
         centered
@@ -151,7 +150,7 @@ const CasoModal: NextPage<Props> = (props) => {
                 <TextArea
                   allowClear
                   showCount
-                  maxLength={200}
+                  maxLength={1000}
                   style={{ height: 150, resize: "none" }}
                   value={props.caso.descripcion_hechos}
                   onChange={handleDescripcion}
@@ -161,7 +160,7 @@ const CasoModal: NextPage<Props> = (props) => {
                 <TextArea
                   allowClear
                   showCount
-                  maxLength={200}
+                  maxLength={1000}
                   style={{ height: 150, resize: "none" }}
                   value={props.caso.peticion}
                   onChange={handlePeticion}
@@ -283,7 +282,7 @@ const CasoModal: NextPage<Props> = (props) => {
                 <Avatar
                   style={{
                     backgroundColor:
-                      props.adultoMayor.sexo == "Femenino"
+                      props.adultoMayor.genero == "Femenino"
                         ? "#ff0080"
                         : "#0041c8",
                     color: "white",

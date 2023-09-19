@@ -36,7 +36,6 @@ interface Props {
   setDenunciados: any;
   loaded: boolean;
   setDisplayDenunciados: any;
-  adulto: Adulto;
 }
 const DenunciadoModal: NextPage<Props> = (props) => {
   //control del modal
@@ -72,7 +71,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
     <>
       <Modal
         key="modal"
-        title={`EDITE LOS VALORES PARA EL Denunciado(A) DE ${props.adulto.nombre.toLocaleUpperCase()} ${props.adulto.paterno.toLocaleUpperCase()} ${props.adulto.materno.toLocaleUpperCase()}`}
+        title={`EDITE LOS VALORES DEL DENUNCIADO`}
         centered
         style={{ textAlign: "center" }}
         open={props.open}
@@ -131,14 +130,16 @@ const DenunciadoModal: NextPage<Props> = (props) => {
                 style={{ marginLeft: 5 }}
                 onClick={() => {
                   const textField = document.createElement("textarea");
-                  textField.innerText = props.adulto.id_adulto;
+                  textField.innerText = props.denunciado.id_denunciado;
                   document.body.appendChild(textField);
                   textField.select();
                   navigator.clipboard
-                    .writeText(props.adulto.id_adulto)
+                    .writeText(props.denunciado.id_denunciado)
                     .then(() => {
                       textField.remove();
-                      message.success("¡ID - Hijo, copiado al portapapeles!");
+                      message.success(
+                        "¡ID - Denunciado, copiado al portapapeles!"
+                      );
                     });
                 }}
                 icon={<CopyOutlined color="blue" />}
@@ -191,7 +192,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
                   </Col>
 
                   <Col span={24} md={{ span: 8 }}>
-                    <Form.Item label="Sexo:">
+                    <Form.Item label="genero:">
                       <Radio.Group
                         value={props.denunciado.genero}
                         defaultValue={props.denunciado.genero}
@@ -205,6 +206,20 @@ const DenunciadoModal: NextPage<Props> = (props) => {
                         <Radio value="Femenino"> Femenino </Radio>
                         <Radio value="Masculino"> Masculino </Radio>
                       </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                  <Col span={24} md={{ span: 8 }}>
+                    <Form.Item label="C.I. Denunciado: ">
+                      <Input
+                        name="ci"
+                        value={props.denunciado.ci}
+                        onChange={(value) =>
+                          props.setDenunciado({
+                            ...props.denunciado,
+                            ci: value.target.value,
+                          })
+                        }
+                      />
                     </Form.Item>
                   </Col>
                 </Row>

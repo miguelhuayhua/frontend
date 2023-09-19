@@ -3,7 +3,6 @@ import { Layout } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
 //estilos
-import "./estilos.scss";
 //env
 import dotenv from "dotenv";
 dotenv.config();

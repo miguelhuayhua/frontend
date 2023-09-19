@@ -46,7 +46,6 @@ const Informacion = () => {
   dayjs.extend(isBeetwen);
   //estados
   const [loaded, setLoaded] = useState(false);
-  const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
   const [open, setOpen] = useState(false);
 
   const columns: ColumnsType<Denunciado> = [
@@ -94,24 +93,30 @@ const Informacion = () => {
           key={denunciado.id_denunciado + "d"}
           className="d-flex align-items-center justify-content-around"
         >
-          <Button
-            key={denunciado.id_denunciado}
-            style={{
-              fontSize: 20,
-              width: 40,
-              height: 40,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 0,
-            }}
-          >
-            <EditOutlined style={{ zIndex: 0 }} />
-          </Button>
-          <Switch
-            key={denunciado.id_denunciado + "-"}
-            checked={denunciado.estado == 1}
-          />
+          {denunciado.estado != 1 ? null : (
+            <Button
+              key={denunciado.id_denunciado}
+              style={{
+                fontSize: 20,
+                width: 40,
+                height: 40,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 0,
+              }}
+            >
+              <EditOutlined style={{ zIndex: 0 }} />
+            </Button>
+          )}
+          {persona.cargo == "1" ? (
+            <>
+              <Switch
+                key={denunciado.id_denunciado + "-"}
+                checked={denunciado.estado == 1}
+              />
+            </>
+          ) : null}
         </div>
       ),
     },
@@ -129,7 +134,7 @@ const Informacion = () => {
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -137,6 +142,7 @@ const Informacion = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
       axios
         .get<Denunciado[]>(process.env.BACKEND_URL + "/denunciado/all")
@@ -144,18 +150,11 @@ const Informacion = () => {
           setDenunciados(res.data);
           setDisplayDenunciados(res.data);
         });
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
-        });
+
+      setPersona(persona);
     }
   }, [data]);
-
   //cambios en los filtros
-
   return (
     <>
       <Row>
@@ -398,20 +397,9 @@ const Informacion = () => {
         }}
       />
 
-      <PDFViewer width={"100%"} height={500}>
-        <context3.Provider
-          value={{
-            denunciados: displayDenunciados,
-            persona: persona,
-          }}
-        >
-          <PdfDenunciado />
-        </context3.Provider>
-      </PDFViewer>
       <DenunciadoModal
         denunciado={denunciado}
         loaded={loaded}
-        adulto={adulto}
         setDisplayDenunciados={setDisplayDenunciados}
         setDenunciado={setDenunciado}
         setDenunciados={setDenunciados}

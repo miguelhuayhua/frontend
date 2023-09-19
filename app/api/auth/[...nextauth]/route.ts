@@ -1,9 +1,11 @@
+import { Persona } from "@/app/dashboard/personal/agregar/data";
 import { Usuario } from "@/app/dashboard/usuarios/data";
 import axios from "axios";
 import bcrypt from 'bcryptjs';
 import NextAuth, { AuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: AuthOptions = {
+
     callbacks: {
 
         async jwt({ token, user }) {
@@ -18,6 +20,7 @@ const authOptions: AuthOptions = {
             return session;
         }
     },
+
     session: { strategy: 'jwt' },
     providers: [
         CredentialsProvider({
@@ -32,14 +35,17 @@ const authOptions: AuthOptions = {
                     usuario: credentials?.usuario,
                     password: credentials?.password
                 })
+                console.log(res.data)
                 if (res.data) {
-                    return { id: '', usuario: res.data }
+                    let persona = await axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: res.data.id_persona })
+                    return { id: '', usuario: res.data, persona: persona.data }
                 }
                 else {
                     return null;
                 }
-            }
-        })
+            },
+
+        }),
     ],
     pages: {
         signIn: '/login',

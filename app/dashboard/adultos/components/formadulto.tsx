@@ -183,7 +183,7 @@ const FormAdulto: NextPage<Props> = (props) => {
             </Col>
 
             <Col span={6} lg={{ span: 6 }}>
-              <Form.Item label="Sexo:">
+              <Form.Item label="genero:">
                 <Radio.Group
                   value={props.adulto.genero}
                   defaultValue={props.adulto.genero}

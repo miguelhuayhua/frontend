@@ -56,6 +56,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
         }}
         footer={[
           <Button
+            key={"btn-vista-2"}
             onClick={() => {
               setOpen(true);
             }}
@@ -114,6 +115,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                         notification.success({
                           message: "Formulario generado con éxito...",
                         });
+                        props.setOpen2(false);
                       });
                   } else {
                     notification.error({ message: res.data.message });

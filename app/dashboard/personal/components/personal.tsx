@@ -1,6 +1,9 @@
 import { NextPage } from "next";
 import { Persona } from "../agregar/data";
+import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+
 import {
+  Avatar,
   Button,
   Col,
   Form,
@@ -8,7 +11,9 @@ import {
   InputNumber,
   Modal,
   Popconfirm,
+  Radio,
   Row,
+  Select,
   Skeleton,
   Space,
   notification,
@@ -23,6 +28,7 @@ interface Props {
   setPersonas: any;
   loaded: boolean;
   setDisplayPersonas: any;
+  persona1: Persona;
 }
 const PersonaModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
@@ -102,6 +108,25 @@ const PersonaModal: NextPage<Props> = (props) => {
         {props.loaded ? (
           <Form>
             <Row gutter={[12, 12]}>
+              <Col span={4}>
+                <Avatar
+                  style={{
+                    backgroundColor:
+                      props.persona.genero == "Femenino"
+                        ? "#ff0080"
+                        : "#0041c8",
+                    color: "white",
+                    width: 70,
+                    height: 70,
+                    fontSize: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto",
+                  }}
+                  icon={<UserOutlined />}
+                ></Avatar>
+              </Col>
               <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <Form.Item
                   rules={[
@@ -201,6 +226,40 @@ const PersonaModal: NextPage<Props> = (props) => {
                   ></InputNumber>
                 </Form.Item>
               </Col>
+              <Col span={24} md={{ span: 8 }}>
+                <Form.Item label="Género:">
+                  <Radio.Group
+                    value={props.persona.genero}
+                    onChange={(value) => {
+                      props.setPersona({
+                        ...props.persona,
+                        genero: value.target.value,
+                      });
+                    }}
+                  >
+                    <Radio value="Femenino"> Femenino </Radio>
+                    <Radio value="Masculino"> Masculino </Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </Col>
+              {props.persona1.cargo == "1" &&
+              props.persona.id_persona != props.persona1.id_persona ? (
+                <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
+                  <Form.Item label="Cargo: ">
+                    <Select
+                      value={props.persona.cargo}
+                      style={{ width: "90%" }}
+                      onChange={(value) => {
+                        props.setPersona({ ...props.persona, cargo: value });
+                      }}
+                    >
+                      <Select.Option value="1">Administrador </Select.Option>
+                      <Select.Option value="2">Asistente</Select.Option>
+                      <Select.Option value="3">Visitante</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              ) : null}
             </Row>
           </Form>
         ) : (

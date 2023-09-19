@@ -6,6 +6,8 @@ import {
   StyleSheet,
   View,
   Image,
+  Svg,
+  Line,
 } from "@react-pdf/renderer";
 import { DataContext } from "./detalles";
 import {
@@ -30,6 +32,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     padding: 20,
     position: "relative",
+    paddingBottom: 25,
+  },
+  signatureBox: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    fontSize: 10,
+    justifyContent: "center",
+    marginRight: 20,
+    marginTop: 80,
   },
   container: {
     width: "100%",
@@ -49,16 +61,16 @@ const styles = StyleSheet.create({
     margin: 5,
     border: "1px solid black",
     borderRadius: 2.5,
+    fontSize: 8,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    fontFamily: "Helvetica-Bold",
+    color: "#000",
   },
   textInfo: { width: "33%", color: "#999", textAlign: "center", fontSize: 8 },
-  checked: {
-    width: 10,
-    height: 10,
-    margin: 5,
-    border: "1px solid black",
-    borderRadius: 2.5,
-    backgroundColor: "#1a9bcd",
-  },
+
   horizontal: {
     display: "flex",
     flexDirection: "row",
@@ -67,6 +79,25 @@ const styles = StyleSheet.create({
   },
   Text: {
     fontSize: 8,
+  },
+  textBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 10,
+  },
+  textCenter: {
+    textAlign: "center",
+  },
+  textEnd: {
+    textAlign: "right",
+  },
+  parraf: {
+    lineHeight: 1.3,
+    fontFamily: "Helvetica",
+    fontSize: 12,
+    marginTop: 12,
+  },
+  listItem: {
+    marginLeft: 40,
   },
 });
 
@@ -98,7 +129,7 @@ const MyDocument = () => {
           style={{
             position: "absolute",
             top: 8,
-            right: 50,
+            right: 20,
             color: "gray",
             fontSize: 8,
           }}
@@ -108,59 +139,48 @@ const MyDocument = () => {
         </Text>
         <Image
           style={{
-            width: 90,
-            height: 60,
+            width: 80,
+            height: 50,
             position: "absolute",
-            top: 15,
-            right: 10,
+            top: 20,
+            right: 2,
           }}
           src={"/assets/logo-gamea.png"}
         ></Image>
+
         <Image
           style={{
-            width: 500,
-            height: 100,
-            position: "absolute",
-            top: 0,
-            right: 40,
-            zIndex: -1,
-          }}
-          src={"/assets/linea-aymara.png"}
-        ></Image>
-        <Image
-          style={{
-            width: 90,
-            height: 60,
+            width: 80,
+            height: 50,
             position: "absolute",
             top: 20,
-            left: 10,
+            left: 2,
           }}
           src={"/assets/logo-elalto.png"}
         ></Image>
-        <View style={{ width: "70%", marginHorizontal: "auto" }}>
-          <Text style={{ fontWeight: "light", fontSize: 14, ...styles.title }}>
-            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-          </Text>
-          <Text
-            style={{ fontWeight: "extrabold", fontSize: 14, ...styles.title }}
-          >
-            SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
-          </Text>
-          <Text style={{ fontSize: 10, ...styles.title, marginTop: 5 }}>
-            DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
-          </Text>
-          <Text
-            style={{
-              fontSize: 9,
-              paddingHorizontal: 60,
-              ...styles.title,
-              marginTop: 5,
-            }}
-          >
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
-          </Text>
-        </View>
-        <View style={{ ...styles.horizontal, marginTop: 10 }}>
+        <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
+        </Text>
+        <Svg height="3" width="600">
+          <Line
+            x1="90"
+            y1="2"
+            x2="470"
+            y2="2"
+            strokeWidth={1}
+            stroke="rgb(0,0,0)"
+          />
+        </Svg>
+        <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
+        </Text>
+        <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
+        </Text>
+        <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+        </Text>
+        <View style={{ ...styles.horizontal, marginTop: 9 }}>
           <Text style={styles.textInfo}>
             {"Fecha y hora de registro: " +
               datosDenuncia.fecha_registro +
@@ -171,115 +191,89 @@ const MyDocument = () => {
             {"Tipología: " + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: " + datosDenuncia.nro_caso}
           </Text>
         </View>
-        <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
+        <Text style={{ fontSize: 9, marginTop: 15, marginBottom: 2.5 }}>
           I. DATOS GENERALES DE LA PERSONA ADULTA MAYOR
         </Text>
         <View style={styles.container}>
-          <Text style={{ fontSize: 10 }}>NOMBRES Y APELLIDOS: </Text>
-          <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+          <Text style={{ fontSize: 9 }}>NOMBRES Y APELLIDOS: </Text>
+          <Text style={{ ...styles.textContainer, fontSize: 9 }}>
             {datosGenerales.nombre +
               " " +
               datosGenerales.paterno +
               " " +
               datosGenerales.materno}
           </Text>
-          <View style={{ ...styles.horizontal, marginTop: 5 }}>
+          <View style={{ ...styles.horizontal, marginTop: 2 }}>
             <View style={{ width: "50%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>SEXO: FEMENINO</Text>
-              <View
-                style={
-                  datosGenerales.sexo == "Femenino"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}> MASCULINO</Text>
-              <View
-                style={
-                  datosGenerales.sexo == "Masculino"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
+              <Text style={{ fontSize: 9 }}>GÉNERO: FEMENINO</Text>
+              <Text style={styles.checker}>
+                {datosGenerales.genero == "Femenino" ? "X" : ""}
+              </Text>
+              <Text style={{ fontSize: 9 }}> MASCULINO</Text>
+              <Text style={styles.checker}>
+                {datosGenerales.genero == "Masculino" ? "X" : ""}
+              </Text>
             </View>
             <View style={{ width: "25%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>EDAD: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ fontSize: 9 }}>EDAD: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosGenerales.edad}
               </Text>
             </View>
             <View style={{ width: "25%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>N° C.I.: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ fontSize: 9 }}>N° C.I.: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosGenerales.ci}
               </Text>
             </View>
           </View>
-          <View style={{ ...styles.horizontal, marginTop: 5 }}>
+          <View style={{ ...styles.horizontal, marginTop: 2 }}>
             <View style={{ width: "50%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>FECHA DE NACIMIENTO: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ fontSize: 9 }}>FECHA DE NACIMIENTO: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosGenerales.f_nacimiento}
               </Text>
             </View>
             <View style={{ width: "50%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>NRO. DE REFERENCIA: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ fontSize: 9 }}>NRO. DE REFERENCIA: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosGenerales.nro_referencia}
               </Text>
             </View>
           </View>
-          <View style={{ width: "100%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontWeight: "bold", fontSize: 10 }}>
+          <View style={{ width: "100%", marginTop: 2, ...styles.horizontal }}>
+            <Text style={{ fontWeight: "bold", fontSize: 9 }}>
               ESTADO CIVIL:
             </Text>
-            <Text style={{ fontSize: 10 }}>SOLTERO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Soltero(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> CASADO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Casado(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> CONCUBINO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Concubino(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> DIVORCIADO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Divorciado(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> VIUDO(A)</Text>
-            <View
-              style={
-                datosGenerales.estado_civil == "Viudo(a)"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <Text style={{ fontSize: 9 }}>SOLTERO(A)</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.estado_civil == "Soltero(a)" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> CASADO(A)</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.estado_civil == "Casado(a)" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> CONCUBINO(A)</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.estado_civil == "Concubino(a)" ? "X" : ""}
+            </Text>
+            <Text style={{ fontSize: 9 }}> DIVORCIADO(A)</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.estado_civil == "Divorciado(a)" ? "X" : ""}
+            </Text>
+            <Text style={{ fontSize: 9 }}> VIUDO(A)</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.estado_civil == "Viudo(a)" ? "X" : ""}
+            </Text>
           </View>
-          <View style={{ width: "50%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>N° Y NOMBRE DE HIJOS: </Text>
-            <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+          <View style={{ width: "50%", marginTop: 2, ...styles.horizontal }}>
+            <Text style={{ fontSize: 9 }}>N° Y NOMBRE DE HIJOS: </Text>
+            <Text style={{ ...styles.textContainer, fontSize: 9 }}>
               {datosGenerales.hijos.length + " hijos(as). "}
               {datosGenerales.hijos.map((hijo, i) => {
                 return i < datosGenerales.hijos.length
@@ -288,127 +282,84 @@ const MyDocument = () => {
               })}
             </Text>
           </View>
-          <View style={{ width: "100%", marginTop: 5, ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>
-              GRADO DE INSTRUCCIÓN: PRIMARIA{" "}
+          <View style={{ width: "100%", marginTop: 2, ...styles.horizontal }}>
+            <Text style={{ fontSize: 9 }}>GRADO DE INSTRUCCIÓN: PRIMARIA</Text>
+            <Text style={styles.checker}>
+              {datosGenerales.grado == "Primaria" ? "X" : ""}
             </Text>
-            <View
-              style={
-                datosGenerales.grado == "Primaria"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> SECUNDARIA </Text>
-            <View
-              style={
-                datosGenerales.grado == "Secundaria"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> TÉCNICO </Text>
-            <View
-              style={
-                datosGenerales.grado == "Tecnico"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> UNIVERSITARIO </Text>
-            <View
-              style={
-                datosGenerales.grado == "Universitario"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> SIN INSTRUCCIÓN </Text>
-            <View
-              style={
-                datosGenerales.grado == "S/Inst."
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+
+            <Text style={{ fontSize: 9 }}> SECUNDARIA </Text>
+            <Text style={styles.checker}>
+              {datosGenerales.grado == "Secundaria" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> TÉCNICO </Text>
+            <Text style={styles.checker}>
+              {datosGenerales.grado == "Tecnico" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> UNIVERSITARIO </Text>
+            <Text style={styles.checker}>
+              {datosGenerales.grado == "Universitario" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> SIN INSTRUCCIÓN </Text>
+            <Text style={styles.checker}>
+              {datosGenerales.grado == "S/Inst." ? "X" : ""}
+            </Text>
           </View>
           <View style={{ ...styles.horizontal, marginTop: 0 }}>
-            <View style={{ width: "50%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>OCUPACIÓN: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+            <View style={{ width: "30%", ...styles.horizontal }}>
+              <Text style={{ fontSize: 9 }}>OCUPACIÓN: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosGenerales.ocupacion}
               </Text>
             </View>
-            <View style={{ width: "50%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>BENEFICIOS: RENTA DIGNIDAD </Text>
-              <View
-                style={
-                  datosGenerales.beneficios == "Renta Dignidad"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}> JUBILADO </Text>
-              <View
-                style={
-                  datosGenerales.beneficios == "Jubilado"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}> NINGUNO </Text>
-              <View
-                style={
-                  datosGenerales.beneficios == "Ninguno"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
+            <View style={{ width: "70%", ...styles.horizontal }}>
+              <Text style={{ fontSize: 9 }}>BENEFICIOS: RENTA DIGNIDAD </Text>
+              <Text style={styles.checker}>
+                {datosGenerales.beneficios == "Renta Dignidad" ? "X" : ""}
+              </Text>
+
+              <Text style={{ fontSize: 9 }}> JUBILADO </Text>
+              <Text style={styles.checker}>
+                {datosGenerales.beneficios == "Jubilado" ? "X" : ""}
+              </Text>
+
+              <Text style={{ fontSize: 9 }}> NINGUNO </Text>
+              <Text style={styles.checker}>
+                {datosGenerales.beneficios == "Ninguno" ? "X" : ""}
+              </Text>
             </View>
           </View>
           <View style={{ width: "100%", marginTop: 2, ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>DOMICILIO: PROPIO </Text>
-            <View
-              style={
-                datosUbicacion.tipo_domicilio == "Propio"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> ALQUILADO </Text>
-            <View
-              style={
-                datosUbicacion.tipo_domicilio == "Alquilado"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> ANTICRÉTICO </Text>
-            <View
-              style={
-                datosUbicacion.tipo_domicilio == "Anticretico"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> CEDIDO </Text>
-            <View
-              style={
-                datosUbicacion.tipo_domicilio == "Cedido"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}> OTRO </Text>
-            <View
-              style={
-                datosUbicacion.tipo_domicilio == "Otro"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <Text style={{ fontSize: 9 }}>DOMICILIO: PROPIO </Text>
+            <Text style={styles.checker}>
+              {datosUbicacion.tipo_domicilio == "Propio" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> ALQUILADO </Text>
+            <Text style={styles.checker}>
+              {datosUbicacion.tipo_domicilio == "Alquilado" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> ANTICRÉTICO </Text>
+            <Text style={styles.checker}>
+              {datosUbicacion.tipo_domicilio == "Anticretico" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> CEDIDO </Text>
+            <Text style={styles.checker}>
+              {datosUbicacion.tipo_domicilio == "Cedido" ? "X" : ""}
+            </Text>
+
+            <Text style={{ fontSize: 9 }}> OTRO </Text>
+            <Text style={styles.checker}>
+              {datosUbicacion.tipo_domicilio == "Otro" ? "X" : ""}
+            </Text>
+
             {datosUbicacion.tipo_domicilio == "Otro" ? (
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosUbicacion.otro_domicilio}
               </Text>
             ) : (
@@ -416,26 +367,30 @@ const MyDocument = () => {
             )}
           </View>
         </View>
-        <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
+        <Text style={{ fontSize: 10, marginTop: 5, marginBottom: 2 }}>
           II. DESCRIPCIÓN DE LOS HECHOS
         </Text>
         <View style={styles.container}>
-          <Text style={{ fontSize: 10 }}>{descripcionHechos}</Text>
+          <Text style={{ fontSize: 9, fontFamily: "Helvetica-Oblique" }}>
+            {descripcionHechos}
+          </Text>
         </View>
-        <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
+        <Text style={{ fontSize: 10, marginTop: 5, marginBottom: 2 }}>
           III. PETICIÓN DE LA PERSONA ADULTA MAYOR
         </Text>
         <View style={styles.container}>
-          <Text style={{ fontSize: 10 }}>{descripcionPeticion}</Text>
+          <Text style={{ fontSize: 9, fontFamily: "Helvetica-Oblique" }}>
+            {descripcionPeticion}
+          </Text>
         </View>
-        <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
+        <Text style={{ fontSize: 10, marginTop: 5, marginBottom: 2 }}>
           IV. DATOS PERSONALES DEL DENUNCIADO(A)
         </Text>
         <View style={styles.container}>
-          <View style={{ ...styles.horizontal, marginTop: 5 }}>
+          <View style={{ ...styles.horizontal, marginTop: 2 }}>
             <View style={{ width: "100%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>NOMBRES Y APELLIDOS: </Text>
-              <Text style={{ ...styles.textContainer, fontSize: 10 }}>
+              <Text style={{ fontSize: 9 }}>NOMBRES Y APELLIDOS: </Text>
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
                 {datosDenunciado.nombres +
                   " " +
                   datosDenunciado.paterno +
@@ -444,75 +399,74 @@ const MyDocument = () => {
               </Text>
             </View>
             <View style={{ width: "100%", ...styles.horizontal }}>
-              <Text style={{ fontSize: 10 }}>PARENTEZCO: HIJO(A) </Text>
-              <View
-                style={
-                  datosDenunciado.parentezco == "Hijo(a)"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}>FAMILIAR </Text>
-              <View
-                style={
-                  datosDenunciado.parentezco == "Familiar"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}>CONOCIDO </Text>
-              <View
-                style={
-                  datosDenunciado.parentezco == "Conocido"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
-              <Text style={{ fontSize: 10 }}>DESCONOCIDO </Text>
-              <View
-                style={
-                  datosDenunciado.parentezco == "Desconocido"
-                    ? styles.checked
-                    : styles.checker
-                }
-              ></View>
+              <Text style={{ fontSize: 9 }}>PARENTEZCO: </Text>
+              <Text style={{ fontSize: 9 }}> HIJO(A)</Text>
+              <Text style={styles.checker}>
+                {datosDenunciado.parentezco == "Hijo(a)" ? "X" : ""}
+              </Text>
+              <Text style={{ fontSize: 9 }}>FAMILIAR </Text>
+              <Text style={styles.checker}>
+                {datosDenunciado.parentezco == "Familiar" ? "X" : ""}
+              </Text>
+              <Text style={{ fontSize: 9 }}>CONOCIDO </Text>
+              <Text style={styles.checker}>
+                {datosDenunciado.parentezco == "Conocido" ? "X" : ""}
+              </Text>
+              <Text style={{ fontSize: 9 }}>DESCONOCIDO </Text>{" "}
+              <Text style={styles.checker}>
+                {datosDenunciado.parentezco == "Desconocido" ? "X" : ""}
+              </Text>
             </View>
           </View>
         </View>
-        <Text style={{ fontSize: 10, marginTop: 15, marginBottom: 5 }}>
+        <Text style={{ fontSize: 10, marginTop: 5, marginBottom: 2 }}>
           V. ACCIONES REALIZADAS
         </Text>
         <View style={styles.container}>
           <View style={{ width: "100%", ...styles.horizontal }}>
-            <Text style={{ fontSize: 10 }}>APERTURA </Text>
-            <View
-              style={
-                accionRealizada == "Apertura" ? styles.checked : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}>ORIENTACIÓN </Text>
-            <View
-              style={
-                accionRealizada == "Orientacion"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}>CITACIÓN </Text>
-            <View
-              style={
-                accionRealizada == "Citacion" ? styles.checked : styles.checker
-              }
-            ></View>
-            <Text style={{ fontSize: 10 }}>DERIVACIÓN </Text>
-            <View
-              style={
-                accionRealizada == "Derivacion"
-                  ? styles.checked
-                  : styles.checker
-              }
-            ></View>
+            <Text style={{ fontSize: 9 }}>APERTURA </Text>
+            <Text style={styles.checker}>
+              {accionRealizada == "Apertura" ? "X" : ""}
+            </Text>
+            <Text style={{ fontSize: 9 }}>ORIENTACIÓN </Text>
+            <Text style={styles.checker}>
+              {accionRealizada == "Orientacion" ? "X" : ""}
+            </Text>
+            <Text style={{ fontSize: 9 }}>CITACIÓN </Text>
+            <Text style={styles.checker}>
+              {accionRealizada == "Citacion" ? "X" : ""}
+            </Text>
+            <Text style={{ fontSize: 9 }}>DERIVACIÓN </Text>
+            <Text style={styles.checker}>
+              {accionRealizada == "Derivacion" ? "X" : ""}
+            </Text>
           </View>
+        </View>
+        <View style={styles.signatureBox}>
+          <Text style={{ borderTop: "0.5px solid black", paddingTop: 9 }}>
+            {persona.profesion +
+              " " +
+              persona.nombres +
+              " " +
+              persona.paterno +
+              " " +
+              persona.materno}
+          </Text>
+          <Text>Sello y Firma del (la) profesional</Text>
+        </View>
+        <View fixed style={{ position: "absolute", bottom: 10, left: 20 }}>
+          <Text style={{ width: "100%", fontSize: 7, textAlign: "center" }}>
+            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
+            Torres y Hernán Siles.
+          </Text>
+          <Text
+            fixed
+            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
+          >
+            {
+              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
+            }
+          </Text>
         </View>
       </Page>
     </Document>

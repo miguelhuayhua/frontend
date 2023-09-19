@@ -37,6 +37,7 @@ import Link from "next/link";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import PdfPersonal from "./pdf-listado";
 import { useSession } from "next-auth/react";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context4 = createContext({});
 const Informacion = () => {
   const [open, setOpen] = useState(false);
@@ -54,10 +55,30 @@ const Informacion = () => {
       className: "text-center",
       fixed: "left",
       width: 120,
+      render: (_, persona) => {
+        return (
+          <Paragraph className="center" copyable>
+            {persona.id_persona}
+          </Paragraph>
+        );
+      },
     },
+
+    {
+      title: "C.I.",
+      key: "ci",
+      render: (_, persona) => {
+        return (
+          <Paragraph className="center" copyable>
+            {persona.ci}
+          </Paragraph>
+        );
+      },
+      className: "text-center",
+    },
+
     {
       title: "Persona",
-
       key: "Persona",
       render: (_, persona) => {
         return `${persona.profesion} ${persona.nombres} ${persona.paterno} ${persona.materno}`;
@@ -124,7 +145,7 @@ const Informacion = () => {
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -132,14 +153,11 @@ const Informacion = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona1(res.data);
-        });
+
+      setPersona1(persona);
+
       axios
         .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
         .then((res) => {
@@ -204,7 +222,7 @@ const Informacion = () => {
                   <context4.Provider
                     value={{
                       personas: displayPersonas,
-                      persona: persona,
+                      persona: persona1,
                     }}
                   >
                     <PdfPersonal />
@@ -404,16 +422,7 @@ const Informacion = () => {
           };
         }}
       />
-      <PDFViewer width={"100%"} height={500}>
-        <context4.Provider
-          value={{
-            personas: displayPersonas,
-            persona: persona1,
-          }}
-        >
-          <PdfPersonal />
-        </context4.Provider>
-      </PDFViewer>
+
       <PersonaModal
         persona={persona}
         loaded={loaded}
@@ -423,6 +432,7 @@ const Informacion = () => {
         key="personamodal"
         open={open}
         setOpen={setOpen}
+        persona1={persona1}
       ></PersonaModal>
     </>
   );

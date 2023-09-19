@@ -131,37 +131,45 @@ const Informacion = () => {
           key={caso.id_caso + "d"}
           className="d-flex align-items-center justify-content-around"
         >
-          <Button
-            key={caso.id_caso}
-            style={{
-              fontSize: 20,
-              width: 40,
-              height: 40,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 0,
-            }}
-          >
-            <div className="btn-cover"></div>
-            <EditOutlined style={{ zIndex: 0 }} />
-          </Button>
-          <Button
-            key={caso.id_caso + "t"}
-            style={{
-              fontSize: 50,
-              width: 52,
-              height: 40,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 0,
-            }}
-          >
-            <div className="btn-redirect"></div>
-            <SlLayers />
-          </Button>
-          <Switch key={caso.id_caso + "-"} checked={caso.estado == 1} />
+          {caso.estado != 1 ? null : (
+            <>
+              <Button
+                key={caso.id_caso}
+                style={{
+                  fontSize: 20,
+                  width: 40,
+                  height: 40,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 0,
+                }}
+              >
+                <div className="btn-cover"></div>
+                <EditOutlined style={{ zIndex: 0 }} />
+              </Button>
+              <Button
+                key={caso.id_caso + "t"}
+                style={{
+                  fontSize: 50,
+                  width: 52,
+                  height: 40,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 0,
+                }}
+              >
+                <div className="btn-redirect"></div>
+                <SlLayers />
+              </Button>
+            </>
+          )}
+          {persona.cargo == "1" ? (
+            <>
+              <Switch key={caso.id_caso + "-"} checked={caso.estado == 1} />
+            </>
+          ) : null}
         </div>
       ),
     },
@@ -178,7 +186,7 @@ const Informacion = () => {
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -186,25 +194,19 @@ const Informacion = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
 
-          axios
-            .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
-            .then((res) => {
-              setCasos(res.data);
-              setDisplayCasos(res.data);
-            });
-          axios
-            .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
-            .then((res) => {
-              setAdultos(res.data);
-            });
+      setPersona(persona);
+
+      axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
+        setCasos(res.data);
+        setDisplayCasos(res.data);
+      });
+      axios
+        .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
+        .then((res) => {
+          setAdultos(res.data);
         });
     }
   }, [data]);
@@ -301,7 +303,7 @@ const Informacion = () => {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
-                    let nombrePdf = `Adultos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    let nombrePdf = `Casos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
                     link.setAttribute("download", nombrePdf);
                     document.body.appendChild(link);
                     link.click();
@@ -482,6 +484,7 @@ const Informacion = () => {
         onRow={(value) => {
           return {
             onClick: (ev: any) => {
+              console.log(ev.target);
               if (ev.target.className.includes("switch")) {
                 axios
                   .post(process.env.BACKEND_URL + "/caso/estado", {
@@ -528,16 +531,7 @@ const Informacion = () => {
           };
         }}
       />
-      <PDFViewer width={"100%"} height={500}>
-        <context.Provider
-          value={{
-            casos: displayCasos,
-            persona: persona,
-          }}
-        >
-          <PdfCasos />
-        </context.Provider>
-      </PDFViewer>
+
       <CasoModal
         key="casomodal"
         adultoMayor={adultoMayor}

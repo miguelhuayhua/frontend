@@ -29,6 +29,7 @@ import Dragger from "antd/es/upload/Dragger";
 import { useState } from "react";
 import { FaRegImage } from "react-icons/fa";
 import bcrypt from "bcryptjs";
+import { Persona } from "../../personal/agregar/data";
 
 //ROUTING
 
@@ -41,6 +42,7 @@ interface Props {
   setUsuarios: any;
   loaded: boolean;
   setDisplayUsuarios: any;
+  persona: Persona;
 }
 const UsuarioModal: NextPage<Props> = (props) => {
   const [progress, setProgress] = useState<{
@@ -177,13 +179,19 @@ const UsuarioModal: NextPage<Props> = (props) => {
         ]}
       >
         {props.loaded ? (
-          <Row gutter={24}>
-            <Col span={24}>
+          <Row gutter={[24, 12]}>
+            <Col span={12}>
               <p style={{ color: "gray", textAlign: "start" }}>
                 <span>Última modifcación: </span>
                 {moment(props.usuario.ult_modificacion).format(
                   "YYYY-MM-DD HH:mm:ss"
                 )}
+              </p>
+            </Col>
+            <Col span={12}>
+              <p style={{ color: "gray", textAlign: "start" }}>
+                <span>Persona encargada/ID: </span>
+                {`${props.persona.nombres} ${props.persona.paterno} ${props.persona.materno}/${props.persona.id_persona}`}
               </p>
             </Col>
             <Col span={24} md={{ span: 12 }}>
@@ -198,6 +206,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
                 <p>Imagen de Perfil:</p>
                 {props.usuario.fotografia != "" ? (
                   <Image
+                    alt="Foto de perfil"
                     preview={{
                       width: "80%",
                       mask: <b style={{ color: "white" }}>Ver Imagen</b>,

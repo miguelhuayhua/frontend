@@ -165,7 +165,7 @@ const FormularioSeguimiento = () => {
             {dias2[fecha.day()]} {fecha.date()} de {meses[fecha.month()]} DE{" "}
             {fecha.year()} a horas {citacion.hora_citacion}, a objeto de tratar
             la situación{" "}
-            {adulto.sexo == "Masculino" ? "del Adulto" : "la Adulta "}Mayor{" "}
+            {adulto.genero == "Masculino" ? "del Adulto" : "la Adulta "}Mayor{" "}
             <Text style={styles.textBold}>
               {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
             </Text>{" "}
@@ -176,8 +176,8 @@ const FormularioSeguimiento = () => {
             El equipo multidisiciplinario de la Unidad de Adultos Mayores le
             informa que queda terminantemente PROHIBIDO EJERCER CUALQUIER TIPO
             DE MALTRATATO CONTRA{" "}
-            {adulto.sexo == "Masculino" ? "EL ADULTO" : "LA ADULTA"} MAYOR, y se
-            le hace conocer que debe respetar sus derechos sin argüir
+            {adulto.genero == "Masculino" ? "EL ADULTO" : "LA ADULTA"} MAYOR, y
+            se le hace conocer que debe respetar sus derechos sin argüir
             desconocimiento.
           </Text>
           <Text style={{ ...styles.parraf, ...styles.textBold }}>

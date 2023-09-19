@@ -108,7 +108,9 @@ const Informacion = () => {
           >
             <EditOutlined style={{ zIndex: 0 }} />
           </Button>
-          <Switch key={hijo.id_hijo + "-"} checked={hijo.estado == 1} />
+          {persona.cargo == "1" ? (
+            <Switch key={hijo.id_hijo + "-"} checked={hijo.estado == 1} />
+          ) : null}
         </div>
       ),
     },
@@ -123,7 +125,7 @@ const Informacion = () => {
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -131,21 +133,21 @@ const Informacion = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
-
-          axios
-            .get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all")
-            .then((res) => {
-              setHijos(res.data);
-              setDisplayHijos(res.data);
-            });
-        });
+      setPersona(persona);
+      axios.get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all").then((res) => {
+        if (persona.cargo == "1") {
+          setHijos(res.data);
+          setDisplayHijos(res.data);
+        } else {
+          let hijosFilter = res.data.filter((value) => {
+            return value.estado == 1;
+          });
+          setHijos(hijosFilter);
+          setDisplayHijos(hijosFilter);
+        }
+      });
     }
   }, [data]);
 
@@ -204,7 +206,7 @@ const Informacion = () => {
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = url;
-                    let nombrePdf = `Adultos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    let nombrePdf = `Hijos-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
                     link.setAttribute("download", nombrePdf);
                     document.body.appendChild(link);
                     link.click();
@@ -416,7 +418,7 @@ const Informacion = () => {
           };
         }}
       />
-     
+
       <HijoModal
         hijo={hijo}
         loaded={loaded}

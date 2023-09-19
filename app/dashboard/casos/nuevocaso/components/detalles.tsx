@@ -277,7 +277,10 @@ const Detalles: NextPage<Props> = (props) => {
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Género: </p>
-                <p className="contenido"> {props.datos.datosGenerales.sexo}</p>
+                <p className="contenido">
+                  {" "}
+                  {props.datos.datosGenerales.genero}
+                </p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>

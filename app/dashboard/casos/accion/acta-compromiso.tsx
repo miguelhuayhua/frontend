@@ -11,6 +11,7 @@ import {
   Row,
   Select,
   Skeleton,
+  notification,
 } from "antd";
 import { NextPage } from "next";
 import { BsTextParagraph, BsFillTrash3Fill, BsPlus } from "react-icons/bs";
@@ -26,6 +27,8 @@ import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import FormularioActaCompromiso from "./pdf-compromiso";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 interface Props {
   setOpen: any;
   open: boolean;
@@ -44,7 +47,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [compromiso, setCompromiso] = useState<Compromiso>(dataCompromiso);
-
+  const router = useRouter();
   return (
     <>
       <Modal
@@ -59,6 +62,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
         width={"85%"}
         footer={[
           <Button
+            key={"btn-vista"}
             onClick={() => {
               setOpen(true);
             }}
@@ -74,6 +78,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
           </Button>,
 
           <Button
+            key={"btn-generar"}
             style={{ height: 45 }}
             onClick={() => {
               setOpen2(true);
@@ -222,7 +227,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                         <>
                           <span className="small-number">{index + 1}</span>
                           <BsTextParagraph
-                            style={{ fontSize: 20 }}
+                            style={{ fontSize: 20, textAlign: "center" }}
                           ></BsTextParagraph>
                         </>
                       }
@@ -266,33 +271,47 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
         title="¿Continuar?"
         open={open2}
         onOk={() => {
-          pdf(
-            <DataContext3.Provider
-              value={{
-                adulto: props.adulto,
-                caso: props.caso,
-                persona: props.persona,
-                compromisos: compromisos,
-                denunciado: props.denunciado,
-              }}
-            >
-              <FormularioActaCompromiso />
-            </DataContext3.Provider>
-          )
-            .toBlob()
-            .then((blob) => {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement("a");
-              link.href = url;
-              let { nombre, paterno, materno } = props.adulto;
+          axios
+            .post(process.env.BACKEND_URL + "/caso/acta-compromiso", {
+              id_caso: props.caso.id_caso,
+              compromisos: compromisos,
+              denunciado: props.denunciado,
+            })
+            .then((res) => {
+              if (res.data.status == 1) {
+                notification.success({ message: "Acta generada con éxito" });
+                pdf(
+                  <DataContext3.Provider
+                    value={{
+                      adulto: props.adulto,
+                      caso: props.caso,
+                      persona: props.persona,
+                      compromisos: compromisos,
+                      denunciado: props.denunciado,
+                    }}
+                  >
+                    <FormularioActaCompromiso />
+                  </DataContext3.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let { nombre, paterno, materno } = props.adulto;
 
-              link.setAttribute(
-                "download",
-                nombre + paterno + materno + ".pdf"
-              );
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+                    link.setAttribute(
+                      "download",
+                      nombre + paterno + materno + ".pdf"
+                    );
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    router.replace("/dashboard/casos");
+                  });
+              } else {
+                notification.error({ message: res.data.message });
+              }
             });
         }}
         onCancel={() => {

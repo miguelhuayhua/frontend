@@ -23,5 +23,5 @@ export let dataDenunciado: Denunciado = {
   parentezco: "",
   genero: "",
   ci: 0,
-  expedido: "",
+  expedido: "LP",
 };

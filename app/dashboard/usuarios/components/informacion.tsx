@@ -31,19 +31,24 @@ import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import UsuarioModal from "./usuario";
 import { Usuario, dataUsuario } from "../data";
-import { useRouter } from "next/navigation";
-export const DataContext = createContext({});
 //ROUTING
 import "./estilos.scss";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { Persona, dataPersona } from "../../personal/agregar/data";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import PdfUsuarios from "./pdf-listado";
+import { useRouter } from "next/navigation";
+export const context5 = createContext({});
 
 const Informacion = () => {
   dayjs.extend(isBeetwen);
   //estados
   const [loaded, setLoaded] = useState(false);
-  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   const [open, setOpen] = useState(false);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [persona1, setPersona1] = useState<Persona>(dataPersona);
+
   const [displayUsuarios, setDisplayUsuarios] = useState<Usuario[]>([]);
   const columns: ColumnsType<Usuario> = [
     {
@@ -123,14 +128,44 @@ const Informacion = () => {
   ];
 
   //cargado de datos desde la API
+
+  const [persona, setPersona] = useState<Persona>(dataPersona);
+
+  //cargado de datos desde la API
+  const { data } = useSession();
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
+
+  const router = useRouter();
   useEffect(() => {
-    axios
-      .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
-      .then((res) => {
-        setUsuarios(res.data);
-        setDisplayUsuarios(res.data);
-      });
-  }, []);
+    if (data) {
+      let { usuario, persona } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+        persona: Persona;
+      };
+      if (persona.cargo != "1") {
+        router.back();
+      } else {
+        setPersona(persona);
+        setUsuario({ password: "", ult_modificacion: "", ...usuario });
+        axios
+          .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
+          .then((res) => {
+            setUsuarios(res.data);
+            setDisplayUsuarios(
+              res.data.filter((value) => {
+                return value.id_usuario != usuario.id_usuario;
+              })
+            );
+          });
+      }
+    }
+  }, [data]);
 
   return (
     <>
@@ -150,7 +185,7 @@ const Informacion = () => {
           className="center"
         >
           <Link
-            href="/dashboard/usuario/agregar"
+            href="/dashboard/usuarios/agregar"
             style={{ textDecoration: "none" }}
           >
             <Button
@@ -179,6 +214,35 @@ const Informacion = () => {
                   }}
                 />
               }
+              onClick={() => {
+                notification.info({
+                  message: "Generando PDF, por favor espere...",
+                });
+                pdf(
+                  <context5.Provider
+                    value={{
+                      usuarios: displayUsuarios,
+                      persona: persona,
+                    }}
+                  >
+                    <PdfUsuarios />
+                  </context5.Provider>
+                )
+                  .toBlob()
+                  .then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    let nombrePdf = `Usuarios-${dayjs().year()}-${dayjs().month()}-${dayjs().date()}.pdf`;
+                    link.setAttribute("download", nombrePdf);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    notification.success({
+                      message: "PDF " + nombrePdf + " generado con éxito...",
+                    });
+                  });
+              }}
             />
           </Tooltip>
           <Tooltip
@@ -251,7 +315,13 @@ const Informacion = () => {
                 .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
                 .then((res) => {
                   setUsuarios(res.data);
-                  setDisplayUsuarios(res.data);
+                  console.log(res.data);
+                  console.log(usuario);
+                  setDisplayUsuarios(
+                    res.data.filter((value) => {
+                      return value.id_usuario != usuario.id_usuario;
+                    })
+                  );
                   message.info("Datos actualizados...");
                 });
             }}
@@ -339,25 +409,39 @@ const Informacion = () => {
                       id_usuario: value.id_usuario,
                     })
                     .then((res) => {
-                      message.success("¡Caso cambiado con éxito!");
+                      message.success("¡Usuario cambiado con éxito!");
                       axios
                         .get<Usuario[]>(
                           process.env.BACKEND_URL + "/usuario/all"
                         )
                         .then((res) => {
                           setUsuarios(res.data);
-                          setDisplayUsuarios(res.data);
+                          setDisplayUsuarios(
+                            res.data.filter((value) => {
+                              return value.id_usuario != usuario.id_usuario;
+                            })
+                          );
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
                   setOpen(true);
                   axios
-                    .post(process.env.BACKEND_URL + "/usuario/get", {
+                    .post<Usuario>(process.env.BACKEND_URL + "/usuario/get", {
                       id_usuario: value.id_usuario,
                     })
                     .then((res) => {
                       setUsuario(res.data);
                       setLoaded(true);
+                      axios
+                        .post<Persona>(
+                          process.env.BACKEND_URL + "/persona/get",
+                          {
+                            id_persona: res.data.id_persona,
+                          }
+                        )
+                        .then((res) => {
+                          setPersona1(res.data);
+                        });
                     });
                 }
               } catch (error) {
@@ -375,6 +459,7 @@ const Informacion = () => {
           };
         }}
       />
+
       <UsuarioModal
         usuario={usuario}
         loaded={loaded}
@@ -384,6 +469,7 @@ const Informacion = () => {
         key="usuariomodal"
         open={open}
         setOpen={setOpen}
+        persona={persona1}
       ></UsuarioModal>
     </>
   );

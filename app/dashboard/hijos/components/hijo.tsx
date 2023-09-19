@@ -48,7 +48,7 @@ const HijoModal: NextPage<Props> = (props) => {
           notification.success({
             message: `¡Los datos de ${props.hijo.nombres_apellidos} se modificaron con éxito!`,
           });
-          axios.get<Adulto[]>(process.env.BACKEND_URL+"RLRL/hijo/all").then((res) => {
+          axios.get<Adulto[]>(process.env.BACKEND_URL+"/hijo/all").then((res) => {
             props.setHijos(res.data);
             props.setDisplayHijos(res.data);
           });
@@ -155,7 +155,7 @@ const HijoModal: NextPage<Props> = (props) => {
                     </Form.Item>
                   </Col>
                   <Col span={24} md={{ span: 8 }}>
-                    <Form.Item label="Sexo:">
+                    <Form.Item label="Género:">
                       <Radio.Group
                         value={props.hijo.genero}
                         defaultValue={props.hijo.genero}

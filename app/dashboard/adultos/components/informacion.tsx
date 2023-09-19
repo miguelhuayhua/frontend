@@ -99,21 +99,30 @@ const Informacion = () => {
           key={adulto.id_adulto + "d"}
           className="d-flex align-items-center justify-content-around"
         >
-          <Button
-            key={adulto.id_adulto}
-            style={{
-              fontSize: 20,
-              width: 40,
-              height: 40,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 0,
-            }}
-          >
-            <EditOutlined style={{ zIndex: 0 }} />
-          </Button>
-          <Switch key={adulto.id_adulto + "-"} checked={adulto.estado == 1} />
+          {adulto.estado != 1 ? null : (
+            <Button
+              key={adulto.id_adulto}
+              style={{
+                fontSize: 20,
+                width: 40,
+                height: 40,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 0,
+              }}
+            >
+              <EditOutlined style={{ zIndex: 0 }} />
+            </Button>
+          )}
+          {persona.cargo == "1" ? (
+            <>
+              <Switch
+                key={adulto.id_adulto + "-"}
+                checked={adulto.estado == 1}
+              />
+            </>
+          ) : null}
         </div>
       ),
     },
@@ -127,7 +136,7 @@ const Informacion = () => {
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -135,14 +144,9 @@ const Informacion = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
-        });
+      setPersona(persona);
       axios
         .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
         .then((res) => {

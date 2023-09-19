@@ -390,7 +390,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                       bordered={false}
                       title={
                         <>
-                          <span className="number">{index + 1}</span>
+                          <span className="number">{item.numero + 1}</span>
                           <b>{nro_citacion[item.numero]} Citación</b>
                           {item.suspendido == 1 ? (
                             <Tag color="#f50">Suspendido</Tag>

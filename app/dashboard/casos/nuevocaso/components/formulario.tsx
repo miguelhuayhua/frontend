@@ -216,8 +216,8 @@ const Formulario: NextPage<Props> = (props) => {
     setDatosGenerales({ ...datosGenerales, ci: value });
   };
 
-  const handleSexo = (value: any) => {
-    setDatosGenerales({ ...datosGenerales, sexo: value.target.value });
+  const handlegenero = (value: any) => {
+    setDatosGenerales({ ...datosGenerales, genero: value.target.value });
   };
 
   const handleNacimiento = (value: any) => {
@@ -304,7 +304,7 @@ const Formulario: NextPage<Props> = (props) => {
   const handleTipologia = (value: any) => {
     setDatosDenuncia({
       ...datosDenuncia,
-      tipologia: value.target.value,
+      tipologia: value,
     });
   };
 
@@ -488,7 +488,7 @@ const Formulario: NextPage<Props> = (props) => {
                     <Radio.Group
                       defaultValue={"Femenino"}
                       className="normal-input"
-                      onChange={handleSexo}
+                      onChange={handlegenero}
                     >
                       <Radio value="Femenino"> Femenino </Radio>
                       <Radio value="Masculino"> Masculino </Radio>

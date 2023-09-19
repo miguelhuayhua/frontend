@@ -124,12 +124,13 @@ const FormularioActaCompromiso = () => {
             horas 11:00 a.m. en instalaciones de la Unidad de Adultos Mayores -
             DDI - SMDHSI del Gobierno Autnónomo Municipal de El Alto, se hacen
             presente de manera libre voluntaria y sin que medie presión, dolo o
-            vicio del consentimiento alguno a la Sra.{" "}
+            vicio del consentimiento alguno{" "}
+            {adulto.genero == "Feminino" ? "a la Sra." : "a el Sr."}{" "}
             <Text style={styles.textBold}>
               {adulto.nombre + " " + adulto.paterno + " " + adulto.materno} C.I.{" "}
               {adulto.ci + " " + adulto.expedido}
             </Text>{" "}
-            y la Sra{" "}
+            y {denunciado.genero == "Femenino" ? "la Sra" : "el Sr."}{" "}
             <Text style={styles.textBold}>
               {denunciado.nombres +
                 " " +
@@ -146,8 +147,9 @@ const FormularioActaCompromiso = () => {
           <Text style={styles.parraf}>
             <Text style={styles.textBold}>PRIMERO {"(ANTECEDENTES)"} </Text>- En
             fecha {fechaCaso.date()} de {meses[fechaCaso.month()]} del{" "}
-            {fechaCaso.year()} se apresona a la Unidad de Adultos Mayores la
-            Sra. {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
+            {fechaCaso.year()} se apresona a la Unidad de Adultos Mayores{" "}
+            {adulto.genero == "Femenino" ? "la Sra." : "el Sr."}{" "}
+            {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
             {" (adulto mayor)"} quien refiere:
           </Text>
           <Text style={styles.parraf}>{caso.descripcion_hechos}</Text>
@@ -156,7 +158,7 @@ const FormularioActaCompromiso = () => {
               {" "}
               SEGUNDO {"(OBJETO DEL COMPROMISO)"}
             </Text>{" "}
-            - Que la Sra.{" "}
+            {denunciado.genero == "Femenino" ? "- Que la Sra." : "- Que el Sr."}
             {denunciado.nombres +
               " " +
               denunciado.paterno +

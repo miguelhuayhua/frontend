@@ -393,7 +393,10 @@ export default function Dashboard() {
                             renderItem={(item, index) => (
                               <List.Item
                                 actions={[
-                                  <Tooltip title="Entrar al caso">
+                                  <Tooltip
+                                    key={index + "t"}
+                                    title="Entrar al caso"
+                                  >
                                     <Link
                                       href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
                                     >
@@ -469,8 +472,12 @@ export default function Dashboard() {
                             renderItem={(item, index) => (
                               <List.Item
                                 actions={[
-                                  <Tooltip title="Entrar al caso">
+                                  <Tooltip
+                                    key={index + "to"}
+                                    title="Entrar al caso"
+                                  >
                                     <Link
+                                      key={index + "i"}
                                       href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
                                     >
                                       <Button>

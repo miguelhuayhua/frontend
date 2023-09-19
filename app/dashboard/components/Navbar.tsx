@@ -37,7 +37,7 @@ const Navbar = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -45,15 +45,10 @@ const Navbar = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
       setUsuario({ ...usuario });
-      axios
-        .post(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
-        });
+      setPersona(persona);
     }
   }, [data]);
   const items: MenuProps["items"] = [
@@ -189,7 +184,15 @@ const Navbar = () => {
                     label: (
                       <button
                         onClick={() => {
-                          signOut({ redirect: true });
+                          axios
+                            .post(process.env.BACKEND_URL + "/usuario/out", {
+                              id_usuario: usuario.id_usuario,
+                            })
+                            .then((res) => {
+                              if (res.data.status == 1) {
+                                signOut({ redirect: true });
+                              }
+                            });
                         }}
                         className="custom-btn"
                       >

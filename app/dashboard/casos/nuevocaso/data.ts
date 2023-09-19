@@ -43,7 +43,7 @@ export interface AdultoMayor {
     nombre: string;
     paterno: string;
     materno: string;
-    sexo: string;
+    genero: string;
     edad: number;
     ci: number;
     f_nacimiento: string;
@@ -60,7 +60,7 @@ export interface AdultoMayor2 {
     nombre: string;
     paterno: string;
     materno: string;
-    sexo: string;
+    genero: string;
     edad: number;
     ci: number;
     f_nacimiento: string;
@@ -108,7 +108,7 @@ export let dataDatosGenerales = {
     nombre: "",
     paterno: "",
     nro_referencia: 0,
-    sexo: "Femenino",
+    genero: "Femenino",
     hijos: [],
     grado: "Primaria",
     beneficios: "Ninguno",
@@ -148,7 +148,7 @@ export interface Citado {
     citado: number;
 }
 export let nro_citacion: string[] = [
-    "Primera", "Segunda", "Tercera", "Cuarta"
+    "Primera", "Segunda", "Tercera", "Cuarta", ""
 ]
 
 export interface Audiencia {
@@ -157,7 +157,7 @@ export interface Audiencia {
     observacion: string;
     ult_modificacion: string;
     estado: number;
-    
+
     id_citacion: string;
 }
 

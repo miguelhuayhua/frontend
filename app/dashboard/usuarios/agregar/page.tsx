@@ -41,6 +41,7 @@ import { now } from "moment";
 import Search from "antd/es/input/Search";
 import Dragger from "antd/es/upload/Dragger";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 const AgregarUsuarios = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -60,25 +61,44 @@ const AgregarUsuarios = () => {
 
   const [file, setFile] = useState<any>(null);
   const params = useSearchParams();
-  useEffect(() => {
-    axios
-      .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
-      .then((res) => {
-        setPersonas(res.data);
-      });
-    let id_persona = params.get("id_persona");
-    if (id_persona) {
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona })
-        .then((res) => {
-          if (res.data) {
-            setPersona(res.data);
-            setCi(res.data.ci.toString());
-          }
-        });
-    }
-  }, []);
 
+  //cargado de datos desde la API
+  const { data } = useSession();
+  useEffect(() => {
+    if (data) {
+      let { usuario, persona } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+        persona: Persona;
+      };
+      if (persona.cargo != "1") {
+        router.back();
+      }
+      axios
+        .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
+        .then((res) => {
+          setPersonas(res.data);
+        });
+      let id_persona = params.get("id_persona");
+      if (id_persona) {
+        axios
+          .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
+            id_persona,
+          })
+          .then((res) => {
+            if (res.data) {
+              setPersona(res.data);
+              setCi(res.data.ci.toString());
+            }
+          });
+      }
+    }
+  }, [data]);
   return (
     <main>
       <Layout>
@@ -143,6 +163,16 @@ const AgregarUsuarios = () => {
                               notification.error({
                                 message:
                                   "Por favor seleccione al personal encargado del nuevo usuario",
+                              });
+                              setProgress({
+                                message: "Verificar",
+                                progress: 0,
+                                status: "normal",
+                              });
+                            } else if (file == null) {
+                              notification.error({
+                                message:
+                                  "Por favor, inserte una imagen de usuario...",
                               });
                               setProgress({
                                 message: "Verificar",
@@ -365,23 +395,45 @@ const AgregarUsuarios = () => {
                       </Form>
                     </Col>
                     <Col style={{ marginTop: 50 }} span={24} lg={10}>
-                      <b>Buscar por CI:</b>
-                      <Search
-                        placeholder="Introduzca CI de la persona"
-                        onChange={(ev: any) => {
-                          setCi(ev.target.value);
-                          let personaFinded = personas.find((persona) => {
-                            return persona.ci == ev.target.value;
-                          });
-                          if (personaFinded) {
-                            setPersona(personaFinded);
-                          } else {
-                            console.log("no hay persona ");
-                            setPersona(dataPersona);
-                          }
-                        }}
-                        value={ci}
-                      />
+                      <Row gutter={[12, 12]}>
+                        <Col span={12}>
+                          <b>Buscar por CI:</b>
+                          <Search
+                            placeholder="Introduzca CI de la persona"
+                            onChange={(ev: any) => {
+                              setCi(ev.target.value);
+                              let personaFinded = personas.find((persona) => {
+                                return persona.ci == ev.target.value;
+                              });
+                              if (personaFinded) {
+                                setPersona(personaFinded);
+                              } else {
+                                console.log("no hay persona ");
+                                setPersona(dataPersona);
+                              }
+                            }}
+                            value={ci}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <b>Buscar por nombres y apellidos:</b>
+                          <Search
+                            placeholder="Introduzca los nombres y apellidos de la persona"
+                            onChange={(ev) => {
+                              let personaFinded = personas.find((persona) => {
+                                return `${persona.nombres} ${persona.paterno} ${persona.materno}`
+                                  .toLowerCase()
+                                  .includes(ev.target.value.toLowerCase());
+                              });
+                              if (personaFinded && ev.target.value) {
+                                setPersona(personaFinded);
+                              } else {
+                                setPersona(dataPersona);
+                              }
+                            }}
+                          />
+                        </Col>
+                      </Row>
                       <Card style={{ marginTop: 50 }}>
                         <Meta
                           avatar={
@@ -545,6 +597,9 @@ const AgregarUsuarios = () => {
                 notification.success({ message: "¡Usuario creado con éxito!" });
                 router.replace("/dashboard/usuarios");
               }
+            })
+            .catch((res) => {
+              notification.error({ message: "Ha ocurrido un error..." });
             });
         }}
         onCancel={() => {
