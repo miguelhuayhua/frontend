@@ -53,6 +53,7 @@ export interface AdultoMayor {
     grado: string;
     ocupacion: string;
     beneficios: string;
+    expedido?: string;
 
 }
 export interface AdultoMayor2 {
@@ -79,8 +80,8 @@ export interface DatosUbicacion {
     tipo_domicilio: string;
     distrito: number;
     zona: string;
-    calle: string;
-    n_vivienda: number;
+    calle_av: string;
+    nro_vivienda: number;
     area: string;
     otro_domicilio: string;
     otra_area: string;
@@ -119,14 +120,24 @@ export let dataDatosGenerales = {
 export let dataDatosUbicacion = {
     area: "Urbano",
     otra_area: "",
-    calle: "",
+    calle_av: "",
     distrito: 1,
-    n_vivienda: 0,
+    nro_vivienda: 0,
     tipo_domicilio: "Propio",
     zona: "",
     otro_domicilio: "",
 };
-
+export let departamentos = [
+    { value: "LP", label: "La Paz" },
+    { value: "CBB", label: "Cochabamba" },
+    { value: "SCZ", label: "Santa Cruz" },
+    { value: "OR", label: "Oruro" },
+    { value: "CH", label: "Chuquisaca" },
+    { value: "TJ", label: "Tarija" },
+    { value: "PD", label: "Pando" },
+    { value: "PT", label: "Potosí" },
+    { value: "BN", label: "Beni" },
+]
 export let dataDatosDenunciado = {
     nombres: "",
     parentezco: "Hijo(a)",
@@ -135,9 +146,9 @@ export let dataDatosDenunciado = {
 
 }
 export let dataDatosDenuncia = {
-    fecha_registro: dayjs().format('YYYY-MM-DD'),
+    fecha_registro: dayjs().format('DD-MM-YYYY'),
     hora_registro: dayjs().format('HH:mm:ss'),
-    tipologia: "",
+    tipologia: "Abandono",
     nro_caso: ""
 
 }

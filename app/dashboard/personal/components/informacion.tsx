@@ -38,6 +38,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import PdfPersonal from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 export const context4 = createContext({});
 const Informacion = () => {
   const [open, setOpen] = useState(false);
@@ -139,7 +140,7 @@ const Informacion = () => {
   //cargado de datos desde la API
 
   const [persona1, setPersona1] = useState<Persona>(dataPersona);
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   //cargado de datos desde la API
   const { data } = useSession();
 
@@ -157,12 +158,16 @@ const Informacion = () => {
       };
 
       setPersona1(persona);
-
+      setUsuario({ ...usuario, ult_modificacion: "", password: "" });
       axios
         .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
         .then((res) => {
           setPersonas(res.data);
-          setDisplayPersonas(res.data);
+          setDisplayPersonas(
+            res.data.filter((value) => {
+              return value.id_persona != persona.id_persona;
+            })
+          );
         });
     }
   }, [data]);
@@ -315,7 +320,11 @@ const Informacion = () => {
                 .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
                 .then((res) => {
                   setPersonas(res.data);
-                  setDisplayPersonas(res.data);
+                  setDisplayPersonas(
+                    res.data.filter((value) => {
+                      return value.id_persona != persona1.id_persona;
+                    })
+                  );
                   message.info("Datos actualizados...");
                 });
             }}
@@ -393,7 +402,11 @@ const Informacion = () => {
                         )
                         .then((res) => {
                           setPersonas(res.data);
-                          setDisplayPersonas(res.data);
+                          setDisplayPersonas(
+                            res.data.filter((value) => {
+                              return value.id_persona != persona1.id_persona;
+                            })
+                          );
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {

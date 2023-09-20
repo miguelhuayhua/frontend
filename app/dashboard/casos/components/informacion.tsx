@@ -1,11 +1,9 @@
 "use client";
 import {
-  Breadcrumb,
   Button,
   Col,
   DatePicker,
   Empty,
-  FloatButton,
   Form,
   Input,
   Row,
@@ -25,16 +23,11 @@ import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
   FilterOutlined,
-  FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
-  AppstoreOutlined,
-  BarsOutlined,
 } from "@ant-design/icons";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-
-import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineReload, AiOutlinePlus } from "react-icons/ai";
 import { SlLayers } from "react-icons/sl";
 import { Caso, DatosDenunciado, Denunciado, datosCaso } from "../data";
 import CasoModal from "./caso";
@@ -48,10 +41,12 @@ import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Hijo } from "../../hijos/data";
 import { useRouter } from "next/navigation";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import PdfCasos from "./pdf-listado";
+import Link from "next/link";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context = createContext({});
 //ROUTING
 
@@ -80,8 +75,8 @@ const Informacion = () => {
         });
         return (
           <>
-            <b>{caso.nro_caso}</b>
-            <br />
+            <Paragraph copyable>{caso.nro_caso}</Paragraph>
+
             {adulto?.nombre + " " + adulto?.paterno + " " + adulto?.materno}
           </>
         );
@@ -267,6 +262,19 @@ const Informacion = () => {
           lg={{ span: 8, offset: 6 }}
           className="center"
         >
+          <Link
+            href="/dashboard/casos/nuevocaso"
+            style={{ textDecoration: "none" }}
+          >
+            <Button
+              className="center info-button"
+              icon={<AiOutlinePlus />}
+              title="Nuevo Caso"
+              style={{ height: 50 }}
+            >
+              Nuevo Caso
+            </Button>
+          </Link>
           <Tooltip
             title="Generar PDF"
             placement={"right"}

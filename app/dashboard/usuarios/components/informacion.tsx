@@ -39,6 +39,7 @@ import { Persona, dataPersona } from "../../personal/agregar/data";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import PdfUsuarios from "./pdf-listado";
 import { useRouter } from "next/navigation";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context5 = createContext({});
 
 const Informacion = () => {
@@ -58,6 +59,13 @@ const Informacion = () => {
       className: "text-center",
       fixed: "left",
       width: 120,
+      render(_, usuario) {
+        return (
+          <Paragraph className="center" copyable>
+            {usuario.id_usuario}
+          </Paragraph>
+        );
+      },
     },
     {
       title: "Usuario",
@@ -134,6 +142,7 @@ const Informacion = () => {
   //cargado de datos desde la API
   const { data } = useSession();
   const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
+  const [usuario2, setUsuario2] = useState<Usuario>(dataUsuario);
 
   const router = useRouter();
   useEffect(() => {
@@ -152,7 +161,7 @@ const Informacion = () => {
         router.back();
       } else {
         setPersona(persona);
-        setUsuario({ password: "", ult_modificacion: "", ...usuario });
+        setUsuario2({ password: "", ult_modificacion: "", ...usuario });
         axios
           .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
           .then((res) => {
@@ -319,7 +328,7 @@ const Informacion = () => {
                   console.log(usuario);
                   setDisplayUsuarios(
                     res.data.filter((value) => {
-                      return value.id_usuario != usuario.id_usuario;
+                      return value.id_usuario != usuario2.id_usuario;
                     })
                   );
                   message.info("Datos actualizados...");
@@ -418,7 +427,7 @@ const Informacion = () => {
                           setUsuarios(res.data);
                           setDisplayUsuarios(
                             res.data.filter((value) => {
-                              return value.id_usuario != usuario.id_usuario;
+                              return value.id_usuario != usuario2.id_usuario;
                             })
                           );
                         });
@@ -461,6 +470,7 @@ const Informacion = () => {
       />
 
       <UsuarioModal
+        usuario2={usuario2}
         usuario={usuario}
         loaded={loaded}
         setDisplayUsuarios={setDisplayUsuarios}

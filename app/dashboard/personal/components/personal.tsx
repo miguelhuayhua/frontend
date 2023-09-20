@@ -19,6 +19,7 @@ import {
   notification,
 } from "antd";
 import axios from "axios";
+import { departamentos } from "../../casos/nuevocaso/data";
 
 interface Props {
   setOpen: any;
@@ -52,7 +53,11 @@ const PersonaModal: NextPage<Props> = (props) => {
             .get<Persona[]>(process.env.BACKEND_URL + "/persona/all")
             .then((res) => {
               props.setPersonas(res.data);
-              props.setDisplayPersonas(res.data);
+              props.setDisplayPersonas(
+                res.data.filter((value) => {
+                  return value.id_persona != props.persona1.id_persona;
+                })
+              );
             });
         } else {
           notification.error({
@@ -193,23 +198,31 @@ const PersonaModal: NextPage<Props> = (props) => {
                 </Form.Item>
               </Col>
               <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor introduzca carnet de identidad...",
-                    },
-                  ]}
-                  label="C.I.: "
-                >
-                  <InputNumber
-                    className="w-100"
-                    onChange={(ev: any) => {
-                      props.setPersona({ ...props.persona, ci: ev });
-                    }}
-                    value={props.persona.ci}
-                  ></InputNumber>
-                </Form.Item>
+                <Space.Compact>
+                  <Form.Item label="C.I. / Expedido:">
+                    <InputNumber
+                      required
+                      name="ci"
+                      className="w-100"
+                      onChange={(ev: any) => {
+                        props.setPersona({ ...props.persona, ci: ev });
+                      }}
+                      value={props.persona.ci}
+                    ></InputNumber>
+                  </Form.Item>
+                  <Form.Item>
+                    <Select
+                      aria-required
+                      style={{ width: 120 }}
+                      defaultValue="LP"
+                      options={departamentos}
+                      value={props.persona.expedido!}
+                      onChange={(value) => {
+                        props.setPersona({ ...props.persona, expedido: value });
+                      }}
+                    />
+                  </Form.Item>
+                </Space.Compact>
               </Col>
               <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
                 <Form.Item label="Celular: ">

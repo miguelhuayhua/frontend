@@ -1,6 +1,5 @@
 "use client";
 import {
-  Avatar,
   Button,
   Col,
   Form,
@@ -24,7 +23,6 @@ import {
 import axios from "axios";
 import moment from "moment";
 import { Usuario } from "../data";
-import { env } from "process";
 import Dragger from "antd/es/upload/Dragger";
 import { useState } from "react";
 import { FaRegImage } from "react-icons/fa";
@@ -36,6 +34,7 @@ import { Persona } from "../../personal/agregar/data";
 //PDF
 interface Props {
   setOpen: any;
+  usuario2: Usuario;
   open: boolean;
   usuario: Usuario;
   setUsuario: any;
@@ -54,7 +53,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
     status: "normal",
     message: "Verificar y Crear",
   });
-
+  const [fileList, setFileList] = useState([]);
   //control del modal
   const [file, setFile] = useState<any>(null);
   const handleConfirm = () => {
@@ -94,7 +93,13 @@ const UsuarioModal: NextPage<Props> = (props) => {
                     .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
                     .then((res) => {
                       props.setUsuarios(res.data);
-                      props.setDisplayUsuarios(res.data);
+                      props.setDisplayUsuarios(
+                        res.data.filter((value) => {
+                          return value.id_usuario != props.usuario2.id_usuario;
+                        })
+                      );
+                      setFile(null);
+                      setFileList([]);
                       setProgress({
                         progress: 0,
                         message: "Verificar y Crear",
@@ -184,7 +189,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
               <p style={{ color: "gray", textAlign: "start" }}>
                 <span>Última modifcación: </span>
                 {moment(props.usuario.ult_modificacion).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  "DD-MM-YYYY HH:mm:ss"
                 )}
               </p>
             </Col>
@@ -241,6 +246,10 @@ const UsuarioModal: NextPage<Props> = (props) => {
                       );
                     }, 2000);
                   }}
+                  fileList={fileList}
+                  onChange={(ev) => {
+                    setFileList(ev.fileList as any);
+                  }}
                 >
                   <>
                     <FaRegImage style={{ fontSize: 60 }} />
@@ -274,8 +283,6 @@ const UsuarioModal: NextPage<Props> = (props) => {
                         navigator.clipboard
                           .writeText(props.usuario.id_usuario)
                           .then(() => {
-                            console.log(env);
-                            console.log(process.env);
                             textField.remove();
                             message.success(
                               "¡ID - Usuario, copiado al portapapeles!"

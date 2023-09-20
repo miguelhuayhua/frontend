@@ -27,10 +27,10 @@ const authOptions: AuthOptions = {
             name: 'Iniciar Sesión',
             credentials: {
                 usuario: { label: 'usuario', type: 'text', placeholder: 'Introduzca su nombre de usuario' },
-                password: { label: "Password", type: "password" },
+                password: { label: "password", type: "password" },
             },
             async authorize(credentials) {
-
+                console.log(credentials)
                 let res = await axios.post<Usuario>(process.env.BACKEND_URL + '/usuario/auth', {
                     usuario: credentials?.usuario,
                     password: credentials?.password
@@ -44,7 +44,6 @@ const authOptions: AuthOptions = {
                     return null;
                 }
             },
-
         }),
     ],
     pages: {

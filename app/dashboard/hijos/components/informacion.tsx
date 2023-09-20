@@ -37,6 +37,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import PdfHijos from "./pdf-listado";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context2 = createContext({});
 //ROUTING
 
@@ -55,6 +56,13 @@ const Informacion = () => {
       className: "text-center",
       fixed: "left",
       width: 120,
+      render(_, hijo) {
+        return (
+          <Paragraph className="center" copyable>
+            {hijo.id_hijo}
+          </Paragraph>
+        );
+      },
     },
     {
       title: "Nombres y Apellidos",

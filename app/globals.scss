@@ -22,3 +22,10 @@
 .info-button {
   margin: 5px;
 }
+
+.column-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

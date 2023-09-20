@@ -1,7 +1,7 @@
 "use client";
 import { Breadcrumb, Button, FloatButton, Layout, Tabs, TabsProps } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import MenuSider from "../../components/MenuSider";
 import Navbar from "../../components/Navbar";
@@ -26,6 +26,7 @@ import CitacionOptions from "./citacion";
 import ModalActaCompromiso from "./acta-compromiso";
 import { dataDenunciado } from "../../denunciados/data";
 import Link from "next/link";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 const AccionCaso = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
@@ -41,10 +42,11 @@ const AccionCaso = () => {
   const [seguimiento, setSeguimiento] = useState<Seguimiento>(dataSeguimiento);
   const params = useSearchParams();
   const { data } = useSession();
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
+  const router = useRouter();
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -52,51 +54,55 @@ const AccionCaso = () => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
-      axios
-        .post<Persona>(process.env.BACKEND_URL + "/persona/get", {
-          id_persona: usuario.id_persona,
-        })
-        .then((res) => {
-          setPersona(res.data);
-        });
+      setPersona(persona);
+      setUsuario({ ...usuario, ult_modificacion: "", password: "" });
       axios
         .post<Caso>(process.env.BACKEND_URL + "/caso/get", {
           id_caso: params.get("id_caso"),
         })
-        .then((res) => {
-          axios
-            .post<Denunciado>(process.env.BACKEND_URL + "/denunciado/get", {
-              id_caso: res.data.id_caso,
-            })
-            .then((res) => {
-              setDenunciado(res.data);
-            });
 
-          setCaso(res.data);
-          axios
-            .post<{ adulto: Adulto; hijos: Hijo[] }>(
-              process.env.BACKEND_URL + "/adulto/get",
-              {
-                id_adulto: res.data.id_adulto,
-              }
-            )
-            .then((res) => {
-              setAdulto({
-                ...res.data.adulto,
-                hijos: res.data.hijos,
-                expedido: "",
-              });
-              setLoaded(true);
-            });
-        });
-      axios
-        .post<Citacion[]>(process.env.BACKEND_URL + "/caso/citacion/all", {
-          id_caso: params.get("id_caso"),
-        })
         .then((res) => {
-          setCitaciones(res.data);
-          setCitacion({ ...citacion, size: res.data.length });
+          if (res.data) {
+            axios
+              .post<Denunciado>(process.env.BACKEND_URL + "/denunciado/get", {
+                id_caso: res.data.id_caso,
+              })
+              .then((res) => {
+                setDenunciado(res.data);
+              });
+
+            setCaso(res.data);
+            axios
+              .post<{ adulto: Adulto; hijos: Hijo[] }>(
+                process.env.BACKEND_URL + "/adulto/get",
+                {
+                  id_adulto: res.data.id_adulto,
+                }
+              )
+              .then((res) => {
+                setAdulto({
+                  ...res.data.adulto,
+                  hijos: res.data.hijos,
+                  expedido: "",
+                });
+                setLoaded(true);
+              });
+            axios
+              .post<Citacion[]>(
+                process.env.BACKEND_URL + "/caso/citacion/all",
+                {
+                  id_caso: params.get("id_caso"),
+                }
+              )
+              .then((res) => {
+                setCitaciones(res.data);
+                setCitacion({ ...citacion, size: res.data.length });
+              });
+          } else {
+            router.back();
+          }
         });
     }
   }, [data]);

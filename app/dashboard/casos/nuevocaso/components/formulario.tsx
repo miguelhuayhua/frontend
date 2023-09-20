@@ -28,6 +28,7 @@ import {
   dataDatosDenunciado,
   dataDatosGenerales,
   dataDatosUbicacion,
+  departamentos,
   dias,
   meses,
 } from "../data";
@@ -268,10 +269,10 @@ const Formulario: NextPage<Props> = (props) => {
     setDatosUbicacion({ ...datosUbicacion, zona: value.target.value });
   };
   const handleCalle = (value: any) => {
-    setDatosUbicacion({ ...datosUbicacion, calle: value.target.value });
+    setDatosUbicacion({ ...datosUbicacion, calle_av: value.target.value });
   };
   const handleNroVivienda = (value: any) => {
-    setDatosUbicacion({ ...datosUbicacion, n_vivienda: value });
+    setDatosUbicacion({ ...datosUbicacion, nro_vivienda: value });
   };
   const handleArea = (value: any) => {
     setDatosUbicacion({ ...datosUbicacion, area: value });
@@ -347,14 +348,22 @@ const Formulario: NextPage<Props> = (props) => {
                     defaultValue={dataDatosDenuncia.tipologia}
                     onChange={handleTipologia}
                   >
-                    <Select.Option value="1">1</Select.Option>
-                    <Select.Option value="2">2</Select.Option>
-                    <Select.Option value="3">3</Select.Option>
-                    <Select.Option value="4">4</Select.Option>
-                    <Select.Option value="5">5</Select.Option>
-                    <Select.Option value="6">6</Select.Option>
-                    <Select.Option value="7">7</Select.Option>
-                    <Select.Option value="8">8</Select.Option>
+                    <Select.Option value="Extravio">Extravío</Select.Option>
+                    <Select.Option value="Maltrato">Maltrato</Select.Option>
+                    <Select.Option value="Abandono">Abandono</Select.Option>
+                    <Select.Option value="Despojo">Despojo</Select.Option>
+                    <Select.Option value="Orientacion Legal">
+                      Orientación Legal
+                    </Select.Option>
+                    <Select.Option value="Desaparecidos">
+                      Desaparecidos
+                    </Select.Option>
+                    <Select.Option value="Desapoderamiento">
+                      Desapoderamiento
+                    </Select.Option>
+                    <Select.Option value="Gestion Derechos">
+                      Gestión de derechos
+                    </Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -373,7 +382,7 @@ const Formulario: NextPage<Props> = (props) => {
               <p className="titulo-form">
                 1. Datos Generales de la persona adulta mayor
               </p>
-              <Row>
+              <Row gutter={[12, 12]}>
                 <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
                   <Form.Item
                     name={"nombres"}
@@ -464,7 +473,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
 
-                <Col span={18} md={{ span: 12 }} xl={{ span: 6 }}>
+                <Col span={18} md={{ span: 12 }} xl={{ span: 4 }}>
                   <Form.Item
                     label="N° de C.I."
                     name={"ci"}
@@ -481,6 +490,17 @@ const Formulario: NextPage<Props> = (props) => {
                       onChange={handleCI}
                       name={"ci"}
                     />
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="Expedido: ">
+                    <Select
+                      defaultValue="LP"
+                      onChange={(ev) => {
+                        setDatosGenerales({ ...datosGenerales, expedido: ev });
+                      }}
+                      options={departamentos}
+                    ></Select>
                   </Form.Item>
                 </Col>
                 <Col span={10} md={{ span: 12 }} xl={{ span: 6 }}>
@@ -867,14 +887,7 @@ const Formulario: NextPage<Props> = (props) => {
         okText="Sí"
         cancelText="No"
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
+        <div className="column-centered">
           <QuestionCircleOutlined
             style={{ fontSize: "4em", color: "#555", marginBottom: ".5em" }}
           />

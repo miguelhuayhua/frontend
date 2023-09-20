@@ -198,9 +198,8 @@ const FormDomicilio: NextPage<Props> = (props) => {
                     }),
                   ]);
                 }}
-                type="primary"
               >
-                Actualizar nuevo Domicilio
+                Limpiar datos
               </Button>
             </Col>
           </Row>

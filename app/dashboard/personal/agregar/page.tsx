@@ -36,6 +36,7 @@ import { now } from "moment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { departamentos } from "../../casos/nuevocaso/data";
 const AgregarPersonal = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [open, setOpen] = useState(false);
@@ -178,25 +179,29 @@ const AgregarPersonal = () => {
                           md={{ span: 12 }}
                           xxl={{ span: 20, offset: 2 }}
                         >
-                          <Form.Item
-                            rules={[
-                              {
-                                required: true,
-                                message:
-                                  "Por favor introduzca carnet de identidad...",
-                              },
-                            ]}
-                            label="C.I.: "
-                            name={"ci"}
-                          >
-                            <InputNumber
-                              className="w-100"
-                              name="ci"
-                              onChange={(ev: any) => {
-                                setPersona({ ...persona, ci: ev });
-                              }}
-                            ></InputNumber>
-                          </Form.Item>
+                          <Space.Compact>
+                            <Form.Item label="C.I. / Expedido:">
+                              <InputNumber
+                                required
+                                name="ci"
+                                style={{ width: "100%" }}
+                                onChange={(ev: any) => {
+                                  setPersona({ ...persona, ci: ev });
+                                }}
+                              />
+                            </Form.Item>
+                            <Form.Item>
+                              <Select
+                                aria-required
+                                style={{ width: 120 }}
+                                defaultValue="LP"
+                                onChange={(value) => {
+                                  setPersona({ ...persona, expedido: value });
+                                }}
+                                options={departamentos}
+                              />
+                            </Form.Item>
+                          </Space.Compact>
                         </Col>
                         <Col
                           span={24}
@@ -229,6 +234,7 @@ const AgregarPersonal = () => {
                         <Col span={24} md={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label={"Fecha de nacimiento"}>
                             <DatePicker
+                            format={"DD-MM-YYYY"}
                               style={{ width: "100%" }}
                               locale={{
                                 ...locale,
@@ -321,7 +327,7 @@ const AgregarPersonal = () => {
                             ></Avatar>
                             <p>
                               <span>C.I.: </span>
-                              {persona.ci}
+                              {`${persona.ci} ${persona.expedido}`}
                             </p>
                           </>
                         }

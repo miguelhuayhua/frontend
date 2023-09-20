@@ -119,7 +119,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                           ...props.citacion,
                           citacion: {
                             ...props.citacion.citacion,
-                            fecha_citacion: fecha.format("YYYY-MM-DD"),
+                            fecha_citacion: fecha.format("DD-MM-YYYY"),
                           },
                         });
                       }}

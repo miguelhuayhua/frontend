@@ -2,6 +2,7 @@
 import {
   Avatar,
   Breadcrumb,
+  Button,
   Card,
   Col,
   Layout,
@@ -12,6 +13,7 @@ import {
   Typography,
   Upload,
   message,
+  notification,
 } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
@@ -22,7 +24,7 @@ import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
 import { dataUsuario } from "../usuarios/data";
 import { Persona, dataPersona } from "../personal/agregar/data";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import axios from "axios";
@@ -62,6 +64,7 @@ export default function Profile() {
       };
       setUsuario({ ...usuario });
       setPersona(persona);
+      console.log(persona);
       axios
         .post<AccionesUsuario[]>(
           process.env.BACKEND_URL + "/usuario/getAccionesById",
@@ -88,7 +91,12 @@ export default function Profile() {
     {
       key: "1",
       label: "Datos Personales",
-      children: <DatosPersonales></DatosPersonales>,
+      children: (
+        <DatosPersonales
+          setPersona={setPersona}
+          persona={persona}
+        ></DatosPersonales>
+      ),
     },
     {
       key: "2",
@@ -174,10 +182,33 @@ export default function Profile() {
                                   // Almacenamos el nuevo archivo seleccionado en el estado file.
                                   let nuevoArchivo = newFile as File;
                                   setFile(nuevoArchivo);
+                                  let form = new FormData();
+                                  form.append("fotografia", nuevoArchivo);
+                                  form.append("id_usuario", usuario.id_usuario);
+                                  axios
+                                    .post(
+                                      process.env.BACKEND_URL +
+                                        "/usuario/fotografia",
+                                      form,
+                                      {
+                                        headers: {
+                                          "Content-Type": "multipart/form-data",
+                                        },
+                                      }
+                                    )
+                                    .then((res) => {
+                                      if (res.data.status == 1) {
+                                        message.success(
+                                          `${nuevoArchivo.name} se cargó correctamente.`
+                                        );
+                                        notification.success({
+                                          message:
+                                            "La foto de perfil se actualizó correctamente, INICIE SESIÓN NUEVAMENTE...",
+                                        });
+                                      }
+                                    });
+
                                   onSuccess!(null);
-                                  message.success(
-                                    `${nuevoArchivo.name} se cargó correctamente.`
-                                  );
                                 }, 2000);
                               }}
                             >
@@ -202,24 +233,65 @@ export default function Profile() {
                             <span style={{ fontSize: 18, fontWeight: "bold" }}>
                               Nombre de Usuario:
                             </span>
-                            <Typography.Title
-                              editable={{
-                                icon: <AiFillEdit />,
-                                tooltip: "Editar ",
-                                onChange(value) {
-                                  setUsuario({ ...usuario, usuario: value });
-                                },
-                              }}
-                              level={4}
-                              style={{ fontWeight: "normal" }}
-                            >
-                              {`${usuario.usuario}`}
-                            </Typography.Title>
+                            <div className="d-flex">
+                              <Typography.Title
+                                editable={{
+                                  icon: <AiFillEdit />,
+                                  tooltip: "Editar ",
+                                  onChange(value) {
+                                    setUsuario({ ...usuario, usuario: value });
+                                  },
+                                  text: usuario.usuario,
+                                }}
+                                level={4}
+                                style={{ fontWeight: "normal" }}
+                              >
+                                {`${usuario.usuario}`}
+                              </Typography.Title>
+                              <Button
+                                style={{ marginLeft: 10, height: 30 }}
+                                onClick={() => {
+                                  axios
+                                    .post(
+                                      process.env.BACKEND_URL +
+                                        "/usuario/username",
+                                      {
+                                        id_usuario: usuario.id_usuario,
+                                        usuario: usuario.usuario,
+                                      }
+                                    )
+                                    .then((res) => {
+                                      if (res.data.status == 1) {
+                                        notification.success({
+                                          message: res.data.message,
+                                          duration: 10,
+                                          btn: (
+                                            <>
+                                              <Button
+                                                onClick={() => {
+                                                  signOut({ redirect: true });
+                                                }}
+                                              >
+                                                Cerrar Sesión
+                                              </Button>
+                                            </>
+                                          ),
+                                        });
+                                      } else {
+                                        notification.warning({
+                                          message: res.data.message,
+                                        });
+                                      }
+                                    });
+                                }}
+                              >
+                                Aceptar
+                              </Button>
+                            </div>
                           </div>
                         </Col>
                         <Col offset={0} span={24} lg={{ span: 10, offset: 6 }}>
                           <Segmented
-                            style={{ flexWrap: "wrap" }}
                             options={[
                               {
                                 label: (

@@ -39,6 +39,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import PdfDenunciado from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import { Persona, dataPersona } from "../../personal/agregar/data";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context3 = createContext({});
 //ROUTING
 
@@ -56,6 +57,13 @@ const Informacion = () => {
       className: "text-center",
       fixed: "left",
       width: 130,
+      render(_, denunciado) {
+        return (
+          <Paragraph className="center" copyable>
+            {denunciado.id_denunciado}
+          </Paragraph>
+        );
+      },
     },
     {
       title: "Nombres y Apellidos",

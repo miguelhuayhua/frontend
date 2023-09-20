@@ -40,7 +40,7 @@ export interface Persona {
     genero: string;
     ult_modificacion: string;
     estado: number;
-
+    expedido?: string
 }
 
 export let dataPersona = {
@@ -52,8 +52,9 @@ export let dataPersona = {
     ci: 0,
     celular: 0,
     f_nacimiento: dayjs().toISOString(),
-    cargo: "Visitante",
+    cargo: "3",
     genero: "Femenino",
     ult_modificacion: "",
     estado: 0,
+    expedido: 'LP'
 }

@@ -140,6 +140,7 @@ const PdfAdultos = () => {
             {`${dayjs().date()}/${dayjs().month()}/${dayjs().year()}-${dayjs().hour()}:${dayjs().minute()}:${dayjs().second()}`}
           </Text>
           <Image
+          
             style={{
               width: 60,
               height: 60,

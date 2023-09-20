@@ -368,7 +368,9 @@ const Detalles: NextPage<Props> = (props) => {
             <Col span={24} md={{ span: 12 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Calle o avenida: </p>
-                <p className="contenido">{props.datos.datosUbicacion.calle}</p>
+                <p className="contenido">
+                  {props.datos.datosUbicacion.calle_av}
+                </p>
               </div>
             </Col>
             <Col span={24} md={{ span: 12 }}>
@@ -384,7 +386,7 @@ const Detalles: NextPage<Props> = (props) => {
               <div className="d-flex w-100">
                 <p className="titulo">N° de vivienda: </p>
                 <p className="contenido">
-                  {props.datos.datosUbicacion.n_vivienda}
+                  {props.datos.datosUbicacion.nro_vivienda}
                 </p>
               </div>
             </Col>

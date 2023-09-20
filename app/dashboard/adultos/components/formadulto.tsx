@@ -38,7 +38,7 @@ const FormAdulto: NextPage<Props> = (props) => {
       let edad = -Number.parseInt(value.diff(moment.now(), "years"));
       props.setAdulto({
         ...props.adulto,
-        f_nacimiento: dayjs(value.$d).format("YYYY-MM-DD"),
+        f_nacimiento: dayjs(value.$d).format("DD-MM-YYYY"),
         edad,
       });
     }

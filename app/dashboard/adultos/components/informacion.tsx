@@ -36,6 +36,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import PdfAdultos from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import { Persona, dataPersona } from "../../personal/agregar/data";
+import Paragraph from "antd/es/typography/Paragraph";
 export const context1 = createContext({});
 
 const Informacion = () => {
@@ -60,6 +61,13 @@ const Informacion = () => {
         let id1 = Number.parseInt(a.id_adulto.split("-")[1]);
         let id2 = Number.parseInt(b.id_adulto.split("-")[1]);
         return id1 - id2;
+      },
+      render(_, adulto) {
+        return (
+          <Paragraph className="center" copyable>
+            {adulto.id_adulto}
+          </Paragraph>
+        );
       },
     },
     {
