@@ -98,6 +98,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 12 }}>
                   <Form.Item label={"Fecha de Registro"}>
                     <DatePicker
+                    format={"DD-MM-YYYY"}
                       style={{ width: "100%" }}
                       locale={{
                         ...locale,

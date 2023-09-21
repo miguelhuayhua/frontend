@@ -131,6 +131,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 <Col span={12} lg={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
+                      format={"DD-MM-YYYY"}
                       value={dayjs(props.adulto.f_nacimiento)}
                       placeholder="Ingrese su fecha de Nacimiento"
                       locale={{
