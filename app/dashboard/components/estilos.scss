@@ -3,15 +3,20 @@
 }
 
 .ant-menu-submenu-selected {
-  background-color: #69b7ff3a;
-  color: #fff;
+  color: black !important;
+  background-color: #eaf4f8;
 }
 
+.ant-menu-item-selected {
+  color: black;
+}
 //NAVBAR
 .ant-scroll-number {
   box-shadow: none !important;
 }
-
+.ant-menu-submenu-selected {
+  color: black !important;
+}
 //contenedor de fecha
 
 .fecha-container {
@@ -57,4 +62,13 @@ hr {
   &:hover {
     background-color: transparent !important;
   }
+}
+
+.ant-menu {
+  background-color: #fefefe;
+}
+.ant-layout-sider-trigger {
+  background-color: #dc3f4a !important;
+  color: white !important;
+  border-top: 1px solid #dc4f59;
 }

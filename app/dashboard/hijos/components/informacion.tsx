@@ -343,6 +343,7 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
+      className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(hijo) => hijo.id_hijo + "T"}
         key="table"

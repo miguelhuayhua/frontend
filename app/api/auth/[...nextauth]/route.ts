@@ -35,10 +35,9 @@ const authOptions: AuthOptions = {
                     usuario: credentials?.usuario,
                     password: credentials?.password
                 })
-                console.log(res.data)
                 if (res.data) {
                     let persona = await axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: res.data.id_persona })
-                    return { id: '', usuario: res.data, persona: persona.data }
+                    return { id: '', usuario: { ...res.data, password: "" }, persona: persona.data }
                 }
                 else {
                     return null;

@@ -16,17 +16,28 @@ interface Props {
   data: any;
   keys: any;
   keyTitle: string;
+  colors?: string[];
 }
-const GraficoBarra = ({ data, keys, keyTitle }: Props) => {
+const GraficoBarra = ({ data, keys, keyTitle, colors }: Props) => {
   let mainData = [];
   if (data) {
-    mainData = data.map((value: any, i: number) => {
-      return {
-        [keyTitle]: keys[i],
-        Cantidad: value,
-        color: getRandomHexColor(),
-      };
-    });
+    if (colors) {
+      mainData = data.map((value: any, i: number) => {
+        return {
+          [keyTitle]: keys[i],
+          Cantidad: value,
+          color: colors[i],
+        };
+      });
+    } else {
+      mainData = data.map((value: any, i: number) => {
+        return {
+          [keyTitle]: keys[i],
+          Cantidad: value,
+          color: getRandomHexColor(),
+        };
+      });
+    }
   }
   return (
     <>

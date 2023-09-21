@@ -11,7 +11,7 @@ interface Props {
   defaultOpenKeys: string[];
   defaultSelectedKey: string;
 }
-
+import Image from "next/legacy/image";
 type MenuItem = Required<MenuProps>["items"][number];
 import MenuItem from "antd/es/menu/MenuItem";
 import {
@@ -31,6 +31,7 @@ import { useSession } from "next-auth/react";
 import { dataUsuario } from "../usuarios/data";
 import { Persona, dataPersona } from "../personal/agregar/data";
 import axios from "axios";
+import Link from "next/link";
 const MenuSider: NextPage<Props> = (props) => {
   const router = useRouter();
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -304,18 +305,40 @@ const MenuSider: NextPage<Props> = (props) => {
             width: 200,
             position: "sticky",
             left: 0,
-            backgroundColor: "#1a2d44",
+            backgroundColor: "#FEFEFE",
             zIndex: 100,
-            boxShadow: "0 0 10px #1a2d44",
+            boxShadow: "0 0 10px #2BC4F144",
           }}
         >
+          <Link
+            href={"/dashboard"}
+            style={{
+              textDecoration: "None",
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#1AB2C0",
+              fontSize: 12,
+            }}
+          >
+            <div style={{ width: "70%", margin: "20px auto" }}>
+              <Image
+                layout="responsive"
+                width={100}
+                height={60}
+                src={"/assets/logo-gamea.png"}
+                style={{ marginBottom: 5 }}
+              ></Image>
+              UNIDAD
+              <br />
+              ADULTOS MAYORES
+            </div>
+          </Link>
           <Menu
-            theme="dark"
             selectedKeys={[props.defaultSelectedKey]}
             mode="inline"
             defaultOpenKeys={props.defaultOpenKeys}
             items={items}
-            style={{ backgroundColor: "#1a2d44" }}
+            style={{ backgroundColor: "#FEFEFE" }}
           />
         </Sider>
       </Affix>

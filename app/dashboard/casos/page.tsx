@@ -3,12 +3,9 @@ import { Breadcrumb, Layout } from "antd";
 import "moment/locale/es";
 import { Content } from "antd/es/layout/layout";
 //estilos
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 
 import "./estilos.scss";
-//env
-import dotenv from "dotenv";
-dotenv.config();
 import React from "react";
 
 import Informacion from "./components/informacion";

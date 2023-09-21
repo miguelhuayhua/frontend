@@ -1,29 +1,18 @@
 "use client";
-import {
-  Affix,
-  Avatar,
-  Badge,
-  Button,
-  Col,
-  Dropdown,
-  Menu,
-  MenuProps,
-  Row,
-  Tooltip,
-} from "antd";
+import { BellOutlined, UserOutlined } from "@ant-design/icons";
+import { Affix, Avatar, Badge, Col, Dropdown, MenuProps, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { UserOutlined, BellOutlined } from "@ant-design/icons";
-import { GrConfigure } from "react-icons/gr";
+import axios from "axios";
+import dayjs from "dayjs";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import { FaCalendarAlt } from "react-icons/fa";
-import "./estilos.scss";
-import {  signOut, useSession } from "next-auth/react";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { dataUsuario } from "../usuarios/data";
+import { GrConfigure } from "react-icons/gr";
 import { Persona, dataPersona } from "../personal/agregar/data";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import { dataUsuario } from "../usuarios/data";
+import "./estilos.scss";
 const Navbar = () => {
   const router = useRouter();
   const { data } = useSession();
@@ -118,7 +107,7 @@ const Navbar = () => {
                 }/${dayjs().year()}`}
               </span>
             </div>
-            <div style={{ position: "absolute", right: 180 }}>
+            {/* <div style={{ position: "absolute", right: 180 }}>
               <Dropdown placement="bottom" menu={{ items }}>
                 <Badge count={99} overflowCount={10} style={{ border: "none" }}>
                   <Avatar
@@ -128,7 +117,7 @@ const Navbar = () => {
                   />
                 </Badge>
               </Dropdown>
-            </div>
+            </div> */}
 
             <Dropdown
               trigger={["click"]}

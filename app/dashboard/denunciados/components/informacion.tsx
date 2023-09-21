@@ -345,6 +345,7 @@ const Informacion = () => {
         </Row>
       </Form>
       <Table
+      className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(Denunciado) => Denunciado.id_denunciado + "T"}
         key="table"

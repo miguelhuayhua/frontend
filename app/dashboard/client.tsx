@@ -187,15 +187,6 @@ export default function Dashboard() {
                               <p>Nuevo Caso</p>
                             </Button>
                           </Link>
-                          <Link
-                            className="custom-btn-dash"
-                            href={"/dashboard/casos"}
-                          >
-                            <Button style={{ height: 60 }} className="vertical">
-                              <AiFillEye fontSize={40} />
-                              <p>Acción 2</p>
-                            </Button>
-                          </Link>
                         </div>
                       </Col>
                     </Row>
@@ -278,8 +269,8 @@ export default function Dashboard() {
                       <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title={
-                            "Total citaciones de este mes " +
-                            meses[dayjs().month()]
+                            "TOTAL CITACIONES DE ESTE MES  " +
+                            meses[dayjs().month()].toUpperCase()
                           }
                           bordered={false}
                         >
@@ -317,13 +308,11 @@ export default function Dashboard() {
                             >
                               <Progress
                                 status="normal"
-                                percent={
-                                  dashboardData?.suspendidos_x_mes == 0
-                                    ? dashboardData.suspendidos_x_mes
-                                    : (dashboardData?.suspendidos_x_mes! *
-                                        100) /
-                                      dashboardData?.citaciones_x_mes!
-                                }
+                                percent={100}
+                                strokeColor={{
+                                  "0%": "#1982a1",
+                                  "100%": "#1982a1",
+                                }}
                                 format={() => ""}
                                 success={{
                                   percent:
@@ -333,6 +322,7 @@ export default function Dashboard() {
                                         (dashboardData?.suspendidos_x_mes! *
                                           100) /
                                           dashboardData?.citaciones_x_mes!,
+                                  strokeColor: "red",
                                 }}
                               />{" "}
                             </Tooltip>
@@ -348,6 +338,7 @@ export default function Dashboard() {
                             data={dashboardData?.casos_x_genero.cantidad}
                             keys={dashboardData?.casos_x_genero.genero}
                             keyTitle="Genero"
+                            colors={["#1982A1", "#AF1E28"]}
                           ></GraficoBarra>
                         </Card>
                       </Col>
@@ -371,7 +362,7 @@ export default function Dashboard() {
                       </Col>
                       <Col span={24} xl={{ span: 8 }}>
                         <Card
-                          title="Últimos casos añadidos"
+                          title="ÚLTIMOS CASOS AÑADIDOS"
                           extra={
                             <Button
                               style={{ height: 40 }}
@@ -410,8 +401,13 @@ export default function Dashboard() {
                                 <List.Item.Meta
                                   avatar={
                                     <Avatar
-                                      style={{ backgroundColor: "#9c8fd4" }}
-                                      icon={<FaBalanceScaleLeft />}
+                                      className="center"
+                                      style={{ backgroundColor: "#AF1E28" }}
+                                      icon={
+                                        <FaBalanceScaleLeft
+                                          style={{ backgroundColor: "" }}
+                                        />
+                                      }
                                     />
                                   }
                                   title={

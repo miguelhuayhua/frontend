@@ -4,6 +4,7 @@ import {
   Button,
   Col,
   DatePicker,
+  Divider,
   FloatButton,
   Form,
   Input,
@@ -311,14 +312,17 @@ const Formulario: NextPage<Props> = (props) => {
 
   return (
     <>
-      <h2>FORMULARIO DE REGISTRO DE ATENCIÓN</h2>
+      <h2 style={{ fontWeight: "bold", color: "#064450" }}>
+        FORMULARIO DE REGISTRO DE ATENCIÓN
+      </h2>
       <Row gutter={[24, 24]}>
         <Col span={24} offset={0} md={{ span: 20, offset: 2 }}>
           <Form onFinish={handleOpenChange} layout="horizontal">
-            <Row>
+            <Row gutter={[24, 24]}>
               <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
                 <Form.Item label={"Fecha de Registro"}>
                   <DatePicker
+                    format={"DD-MM-YYYY"}
                     className="normal-input"
                     disabled
                     locale={{
@@ -368,7 +372,7 @@ const Formulario: NextPage<Props> = (props) => {
                 </Form.Item>
               </Col>
               <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
-                <Form.Item label="N° de Caso:" style={{ paddingLeft: 5 }}>
+                <Form.Item label="N° de Caso:">
                   <Input
                     className="small-input"
                     suffix={"/2023"}
@@ -438,6 +442,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
+                      format={"DD-MM-YYYY"}
                       defaultValue={dayjs(datosGenerales.f_nacimiento)}
                       placeholder="Ingrese su fecha de Nacimiento"
                       className="normal-input"
@@ -552,7 +557,9 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <hr />
+                  <Divider style={{ fontSize: 12 }} orientation="left">
+                    HIJOS DEL ADULTO MAYOR
+                  </Divider>
                   <Form.Item
                     className="normal-input mt-3"
                     label="Hijos del adulto mayor"
@@ -738,7 +745,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24}>
                   <Form.Item className="w-100">
                     <TextArea
-                      style={{ maxHeight: 150 }}
+                      style={{ maxHeight: 200, height: 150, minHeight: 150 }}
                       onChange={handleDescripcion}
                     />
                   </Form.Item>
@@ -753,7 +760,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24}>
                   <Form.Item className="w-100">
                     <TextArea
-                      style={{ maxHeight: 150 }}
+                      style={{ maxHeight: 200, height: 150, minHeight: 150 }}
                       onChange={handlePeticion}
                     />
                   </Form.Item>
@@ -762,7 +769,7 @@ const Formulario: NextPage<Props> = (props) => {
             </div>
             <div className="border position-relative rounded p-4 mt-4">
               <p className="titulo-form">4. Datos personales del denunciado</p>
-              <Row>
+              <Row gutter={[24, 24]}>
                 <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
                   <Form.Item
                     label="Nombres:"
@@ -867,9 +874,9 @@ const Formulario: NextPage<Props> = (props) => {
               <Col span={14} offset={5}>
                 <Form.Item>
                   <Button
-                    style={{ backgroundColor: "#1677ff", color: "white" }}
                     htmlType="submit"
                     className="w-100 my-3"
+                    type="primary"
                   >
                     Continuar
                   </Button>

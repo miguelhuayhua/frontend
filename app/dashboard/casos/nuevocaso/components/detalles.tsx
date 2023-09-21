@@ -17,6 +17,7 @@ import {
   Badge,
   Button,
   Col,
+  Divider,
   Dropdown,
   FloatButton,
   Modal,
@@ -215,9 +216,11 @@ const Detalles: NextPage<Props> = (props) => {
               </Button>
             </Dropdown>
           </Affix>
-          <Row className="mt-4">
-            <Col span={12}>
-              <b>Datos Generales</b>
+          <Row className="mt-4 rounded overflow-hidden">
+            <Col span={24}>
+              <Divider orientation="left">
+                <b>Datos Generales</b>
+              </Divider>
             </Col>
 
             <Col span={24}>
@@ -336,9 +339,11 @@ const Detalles: NextPage<Props> = (props) => {
           span={24}
           md={{ span: 22, offset: 1 }}
         >
-          <Row>
+          <Row className="rounded overflow-hidden">
             <Col span={24}>
-              <b>Datos de Ubicación</b>
+              <Divider orientation="left">
+                <b>Datos de Ubicación</b>
+              </Divider>
             </Col>
             <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
@@ -403,9 +408,11 @@ const Detalles: NextPage<Props> = (props) => {
           span={24}
           md={{ span: 22, offset: 1 }}
         >
-          <Row>
+          <Row className="rounded overflow-hidden">
             <Col span={24}>
-              <b>Datos del denunciado</b>
+              <Divider orientation="left">
+                <b>Datos del denunciado</b>
+              </Divider>
             </Col>
             <Col span={24}>
               <Badge status="processing" text="Datos Validados" />
@@ -450,9 +457,11 @@ const Detalles: NextPage<Props> = (props) => {
           span={24}
           md={{ span: 22, offset: 1 }}
         >
-          <Row>
+          <Row className="rounded overflow-hidden">
             <Col span={24}>
-              <b>Descripciones</b>
+              <Divider orientation="left">
+                <b>Descripciones</b>
+              </Divider>
             </Col>
             <Col span={24}>
               <Badge status="processing" text="Datos Validados" />

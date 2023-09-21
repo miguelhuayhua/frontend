@@ -25,7 +25,7 @@ import Navbar from "../components/Navbar";
 import { dataUsuario } from "../usuarios/data";
 import { Persona, dataPersona } from "../personal/agregar/data";
 import { signOut, useSession } from "next-auth/react";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import axios from "axios";
 import { AccesoUsuario, AccionesUsuario, dataAccionesUsuario } from "./data";

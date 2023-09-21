@@ -11,16 +11,10 @@ import {
   Font,
 } from "@react-pdf/renderer";
 
-import { Persona } from "../../personal/agregar/data";
-import { Caso, Citacion, Compromiso, Denunciado } from "../data";
-import { AdultoMayor2, Citado, dias, dias2, meses } from "../nuevocaso/data";
-import { DataContext2 } from "./citacion";
+import { Persona, meses } from "../../personal/agregar/data";
+import { Caso, Compromiso, Denunciado } from "../data";
 
 import dayjs from "dayjs";
-Font.register({
-  family: "Roboto",
-  fonts: [{ src: "./../../../fonts/Roboto/Roboto-Black.ttf" }],
-});
 
 import { DataContext3 } from "./acta-compromiso";
 import { Adulto } from "../../adultos/data";

@@ -141,9 +141,16 @@ const DatosPersonales: NextPage<Props> = (props) => {
                     <Form.Item>
                       <Select
                         aria-required
+                        value={props.persona.expedido}
                         style={{ width: 120 }}
                         defaultValue="LP"
                         options={departamentos}
+                        onChange={(value) => {
+                          props.setPersona({
+                            ...props.persona,
+                            expedido: value,
+                          });
+                        }}
                       />
                     </Form.Item>
                   </Space.Compact>
