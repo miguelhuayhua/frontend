@@ -16,6 +16,7 @@ import moment from "moment";
 import { Adulto, Domicilio } from "../data";
 import FormAdulto from "./formadulto";
 import FormDomicilio from "./formdomicilio";
+import { Usuario } from "../../usuarios/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -33,6 +34,7 @@ interface Props {
   setLoaded: any;
   domicilios: Domicilio[];
   setDomicilios: any;
+  usuario: Usuario
 }
 const AdultoModal: NextPage<Props> = (props) => {
   //control del modal
@@ -40,12 +42,13 @@ const AdultoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL+"/adulto/update", { ...props.adulto })
+      .post(process.env.BACKEND_URL + "/adulto/update", { ...props.adulto, usuario: props.usuario })
       .then((res) => {
         let tipo = props.domicilio.actual == 1 ? "update" : "insert";
         axios
-          .post(process.env.BACKEND_URL+"/domicilio/" + tipo, {
+          .post(process.env.BACKEND_URL + "/domicilio/" + tipo, {
             ...props.domicilio,
+            usuario: props.usuario
           })
           .then((res) => {
             if (res.data.status == 1) {
@@ -53,7 +56,7 @@ const AdultoModal: NextPage<Props> = (props) => {
                 message: `¡Los datos de ${props.adulto.nombre} ${props.adulto.paterno} ${props.adulto.materno} se modificaron con éxito!`,
               });
               axios
-                .get<Adulto[]>(process.env.BACKEND_URL+"/adulto/all")
+                .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
                 .then((res) => {
                   props.setAdultos(res.data);
                   props.setDisplayAdultos(res.data);

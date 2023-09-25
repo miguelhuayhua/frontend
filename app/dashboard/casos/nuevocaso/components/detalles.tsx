@@ -76,7 +76,7 @@ const Detalles: NextPage<Props> = (props) => {
       ["counter"]
     );
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -84,15 +84,11 @@ const Detalles: NextPage<Props> = (props) => {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona
       };
-      let persona = await axios.post<Persona>(
-        process.env.BACKEND_URL + "/persona/get",
-        {
-          id_persona: usuario.id_persona,
-        }
-      );
+
       pdf(
-        <DataContext.Provider value={{ ...props.datos, persona: persona.data }}>
+        <DataContext.Provider value={{ ...props.datos, persona: persona }}>
           <MyDocument />
         </DataContext.Provider>
       )
@@ -106,22 +102,21 @@ const Detalles: NextPage<Props> = (props) => {
           link.setAttribute(
             "download",
             nombre +
-              paterno +
-              materno +
-              dataDatosDenuncia.fecha_registro +
-              ".pdf"
+            paterno +
+            materno +
+            dataDatosDenuncia.fecha_registro +
+            ".pdf"
           );
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         });
       axios
-        .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos })
+        .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos, usuario: usuario })
         .then((res) => {
           setSuccess(true);
           setCounter(100);
           setEstado(false);
-
           if (res.data.status == 1) {
             notification.success({ message: res.data.response });
             props.router.push("/dashboard/casos");
@@ -362,9 +357,9 @@ const Detalles: NextPage<Props> = (props) => {
                 <p className="contenido">
                   {props.datos.datosUbicacion.area == "Otro"
                     ? props.datos.datosUbicacion.area +
-                      " (" +
-                      props.datos.datosUbicacion.otra_area +
-                      ")"
+                    " (" +
+                    props.datos.datosUbicacion.otra_area +
+                    ")"
                     : props.datos.datosUbicacion.area}
                 </p>
               </div>

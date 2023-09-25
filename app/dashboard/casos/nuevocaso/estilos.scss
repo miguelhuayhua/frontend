@@ -52,16 +52,18 @@ h2 {
 
 //ESTILOS DE LA PARTE DEL COMPONENTE DE DETALLES
 .titulo {
-  background-color: #2495bb;
+  background-color: #137799;
   padding: 0.5em 1em;
   width: 40%;
+  font-family: 'Courier New', Courier, monospace;
   color: white;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 .contenido {
   padding: 0.5em 1em;
   width: 60%;
+  font-weight: bolder;
   border: 0.5px solid rgb(235, 235, 235);
 }
 p {

@@ -73,6 +73,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
             formData.append("password", hash);
             formData.append("fotografia", file);
             formData.append("id_usuario", props.usuario.id_usuario);
+            formData.append("id_usuario2", props.usuario2.id_usuario);
             axios
               .post<{ status: number }>(
                 process.env.BACKEND_URL + "/usuario/update",

@@ -145,7 +145,7 @@ export default function Dashboard() {
                       >
                         <CgHello
                           style={{ margin: "0 10px" }}
-                          color="#1a2d44"
+                          color="#36bbc7"
                           fontSize={35}
                         />
                         <span style={{ fontSize: 18, color: "GrayText" }}>
@@ -198,7 +198,7 @@ export default function Dashboard() {
                           title={
                             <p style={{ fontSize: 14 }}>
                               {"DENUNCIAS DE ESTE MES (" +
-                                meses[dayjs().month()] +
+                                meses[dayjs().month()].toUpperCase() +
                                 ")"}
                             </p>
                           }
@@ -224,14 +224,13 @@ export default function Dashboard() {
                               <AiOutlinePlus color="gray" size={20} />
                               <span
                                 className="card-text"
-                                style={{ color: "gray" }}
+                                style={{ color: "gray", display: 'block', textAlign: 'center' }}
                               >
-                                {`${dashboardData?.casos_x_dia} (${
-                                  dashboardData?.casos_x_mes_actual != 0
-                                    ? (dashboardData?.casos_x_dia! * 100) /
-                                      dashboardData?.casos_x_mes_actual!
-                                    : 0
-                                }%)`}
+                                {`${dashboardData?.casos_x_dia} (${dashboardData?.casos_x_mes_actual != 0
+                                  ? (dashboardData?.casos_x_dia! * 100) /
+                                  dashboardData?.casos_x_mes_actual!
+                                  : 0
+                                  }%)`}
                               </span>
                             </Col>
                           </Row>
@@ -241,7 +240,7 @@ export default function Dashboard() {
                         <Card
                           title={
                             <p style={{ fontSize: 14 }}>
-                              {"AUDIENCIAS SUSPENDIDAS DE ESTE MES (" +
+                              {"AUDIENCIAS SUSPENDIDAS MES (" +
                                 meses[dayjs().month()] +
                                 ")"}
                             </p>
@@ -269,7 +268,7 @@ export default function Dashboard() {
                       <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title={
-                            "TOTAL CITACIONES DE ESTE MES  " +
+                            "TOTAL CITACIONES MES  " +
                             meses[dayjs().month()].toUpperCase()
                           }
                           bordered={false}
@@ -293,18 +292,16 @@ export default function Dashboard() {
                           </Row>
                           <Col span={24}>
                             <Tooltip
-                              title={`${
-                                dashboardData?.suspendidos_x_mes == 0
-                                  ? dashboardData.suspendidos_x_mes
-                                  : (dashboardData?.suspendidos_x_mes! * 100) /
-                                    dashboardData?.citaciones_x_mes!
-                              }% citaciones suspendidas / ${
-                                dashboardData?.citaciones_x_mes == 0
+                              title={`${dashboardData?.suspendidos_x_mes == 0
+                                ? dashboardData.suspendidos_x_mes
+                                : (dashboardData?.suspendidos_x_mes! * 100) /
+                                dashboardData?.citaciones_x_mes!
+                                }% citaciones suspendidas / ${dashboardData?.citaciones_x_mes == 0
                                   ? dashboardData.citaciones_x_mes
                                   : 100 -
-                                    (dashboardData?.suspendidos_x_mes! * 100) /
-                                      dashboardData?.citaciones_x_mes!
-                              }% citaciones en proceso`}
+                                  (dashboardData?.suspendidos_x_mes! * 100) /
+                                  dashboardData?.citaciones_x_mes!
+                                }% citaciones en proceso`}
                             >
                               <Progress
                                 status="normal"
@@ -319,9 +316,9 @@ export default function Dashboard() {
                                     dashboardData?.citaciones_x_mes == 0
                                       ? dashboardData.citaciones_x_mes
                                       : 100 -
-                                        (dashboardData?.suspendidos_x_mes! *
-                                          100) /
-                                          dashboardData?.citaciones_x_mes!,
+                                      (dashboardData?.suspendidos_x_mes! *
+                                        100) /
+                                      dashboardData?.citaciones_x_mes!,
                                   strokeColor: "red",
                                 }}
                               />{" "}
@@ -442,7 +439,7 @@ export default function Dashboard() {
                                     Total:{" "}
                                     {dashboardData?.proximas_citaciones.length}
                                   </span>
-                                  <p style={{ fontSize: 20 }}>
+                                  <p style={{ fontSize: 16 }}>
                                     Citaciones para los próximos 7 días
                                   </p>
                                 </Col>

@@ -61,7 +61,7 @@ const AgregarUsuarios = () => {
 
   const [file, setFile] = useState<any>(null);
   const params = useSearchParams();
-
+  const [usuario2, setUsuario2] = useState<Usuario>(dataUsuario)
   //cargado de datos desde la API
   const { data } = useSession();
   useEffect(() => {
@@ -76,6 +76,7 @@ const AgregarUsuarios = () => {
         };
         persona: Persona;
       };
+      setUsuario2({ ...usuario, password: "", ult_modificacion: "" })
       if (persona.cargo != "1") {
         router.back();
       }
@@ -582,6 +583,7 @@ const AgregarUsuarios = () => {
           formData.append("password", hash);
           formData.append("fotografia", file);
           formData.append("id_persona", persona.id_persona);
+          formData.append('id_usuario', usuario2.id_usuario)
           axios
             .post<{ status: number }>(
               process.env.BACKEND_URL + "/usuario/insert",

@@ -23,6 +23,7 @@ import moment from "moment";
 import { Denunciado, dataDenunciado } from "../data";
 import { Adulto } from "../../adultos/data";
 import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+import { Usuario } from "../../usuarios/data";
 
 //ROUTING
 
@@ -30,7 +31,7 @@ import { UserOutlined, CopyOutlined } from "@ant-design/icons";
 interface Props {
   setOpen: any;
   open: boolean;
-
+  usuario: Usuario;
   denunciado: Denunciado;
   setDenunciado: any;
   setDenunciados: any;
@@ -46,6 +47,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
         process.env.BACKEND_URL + "/denunciado/update",
         {
           ...props.denunciado,
+          usuario: props.usuario
         }
       )
       .then((res) => {

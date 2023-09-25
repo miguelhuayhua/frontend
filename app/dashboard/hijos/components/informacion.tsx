@@ -38,6 +38,7 @@ import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import PdfHijos from "./pdf-listado";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 export const context2 = createContext({});
 //ROUTING
 
@@ -130,7 +131,7 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   const { data } = useSession();
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario)
   useEffect(() => {
     if (data) {
       let { usuario, persona } = data?.user as {
@@ -144,6 +145,7 @@ const Informacion = () => {
         persona: Persona;
       };
       setPersona(persona);
+      setUsuario({ ...usuario, password: "", ult_modificacion: "" })
       axios.get<Hijo[]>(process.env.BACKEND_URL + "/hijo/all").then((res) => {
         if (persona.cargo == "1") {
           setHijos(res.data);
@@ -343,7 +345,7 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
-      className="mt-2"
+        className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(hijo) => hijo.id_hijo + "T"}
         key="table"
@@ -364,7 +366,7 @@ const Informacion = () => {
                 if (ev.target.className.includes("switch")) {
                   axios
                     .post(process.env.BACKEND_URL + "/hijo/estado", {
-                      id_hijo: value.id_hijo,
+                      id_hijo: value.id_hijo, usuario: usuario
                     })
                     .then((res) => {
                       message.success("¡Caso cambiado con éxito!");
@@ -437,6 +439,7 @@ const Informacion = () => {
         setHijos={setHijos}
         key="hijomodal"
         open={open}
+        usuario={usuario}
         setOpen={setOpen}
       ></HijoModal>
     </>

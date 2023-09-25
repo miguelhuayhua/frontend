@@ -37,6 +37,7 @@ import PdfAdultos from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 export const context1 = createContext({});
 
 const Informacion = () => {
@@ -141,7 +142,7 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   const { data } = useSession();
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   useEffect(() => {
     if (data) {
       let { usuario, persona } = data?.user as {
@@ -155,6 +156,7 @@ const Informacion = () => {
         persona: Persona;
       };
       setPersona(persona);
+      setUsuario({ ...usuario, password: "", ult_modificacion: "" })
       axios
         .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
         .then((res) => {
@@ -264,8 +266,8 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Adultos-" +
-                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
-                        ".xlsx"
+                      dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                      ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -345,7 +347,7 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
-      className="mt-2"
+        className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(adulto) => adulto.id_adulto + "T"}
         key="table"
@@ -367,15 +369,16 @@ const Informacion = () => {
                   axios
                     .post(process.env.BACKEND_URL + "/adulto/estado", {
                       id_adulto: value.id_adulto,
+                      usuario: usuario
                     })
                     .then((res) => {
                       value.estado == 0
                         ? message.success(
-                            "Adulto " + value.id_adulto + " activo"
-                          )
+                          "Adulto " + value.id_adulto + " activo"
+                        )
                         : message.error(
-                            "Adulto " + value.id_adulto + " inactivo"
-                          );
+                          "Adulto " + value.id_adulto + " inactivo"
+                        );
 
                       axios
                         .get<Adulto[]>(process.env.BACKEND_URL + "/adulto/all")
@@ -476,6 +479,7 @@ const Informacion = () => {
         setAdultos={setAdultos}
         setDisplayAdultos={setDisplayAdultos}
         setDomicilios={setDomicilios}
+        usuario={usuario}
       ></AdultoModal>
     </>
   );

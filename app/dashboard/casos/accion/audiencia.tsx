@@ -27,6 +27,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import FormularioAudienciaSuspendida from "./pdf-audiencia-suspendida";
 import { Audiencia, Citado, dataAudiencia } from "../nuevocaso/data";
 import axios from "axios";
+import { Usuario } from "../../usuarios/data";
 interface Props {
   setOpen2: any;
   open2: boolean;
@@ -35,6 +36,7 @@ interface Props {
   adulto: Adulto;
   citacion: Citacion;
   citados: Citado[];
+  usuario: Usuario;
 }
 
 export const DataContext4 = createContext({});
@@ -80,6 +82,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                   {
                     id_citacion: props.citacion.id_citacion,
                     audiencia: audiencia,
+                    usuario: props.usuario
                   }
                 )
                 .then((res) => {
@@ -123,7 +126,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                 });
             }}
           >
-            <Button onClick={() => {}} style={{ height: 45 }}>
+            <Button onClick={() => { }} style={{ height: 45 }}>
               Aceptar y Generar
               <AiOutlineFilePdf
                 style={{

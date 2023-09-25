@@ -22,6 +22,7 @@ import axios from "axios";
 import moment from "moment";
 import { Hijo } from "../data";
 import { Adulto } from "../../adultos/data";
+import { Usuario } from "../../usuarios/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -29,7 +30,7 @@ export const DataContext = createContext({});
 interface Props {
   setOpen: any;
   open: boolean;
-
+  usuario: Usuario;
   hijo: Hijo;
   setHijo: any;
   setHijos: any;
@@ -42,13 +43,13 @@ const HijoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL+"/hijo/update", { ...props.hijo })
+      .post(process.env.BACKEND_URL + "/hijo/update", { ...props.hijo, usuario: props.usuario })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
             message: `¡Los datos de ${props.hijo.nombres_apellidos} se modificaron con éxito!`,
           });
-          axios.get<Adulto[]>(process.env.BACKEND_URL+"/hijo/all").then((res) => {
+          axios.get<Adulto[]>(process.env.BACKEND_URL + "/hijo/all").then((res) => {
             props.setHijos(res.data);
             props.setDisplayHijos(res.data);
           });

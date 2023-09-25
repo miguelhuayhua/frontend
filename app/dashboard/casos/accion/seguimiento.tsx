@@ -24,6 +24,7 @@ import { Hijo } from "../../hijos/data";
 import { AiOutlineFilePdf } from "react-icons/ai";
 export const DataContext = createContext({});
 import "./estilos.scss";
+import { Usuario } from "../../usuarios/data";
 interface Props {
   caso: Caso;
   adulto: Adulto;
@@ -31,6 +32,7 @@ interface Props {
   setSeguimiento: any;
   data: any;
   persona: Persona;
+  usuario: Usuario;
 }
 
 const SeguimientoOptions: NextPage<Props> = (props) => {
@@ -102,6 +104,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                   .post(process.env.BACKEND_URL + "/caso/seguimiento/add", {
                     ...props.seguimiento,
                     id_caso: props.caso.id_caso,
+                    usuario: props.usuario
                   })
                   .then((res) => {
                     if (res.data.status == 1) {
@@ -131,10 +134,10 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                           link.setAttribute(
                             "download",
                             nombre +
-                              paterno +
-                              materno +
-                              props.seguimiento.fecha_seguimiento +
-                              ".pdf"
+                            paterno +
+                            materno +
+                            props.seguimiento.fecha_seguimiento +
+                            ".pdf"
                           );
                           document.body.appendChild(link);
                           link.click();
@@ -234,10 +237,10 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                                   link.setAttribute(
                                     "download",
                                     nombre +
-                                      paterno +
-                                      materno +
-                                      props.seguimiento.fecha_seguimiento +
-                                      ".pdf"
+                                    paterno +
+                                    materno +
+                                    props.seguimiento.fecha_seguimiento +
+                                    ".pdf"
                                   );
                                   document.body.appendChild(link);
                                   link.click();

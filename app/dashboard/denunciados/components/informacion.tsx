@@ -40,6 +40,7 @@ import PdfDenunciado from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 export const context3 = createContext({});
 //ROUTING
 
@@ -139,7 +140,7 @@ const Informacion = () => {
 
   //cargado de datos desde la API
   const { data } = useSession();
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   useEffect(() => {
     if (data) {
       let { usuario, persona } = data?.user as {
@@ -160,6 +161,8 @@ const Informacion = () => {
         });
 
       setPersona(persona);
+      setUsuario({ ...usuario, password: "", ult_modificacion: "" })
+
     }
   }, [data]);
   //cambios en los filtros
@@ -263,8 +266,8 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Denunciados-" +
-                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
-                        ".xlsx"
+                      dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                      ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -345,7 +348,7 @@ const Informacion = () => {
         </Row>
       </Form>
       <Table
-      className="mt-2"
+        className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(Denunciado) => Denunciado.id_denunciado + "T"}
         key="table"
@@ -366,7 +369,7 @@ const Informacion = () => {
                 if (ev.target.className.includes("switch")) {
                   axios
                     .post(process.env.BACKEND_URL + "/denunciado/estado", {
-                      id_denunciado: value.id_denunciado,
+                      id_denunciado: value.id_denunciado, usuario: usuario
                     })
                     .then((res) => {
                       message.success("¡Denunciado cambiado con éxito!");
@@ -415,6 +418,7 @@ const Informacion = () => {
         key="Denunciadomodal"
         open={open}
         setOpen={setOpen}
+        usuario={usuario}
       ></DenunciadoModal>
     </>
   );

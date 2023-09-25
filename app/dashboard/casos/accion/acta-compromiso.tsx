@@ -29,6 +29,7 @@ import { PDFViewer, pdf } from "@react-pdf/renderer";
 import FormularioActaCompromiso from "./pdf-compromiso";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Usuario } from "../../usuarios/data";
 interface Props {
   setOpen: any;
   open: boolean;
@@ -38,6 +39,7 @@ interface Props {
   loaded: boolean;
   denunciado: Denunciado;
   setDenunciado: any;
+  usuario: Usuario;
 }
 
 export const DataContext3 = createContext({});
@@ -276,6 +278,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
               id_caso: props.caso.id_caso,
               compromisos: compromisos,
               denunciado: props.denunciado,
+              usuario: props.usuario
             })
             .then((res) => {
               if (res.data.status == 1) {

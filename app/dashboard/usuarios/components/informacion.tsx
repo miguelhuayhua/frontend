@@ -289,8 +289,8 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Usuarios-" +
-                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
-                        ".xlsx"
+                      dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                      ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -417,6 +417,7 @@ const Informacion = () => {
                   axios
                     .post(process.env.BACKEND_URL + "/usuario/estado", {
                       id_usuario: value.id_usuario,
+                      usuario: usuario2
                     })
                     .then((res) => {
                       message.success("¡Usuario cambiado con éxito!");
@@ -434,12 +435,13 @@ const Informacion = () => {
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
-                  setOpen(true);
+                  console.log(usuario)
                   axios
                     .post<Usuario>(process.env.BACKEND_URL + "/usuario/get", {
                       id_usuario: value.id_usuario,
                     })
                     .then((res) => {
+                      console.log(res.data)
                       setUsuario(res.data);
                       setLoaded(true);
                       axios
@@ -451,11 +453,12 @@ const Informacion = () => {
                         )
                         .then((res) => {
                           setPersona1(res.data);
+                          setOpen(true);
+
                         });
                     });
                 }
               } catch (error) {
-                setOpen(true);
                 axios
                   .post(process.env.BACKEND_URL + "/usuario/get", {
                     id_usuario: value.id_usuario,
@@ -463,6 +466,18 @@ const Informacion = () => {
                   .then((res) => {
                     setUsuario(res.data);
                     setLoaded(true);
+                    axios
+                      .post<Persona>(
+                        process.env.BACKEND_URL + "/persona/get",
+                        {
+                          id_persona: res.data.id_persona,
+                        }
+                      )
+                      .then((res) => {
+                        setPersona1(res.data);
+                        setOpen(true);
+
+                      });
                   });
               }
             },

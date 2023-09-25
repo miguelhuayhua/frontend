@@ -30,17 +30,38 @@ import Meta from "antd/es/card/Meta";
 import locale from "antd/es/date-picker/locale/es_ES";
 import { Persona, dataPersona, dias, meses } from "./data";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./estilos.scss";
 import { now } from "moment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { departamentos } from "../../casos/nuevocaso/data";
+import { useSession } from "next-auth/react";
+import { Usuario, dataUsuario } from "../../usuarios/data";
 const AgregarPersonal = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
+  //cargado de datos desde la API
+  const { data } = useSession();
+
+  useEffect(() => {
+    if (data) {
+      let { usuario, persona } = data?.user as {
+        usuario: {
+          usuario: string;
+          estado: number;
+          fotografia: string;
+          id_persona: string;
+          id_usuario: string;
+        };
+        persona: Persona;
+      };
+      setUsuario({ ...usuario, ult_modificacion: "", password: "" });
+    }
+  }, [data]);
   return (
     <main>
       <Layout>
@@ -234,7 +255,7 @@ const AgregarPersonal = () => {
                         <Col span={24} md={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label={"Fecha de nacimiento"}>
                             <DatePicker
-                            format={"DD-MM-YYYY"}
+                              format={"DD-MM-YYYY"}
                               style={{ width: "100%" }}
                               locale={{
                                 ...locale,
@@ -410,9 +431,7 @@ const AgregarPersonal = () => {
         onOk={() => {
           axios
             .post<{ status: number; id_persona: string }>(
-              process.env.BACKEND_URL + "/persona/insert",
-              persona
-            )
+              process.env.BACKEND_URL + "/persona/insert", { ...persona, usuario: usuario })
             .then((res) => {
               if (res.data.status == 1) {
                 notification.success({
@@ -429,7 +448,7 @@ const AgregarPersonal = () => {
                         onClick={() => {
                           router.replace(
                             "/dashboard/usuarios/agregar?id_persona=" +
-                              res.data.id_persona
+                            res.data.id_persona
                           );
                         }}
                       >

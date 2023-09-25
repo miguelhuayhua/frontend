@@ -19,7 +19,6 @@ import {
 } from "../nuevocaso/data";
 import { Persona } from "../../personal/agregar/data";
 
-// Create styles
 //estilos
 const styles = StyleSheet.create({
   textItalic: { fontSize: 9, fontFamily: "Helvetica-Oblique" },
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     paddingHorizontal: 5,
-    paddingVertical: 3.5,
+    paddingVertical: 2.5,
     border: "1px solid black",
     borderRadius: 2,
     fontSize: 9,
@@ -498,7 +497,7 @@ const Formulario = () => {
           style={{
             ...styles.horizontal,
             justifyContent: "space-evenly",
-            marginTop: 40,
+            marginTop: 30,
           }}
         >
           <Text style={{ ...styles.text, ...styles.textCenter }}>

@@ -22,7 +22,7 @@ import "./estilos.scss";
 import React, { useEffect, useState } from "react";
 import MenuSider from "../components/MenuSider";
 import Navbar from "../components/Navbar";
-import { dataUsuario } from "../usuarios/data";
+import { Usuario, dataUsuario } from "../usuarios/data";
 import { Persona, dataPersona } from "../personal/agregar/data";
 import { signOut, useSession } from "next-auth/react";
 import { HomeOutlined } from "@ant-design/icons";
@@ -35,18 +35,14 @@ import DatosPersonales from "./datos-personales";
 
 export default function Profile() {
   const { data } = useSession();
-  const [usuario, setUsuario] = useState<{
-    usuario: string;
-    estado: number;
-    fotografia: string;
-    id_persona: string;
-    id_usuario: string;
-  }>(dataUsuario);
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   const [accionesUsuario, setAccionesUsuario] = useState<AccionesUsuario[]>([]);
   const [accesosUsuario, setAccesosUsuario] = useState<{
     horas: number;
     accesos_usuario: AccesoUsuario[];
   }>({ horas: 0, accesos_usuario: [] });
+  const [displayAccionesUsuario, setDisplayAccionesUsuario] = useState<AccionesUsuario[]>([]);
+  const [displayAccesosUsuario, setDisplayAccesosUsuario] = useState<AccesoUsuario[]>([]);
   const [file, setFile] = useState<any>(null);
 
   const [persona, setPersona] = useState<Persona>(dataPersona);
@@ -62,9 +58,8 @@ export default function Profile() {
         };
         persona: Persona;
       };
-      setUsuario({ ...usuario });
+      setUsuario({ ...usuario, password: '', ult_modificacion: '' });
       setPersona(persona);
-      console.log(persona);
       axios
         .post<AccionesUsuario[]>(
           process.env.BACKEND_URL + "/usuario/getAccionesById",
@@ -74,6 +69,7 @@ export default function Profile() {
         )
         .then((res) => {
           setAccionesUsuario(res.data);
+          setDisplayAccionesUsuario(res.data)
           axios
             .post<{ horas: number; accesos_usuario: AccesoUsuario[] }>(
               process.env.BACKEND_URL + "/usuario/getAccesosById",
@@ -83,6 +79,7 @@ export default function Profile() {
             )
             .then((res) => {
               setAccesosUsuario(res.data);
+              setDisplayAccesosUsuario(res.data.accesos_usuario)
             });
         });
     }
@@ -100,15 +97,22 @@ export default function Profile() {
     },
     {
       key: "2",
-      label: "Editar Perfil",
-      children: <Perfil></Perfil>,
+      label: "Seguridad",
+      children: <Perfil setUsuario={setUsuario} usuario={usuario}></Perfil>,
     },
     {
       key: "3",
       label: "Seguimiento de cuenta",
       children: (
         <SeguimientoCuenta
+          accesosUsuario={accesosUsuario.accesos_usuario}
           accionesUsuario={accionesUsuario}
+          persona={persona}
+          displayAccionesUsuario={displayAccionesUsuario}
+          displayAccesosUsuario={displayAccesosUsuario}
+          setDisplayAccionesUsuario={setDisplayAccionesUsuario}
+          setDisplayAccesosUsuario={setDisplayAccesosUsuario}
+
         ></SeguimientoCuenta>
       ),
     },
@@ -188,7 +192,7 @@ export default function Profile() {
                                   axios
                                     .post(
                                       process.env.BACKEND_URL +
-                                        "/usuario/fotografia",
+                                      "/usuario/fotografia",
                                       form,
                                       {
                                         headers: {
@@ -204,6 +208,19 @@ export default function Profile() {
                                         notification.success({
                                           message:
                                             "La foto de perfil se actualizó correctamente, INICIE SESIÓN NUEVAMENTE...",
+                                          duration: 10,
+                                          btn: (
+                                            <>
+                                              <Button
+                                                onClick={() => {
+                                                  signOut({ redirect: true });
+                                                }}
+                                              >
+                                                Cerrar Sesión
+                                              </Button>
+                                            </>
+                                          ),
+
                                         });
                                       }
                                     });
@@ -219,18 +236,19 @@ export default function Profile() {
                                 src={
                                   file == null
                                     ? process.env.BACKEND_URL +
-                                      usuario.fotografia
+                                    usuario.fotografia
                                     : URL.createObjectURL(file)
                                 }
                                 style={{
                                   width: 100,
                                   height: 100,
+                                  zIndex: 1
                                 }}
                               ></Avatar>
                             </Upload>
                           </div>
                           <div className="mt-4">
-                            <span style={{ fontSize: 18, fontWeight: "bold" }}>
+                            <span style={{ fontSize: 18, fontWeight: "bold", color: "#0c7fa1" }}>
                               Nombre de Usuario:
                             </span>
                             <div className="d-flex">
@@ -254,7 +272,7 @@ export default function Profile() {
                                   axios
                                     .post(
                                       process.env.BACKEND_URL +
-                                        "/usuario/username",
+                                      "/usuario/username",
                                       {
                                         id_usuario: usuario.id_usuario,
                                         usuario: usuario.usuario,
@@ -290,53 +308,39 @@ export default function Profile() {
                             </div>
                           </div>
                         </Col>
-                        <Col offset={0} span={24} lg={{ span: 10, offset: 6 }}>
-                          <Segmented
-                            options={[
-                              {
-                                label: (
-                                  <div className="counters">
-                                    <p>Acciones de Usuario</p>
-                                    <span>
-                                      {accionesUsuario.length} ACCIONES
-                                    </span>
-                                  </div>
-                                ),
-                                value: "spring",
-                              },
-                              {
-                                label: (
-                                  <div className="counters">
-                                    <p>Nro. de Inicios de Sesión</p>
-                                    <span>
-                                      {accesosUsuario.accesos_usuario.length}{" "}
-                                      INICIOS
-                                    </span>
-                                  </div>
-                                ),
-                                value: "summer",
-                              },
-                              {
-                                label: (
-                                  <div className="counters">
-                                    <p>Horas dentro del sistema</p>
-                                    <span>
-                                      {accesosUsuario.horas
-                                        ? accesosUsuario.horas.toFixed(2)
-                                        : "0"}{" "}
-                                      HORAS
-                                    </span>
-                                  </div>
-                                ),
-                                value: "autumn",
-                              },
-                            ]}
-                          />
+                        <Col offset={0} span={24} lg={{ span: 10, offset: 4 }} className="d-flex">
+                          <div className="counters">
+                            <p>Acciones de Usuario</p>
+                            <span>
+                              {accionesUsuario.length} ACCIONES
+                            </span>
+                          </div>
+                          <div className="counters" style={{ borderLeft: "1px solid gray", borderRight: "1px solid gray" }}>
+                            <p>Nro. de Inicios de Sesión</p>
+                            <span>
+                              {accesosUsuario.accesos_usuario.length}{" "}
+                              INICIOS
+                            </span>
+                          </div>
+                          <div className="counters">
+                            <p>Horas dentro del sistema</p>
+                            <span>
+                              {accesosUsuario.horas
+                                ? accesosUsuario.horas.toFixed(2)
+                                : "0"}{" "}
+                              HORAS
+                            </span>
+                          </div>
+
                         </Col>
-                        <Col span={24}>
-                          <Tabs defaultActiveKey="1" items={items} />
-                        </Col>
+
                       </Row>
+                    </Card>
+                  </Col>
+                  <Col span={24}>
+                    <Card className="mt-3">
+                      <Tabs defaultActiveKey="1" items={items} />
+
                     </Card>
                   </Col>
                 </Row>

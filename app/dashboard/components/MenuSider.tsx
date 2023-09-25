@@ -103,7 +103,7 @@ const MenuSider: NextPage<Props> = (props) => {
                     label: "Reportes",
                     icon: <TbReportAnalytics />,
                     onClick: () => {
-                      router.push("/dashboard/caso/reportes");
+                      router.push("/dashboard/casos/reportes");
                     },
                   },
                 ],

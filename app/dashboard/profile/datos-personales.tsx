@@ -20,10 +20,10 @@ import { NextPage } from "next";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import moment from "moment";
 import { departamentos } from "../casos/nuevocaso/data";
+import Paragraph from "antd/es/typography/Paragraph";
 interface Props {
   persona: Persona;
   setPersona: any;
@@ -84,14 +84,14 @@ const DatosPersonales: NextPage<Props> = (props) => {
       </Modal>
       <Content className="mt-2">
         <Row gutter={[24, 24]}>
-          <Col span={24} lg={{ span: 12 }}>
+          <Col span={24} lg={{ span: 16 }}>
             <Form
               onFinish={() => {
                 setOpen(true);
               }}
             >
               <Row gutter={[24, 24]}>
-                <Col span={24} md={{ span: 10, offset: 2 }}>
+                <Col span={24} md={{ span: 11, offset: 1 }}>
                   <Form.Item label="Profesión:">
                     <Input
                       required
@@ -122,7 +122,7 @@ const DatosPersonales: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={24} md={{ span: 11, offset: 2 }}>
+                <Col span={24} md={{ span: 11, offset: 1 }}>
                   <Space.Compact>
                     <Form.Item label="C.I. / Expedido:">
                       <InputNumber
@@ -192,8 +192,12 @@ const DatosPersonales: NextPage<Props> = (props) => {
               </Button>
             </Form>
           </Col>
-          <Col span={24} lg={12}>
+          <Col span={24} lg={8}>
             <Card title="DATOS PERSONALES">
+              <b style={{ fontWeight: "bold" }}>ID PERSONA: </b>
+              <Paragraph copyable style={{ display: 'flex', alignItems: 'center' }}>
+                {props.persona.id_persona}
+              </Paragraph>
               <p>
                 <b style={{ fontWeight: "bold" }}>Nombres y Apellidos: </b>
                 {`${props.persona.nombres} ${props.persona.paterno} ${props.persona.materno}`}
@@ -206,14 +210,11 @@ const DatosPersonales: NextPage<Props> = (props) => {
               </p>
               <p>
                 <b style={{ fontWeight: "bold" }}>Fecha de nacimiento: </b>
-                {props.persona.f_nacimiento}
+                {dayjs(props.persona.f_nacimiento).format('DD/MM/YYYY')}
                 <b style={{ fontWeight: "bold", marginLeft: 20 }}> Edad: </b>
                 {-dayjs(props.persona.f_nacimiento).diff(moment.now(), "years")}
               </p>
-              <p>
-                <b style={{ fontWeight: "bold" }}>C.I.: </b>
-                {props.persona.ci}
-              </p>
+
             </Card>
           </Col>
         </Row>

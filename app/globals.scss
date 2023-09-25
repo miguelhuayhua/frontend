@@ -1,4 +1,5 @@
 @import "/node_modules/bootstrap/scss/bootstrap.scss";
+
 //botones flotantes de exportación
 .info {
   color: rgb(134, 134, 134);
@@ -9,6 +10,7 @@
   bottom: 30px;
   width: 55px;
   height: 55px;
+
   &:hover {
     background-color: transparent !important;
   }
@@ -19,8 +21,13 @@
   align-items: center;
   justify-content: center;
 }
+
 .info-button {
   margin: 5px;
+}
+
+b {
+  color: #167a9b !important;
 }
 
 .column-centered {
@@ -40,6 +47,7 @@ label {
   color: #186680;
   font-size: 18px;
 }
+
 //SELECT AND DATE PICKER
 .ant-select-item-option,
 .ant-select-dropdown,
@@ -47,30 +55,37 @@ label {
   background-color: #1f96be !important;
   color: white !important;
 }
+
 .ant-picker-body {
   padding: 0 !important;
 }
+
 .ant-picker-header button {
   color: white !important;
 }
+
 .ant-picker-content {
   width: 100% !important;
 }
+
 .ant-picker-content th {
   background-color: #1f96be !important;
 }
+
 .ant-select-item-option-selected {
   color: #1f96be !important;
   background-color: white !important;
 }
+
 .ant-picker-cell-selected .ant-picker-cell-inner {
   background-color: #dc3f4a !important;
 }
 
 .ant-select-item-option-active {
-
   color: #1f96be !important;
-  background-color: rgb(243, 243, 243) !important;}
+  background-color: rgb(243, 243, 243) !important;
+}
+
 //INPUT
 .ant-input,
 .ant-select,
@@ -79,14 +94,26 @@ label {
 .ant-select-selector,
 .ant-input-affix-wrapper {
   background-color: #f5fafb !important;
+
   &::placeholder {
     color: gray;
   }
 }
+
+//CARD
+.ant-card-head-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #167a9b !important;
+}
+
 //TABLE
 th {
   background-color: #dc3f4a !important;
   color: white !important;
+  text-align: center !important;
+  font-size: 14px !important;
+  padding: 5px !important;
 }
 
 //SWITCH
@@ -99,7 +126,9 @@ th {
   background-color: #26a6d1;
   font-weight: bold;
 }
-
+.ant-modal-footer {
+  display: flex;
+}
 //RADIO BUTTON
 .ant-radio-checked .ant-radio-inner {
   border-color: #dc3f4a;
@@ -109,7 +138,20 @@ th {
 //FLOAT BUTTON
 .ant-float-btn-body {
   background-color: #26a6d1 !important;
+  color: white !important;
+
   .anticon {
-    color: white;
+    color: white !important;
   }
+}
+.ant-float-btn-icon {
+  color: white;
+}
+
+//timepicker
+.ant-picker-header {
+  display: flex;
+  padding: 0 8px;
+  color: rgba(0, 0, 0, 0.88);
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
 }

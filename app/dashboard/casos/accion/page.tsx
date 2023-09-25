@@ -113,6 +113,7 @@ const AccionCaso = () => {
       label: `Seguimientos`,
       children: (
         <SeguimientoOptions
+          usuario={usuario}
           setSeguimiento={setSeguimiento}
           seguimiento={seguimiento}
           adulto={adulto}
@@ -127,6 +128,7 @@ const AccionCaso = () => {
       label: `Citaciones`,
       children: (
         <CitacionOptions
+          usuario={usuario}
           adulto={adulto}
           caso={caso}
           data={data}
@@ -218,6 +220,7 @@ const AccionCaso = () => {
       ></FloatButton>
 
       <ModalActaCompromiso
+        usuario={usuario}
         setDenunciado={setDenunciado}
         adulto={adulto}
         caso={caso}

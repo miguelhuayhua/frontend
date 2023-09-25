@@ -38,7 +38,6 @@ import {
   meses,
 } from "../nuevocaso/data";
 import dayjs from "dayjs";
-import isBeetwen from "dayjs/plugin/isBetween";
 import { Hijo } from "../../hijos/data";
 import { useRouter } from "next/navigation";
 import { pdf } from "@react-pdf/renderer";
@@ -47,9 +46,14 @@ import { useSession } from "next-auth/react";
 import PdfCasos from "./pdf-listado";
 import Link from "next/link";
 import Paragraph from "antd/es/typography/Paragraph";
+import { Usuario, dataUsuario } from "../../usuarios/data";
+import isBeetwen from "dayjs/plugin/isBetween";
+
 export const context = createContext({});
 //ROUTING
-
+interface Props {
+  usuario: Usuario
+}
 const Informacion = () => {
   dayjs.extend(isBeetwen);
   //estados
@@ -175,7 +179,7 @@ const Informacion = () => {
   const router = useRouter();
   //cargado de datos desde la API
   const [persona, setPersona] = useState<Persona>(dataPersona);
-
+  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   //cargado de datos desde la API
   const { data } = useSession();
 
@@ -193,7 +197,7 @@ const Informacion = () => {
       };
 
       setPersona(persona);
-
+      setUsuario({ ...usuario, password: "", ult_modificacion: "" })
       axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
         setCasos(res.data);
         setDisplayCasos(res.data);
@@ -493,11 +497,11 @@ const Informacion = () => {
         onRow={(value) => {
           return {
             onClick: (ev: any) => {
-              console.log(ev.target);
               if (ev.target.className.includes("switch")) {
                 axios
                   .post(process.env.BACKEND_URL + "/caso/estado", {
                     id_caso: value.id_caso,
+                    usuario: usuario
                   })
                   .then((res) => {
                     message.success(
@@ -543,6 +547,7 @@ const Informacion = () => {
 
       <CasoModal
         key="casomodal"
+        usuario={usuario}
         adultoMayor={adultoMayor}
         caso={caso!}
         setOpen={setOpen}

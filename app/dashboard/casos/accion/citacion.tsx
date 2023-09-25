@@ -36,6 +36,7 @@ import { Citado, dias, meses, nro_citacion } from "../nuevocaso/data";
 import moment, { now } from "moment";
 import "./estilos.scss";
 import ModalAudienciaSuspendida from "./audiencia";
+import { Usuario } from "../../usuarios/data";
 export const DataContext2 = createContext({});
 
 interface Props {
@@ -47,6 +48,7 @@ interface Props {
   citacion: { citacion: Citacion; size: number };
   setCitacion: any;
   setCitaciones: any;
+  usuario: Usuario;
 }
 
 const CitacionOptions: NextPage<Props> = (props) => {
@@ -98,7 +100,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 12 }}>
                   <Form.Item label={"Fecha de Registro"}>
                     <DatePicker
-                    format={"DD-MM-YYYY"}
+                      format={"DD-MM-YYYY"}
                       style={{ width: "100%" }}
                       locale={{
                         ...locale,
@@ -188,7 +190,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                               axios
                                 .post<{ genero: number }>(
                                   process.env.BACKEND_URL +
-                                    "/ml/genderize/predict",
+                                  "/ml/genderize/predict",
                                   { nombres_apellidos: citado }
                                 )
                                 .then((res) => {
@@ -278,6 +280,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                           citacion: props.citacion.citacion,
                           citados: citados,
                           numero: props.citacion.size,
+                          usuario: props.usuario
                         })
                         .then((res) => {
                           if (res.data.status == 1) {
@@ -304,7 +307,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                 axios
                                   .post<Citacion[]>(
                                     process.env.BACKEND_URL +
-                                      "/caso/citacion/all",
+                                    "/caso/citacion/all",
                                     {
                                       id_caso: params.get("id_caso"),
                                     }
@@ -427,7 +430,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                   axios
                                     .post<Citado[]>(
                                       process.env.BACKEND_URL +
-                                        "/caso/citados/get",
+                                      "/caso/citados/get",
                                       {
                                         id_citacion: item.id_citacion,
                                       }
@@ -491,7 +494,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                   axios
                                     .post<Citado[]>(
                                       process.env.BACKEND_URL +
-                                        "/caso/citados/get",
+                                      "/caso/citados/get",
                                       {
                                         id_citacion: item.id_citacion,
                                       }
@@ -549,6 +552,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
         open2={open2}
         setOpen2={setOpen2}
         persona={props.persona}
+        usuario={props.usuario}
       ></ModalAudienciaSuspendida>
     </>
   );

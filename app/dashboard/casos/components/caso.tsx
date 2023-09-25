@@ -33,6 +33,7 @@ import { Domicilio } from "../../adultos/data";
 import { useSession } from "next-auth/react";
 import { Persona } from "../../personal/agregar/data";
 import "./estilos.scss";
+import { Usuario } from "../../usuarios/data";
 export const DataContext = createContext({});
 //ROUTING
 
@@ -44,6 +45,7 @@ interface Props {
   setCaso: any;
   adultoMayor: AdultoMayor2;
   denunciado: Denunciado;
+  usuario: Usuario;
   setCasos: any;
   setDisplayCasos: any;
 }
@@ -53,7 +55,7 @@ const CasoModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL + "/caso/update", { ...props.caso })
+      .post(process.env.BACKEND_URL + "/caso/update", { ...props.caso, usuario: props.usuario })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
@@ -246,10 +248,10 @@ const CasoModal: NextPage<Props> = (props) => {
                             link.setAttribute(
                               "download",
                               nombre +
-                                paterno +
-                                materno +
-                                props.caso.fecha_registro +
-                                ".pdf"
+                              paterno +
+                              materno +
+                              props.caso.fecha_registro +
+                              ".pdf"
                             );
                             document.body.appendChild(link);
                             link.click();

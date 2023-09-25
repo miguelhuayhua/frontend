@@ -29,12 +29,11 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 
-import { useRouter } from "next/navigation";
 import { Persona, dataPersona } from "../agregar/data";
 import PersonaModal from "./personal";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import {  pdf } from "@react-pdf/renderer";
 import PdfPersonal from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -285,8 +284,8 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Personal-" +
-                        dayjs().format("DD-MM-YYYY_HH:mm:ss") +
-                        ".xlsx"
+                      dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                      ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -372,7 +371,7 @@ const Informacion = () => {
       </Form>
       <hr />
       <Table
-      className="mt-2"
+        className="mt-2"
         scroll={{ x: 800, y: 500 }}
         rowKey={(persona) => persona.id_persona + "T"}
         key="table"
@@ -394,6 +393,7 @@ const Informacion = () => {
                   axios
                     .post(process.env.BACKEND_URL + "/persona/estado", {
                       id_persona: value.id_persona,
+                      usuario: usuario
                     })
                     .then((res) => {
                       message.success("¡Personal cambiado con éxito!");
@@ -447,6 +447,7 @@ const Informacion = () => {
         open={open}
         setOpen={setOpen}
         persona1={persona1}
+        usuario={usuario}
       ></PersonaModal>
     </>
   );

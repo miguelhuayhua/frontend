@@ -20,6 +20,7 @@ import {
 } from "antd";
 import axios from "axios";
 import { departamentos } from "../../casos/nuevocaso/data";
+import { Usuario } from "../../usuarios/data";
 
 interface Props {
   setOpen: any;
@@ -30,23 +31,24 @@ interface Props {
   loaded: boolean;
   setDisplayPersonas: any;
   persona1: Persona;
+  usuario: Usuario
 }
 const PersonaModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     axios
       .post<{ status: number }>(process.env.BACKEND_URL + "/persona/update", {
         ...props.persona,
+        usuario: props.usuario
       })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
-            message: `Personal ${
-              props.persona.nombres +
+            message: `Personal ${props.persona.nombres +
               " " +
               props.persona.paterno +
               " " +
               props.persona.materno
-            } editado con éxito`,
+              } editado con éxito`,
           });
           props.setOpen(false);
           axios
@@ -70,13 +72,12 @@ const PersonaModal: NextPage<Props> = (props) => {
     <>
       <Modal
         key="modal"
-        title={`EDITE LOS VALORES PARA EL PERSONAL ${
-          props.persona.nombres +
+        title={`EDITE LOS VALORES PARA EL PERSONAL ${props.persona.nombres +
           " " +
           props.persona.paterno +
           " " +
           props.persona.materno
-        }`}
+          }`}
         centered
         style={{ textAlign: "center" }}
         open={props.open}
@@ -256,7 +257,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                 </Form.Item>
               </Col>
               {props.persona1.cargo == "1" &&
-              props.persona.id_persona != props.persona1.id_persona ? (
+                props.persona.id_persona != props.persona1.id_persona ? (
                 <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
                   <Form.Item label="Cargo: ">
                     <Select
