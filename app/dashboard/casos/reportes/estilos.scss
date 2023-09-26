@@ -20,6 +20,8 @@ Button {
   }
   &:hover {
     color: white !important;
+    scale: 1.1;
+    z-index: 20;
   }
 }
 .g-1 {

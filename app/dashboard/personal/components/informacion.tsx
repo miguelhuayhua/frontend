@@ -284,7 +284,7 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Personal-" +
-                      dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                      dayjs().format("dd-mm-yyyy_HH:mm:ss") +
                       ".xlsx"
                     );
                     link.click();
@@ -293,7 +293,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Personal-" +
-                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),

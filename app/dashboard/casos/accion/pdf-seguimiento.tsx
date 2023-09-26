@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-evenly",
     width: "100%",
-    marginTop: 10,
+    marginTop: 20,
   },
   signatureBox: {
     display: "flex",

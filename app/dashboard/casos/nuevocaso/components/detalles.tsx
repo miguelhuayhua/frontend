@@ -97,22 +97,21 @@ const Detalles: NextPage<Props> = (props) => {
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          let { nombre, paterno, materno } = dataDatosGenerales;
+          let { nombre, paterno, materno } = props.datos.datosGenerales;
 
           link.setAttribute(
             "download",
             nombre +
             paterno +
             materno +
-            dataDatosDenuncia.fecha_registro +
-            ".pdf"
+            "caso.pdf"
           );
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
         });
       axios
-        .post("http://127.0.0.1:8000/denuncia/insert", { ...props.datos, usuario: usuario })
+        .post(process.env.BACKEND_URL + "/denuncia/insert", { ...props.datos, usuario: usuario })
         .then((res) => {
           setSuccess(true);
           setCounter(100);

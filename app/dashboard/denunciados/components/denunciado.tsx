@@ -104,7 +104,7 @@ const DenunciadoModal: NextPage<Props> = (props) => {
               <p style={{ color: "gray", textAlign: "start" }}>
                 <span>Última modifcación: </span>
                 {moment(props.denunciado.ult_modificacion).format(
-                  "DD-MM-YYYY HH:mm:ss"
+                  "dd-mm-yyyy HH:mm:ss"
                 )}
               </p>
             </Col>

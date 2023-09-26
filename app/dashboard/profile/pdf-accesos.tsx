@@ -189,7 +189,7 @@ const PdfAccesos = () => {
                         HISTORIAL DE ACCESOS DE {`${persona.nombres.toUpperCase()} ${persona.paterno.toUpperCase()} ${persona.materno.toUpperCase()}`}
                     </Text>
                     <Text style={{ ...styles.parraf, color: 'gray' }}>
-                        {rangeAcceso.de ? `Datos filtrados desde el ${dayjs(rangeAcceso.de).format("DD/MM/YYYY-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcceso.hasta).format("DD/MM/YYYY-hh:mm:ss")} ` : null}
+                        {rangeAcceso.de ? `Datos filtrados desde el ${dayjs(rangeAcceso.de).format("dd-mm-yyyy-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcceso.hasta).format("dd-mm-yyyy-hh:mm:ss")} ` : null}
                     </Text>
                     <View style={styles.table}>
                         <View style={styles.row}>
@@ -223,7 +223,7 @@ const PdfAccesos = () => {
                                     </View>
                                     <View style={styles.cell}>
                                         <Text>
-                                            {dayjs(value.fecha_hora_acceso).format("hh:mm:ss")}
+                                            {dayjs(value.fecha_hora_acceso).format("HH:mm:ss")}
                                         </Text>
                                     </View>
                                     <View style={styles.cell}>
@@ -231,7 +231,7 @@ const PdfAccesos = () => {
                                     </View>
                                     <View style={styles.cell}>
                                         <Text>
-                                            {dayjs(value.fecha_hora_salida).format("hh:mm:ss")}
+                                            {dayjs(value.fecha_hora_salida).format("HH:mm:ss")}
                                         </Text>
                                     </View>
                                 </View>

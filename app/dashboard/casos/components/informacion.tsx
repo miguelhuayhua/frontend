@@ -361,7 +361,7 @@ const Informacion = () => {
                     link.href = url;
                     link.setAttribute(
                       "download",
-                      "Casos-" + dayjs().format("DD-MM-YYYY_HH:mm:ss") + ".xlsx"
+                      "Casos-" + dayjs().format("dd-mm-yyyy_HH:mm:ss") + ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -369,7 +369,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Casos-" +
-                            dayjs().format("DD-MM-YYYY_HH:mm:ss") +
+                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),

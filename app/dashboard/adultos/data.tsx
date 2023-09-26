@@ -27,7 +27,7 @@ export let dataAdulto = {
   genero: "",
   edad: 10,
   ci: 0,
-  f_nacimiento: "",
+  f_nacimiento: "1960/01/01",
   nro_referencia: 0,
   estado_civil: "",
   grado: "",

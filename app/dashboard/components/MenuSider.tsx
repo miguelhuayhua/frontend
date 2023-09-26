@@ -160,15 +160,8 @@ const MenuSider: NextPage<Props> = (props) => {
                     onClick: () => {
                       router.push("/dashboard/personal");
                     },
-                  },
-                  {
-                    key: "personal1.3",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/personal/reportes");
-                    },
-                  },
+                  }
+            
                 ],
               },
               {
@@ -192,14 +185,7 @@ const MenuSider: NextPage<Props> = (props) => {
                       router.push("/dashboard/usuarios");
                     },
                   },
-                  {
-                    key: "usuario1.3",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/reportes");
-                    },
-                  },
+                 
                 ],
               },
             ]

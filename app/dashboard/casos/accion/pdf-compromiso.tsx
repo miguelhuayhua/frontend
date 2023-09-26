@@ -57,7 +57,7 @@ const FormularioActaCompromiso = () => {
     compromisos: Compromiso[];
   };
 
-  let fechaCaso = dayjs(caso.fecha_registro);
+  let fechaCaso = dayjs(caso.fecha_registro, { format: "dd-mm-yyyy" });
   return (
     <Document>
       <Page style={styles.page}>

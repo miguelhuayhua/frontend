@@ -159,13 +159,12 @@ const DatosPersonales: NextPage<Props> = (props) => {
                 <Col span={24} md={{ span: 9 }}>
                   <Form.Item label="Fecha de Nacimiento">
                     <DatePicker
-                      format={"DD-MM-YYYY"}
                       style={{ width: "100%" }}
                       aria-required
                       onChange={(value) => {
                         props.setPersona({
                           ...props.persona,
-                          f_nacimiento: value?.format("DD-MM-YYYY"),
+                          f_nacimiento: value?.format("YYYY-MM-DD"),
                         });
                       }}
                       locale={{
@@ -210,7 +209,7 @@ const DatosPersonales: NextPage<Props> = (props) => {
               </p>
               <p>
                 <b style={{ fontWeight: "bold" }}>Fecha de nacimiento: </b>
-                {dayjs(props.persona.f_nacimiento).format('DD/MM/YYYY')}
+                {dayjs(props.persona.f_nacimiento).format('DD-MM-YYYY')}
                 <b style={{ fontWeight: "bold", marginLeft: 20 }}> Edad: </b>
                 {-dayjs(props.persona.f_nacimiento).diff(moment.now(), "years")}
               </p>

@@ -140,7 +140,7 @@ const CasoModal: NextPage<Props> = (props) => {
                 <p className="info">
                   <span>Última modifcación: </span>
                   {moment(props.caso.ult_modificacion).format(
-                    "DD-MM-YYYY HH:mm:ss"
+                    "dd-mm-yyyy HH:mm:ss"
                   )}
                 </p>
               </Col>

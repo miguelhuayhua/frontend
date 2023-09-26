@@ -73,7 +73,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
   return (
     <>
       <Row gutter={[24, 24]}>
-        <Col span={24} xl={{ span: 12 }}>
+        <Col span={24} xl={{ span: 14 }}>
           <div className="detalle-citacion">
             <p>
               <b style={{ marginRight: 10 }}>Adulto mayor implicado: </b>
@@ -100,7 +100,6 @@ const CitacionOptions: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 12 }}>
                   <Form.Item label={"Fecha de Registro"}>
                     <DatePicker
-                      format={"DD-MM-YYYY"}
                       style={{ width: "100%" }}
                       locale={{
                         ...locale,
@@ -122,7 +121,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                           ...props.citacion,
                           citacion: {
                             ...props.citacion.citacion,
-                            fecha_citacion: fecha.format("DD-MM-YYYY"),
+                            fecha_citacion: fecha.format("YYYY-MM-DD"),
                           },
                         });
                       }}
@@ -160,18 +159,15 @@ const CitacionOptions: NextPage<Props> = (props) => {
                             height={50}
                             fontSize={50}
                           />
-                          <p>Sin datos</p>
+                          <p className="text-center">Sin datos</p>
                         </>
                       ),
                     }}
                     header={
                       <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-around",
-                        }}
+
                       >
-                        <h6>
+                        <h6 className="text-center">
                           <b>Lista de citados</b>
                         </h6>
                         <Space.Compact>
@@ -363,7 +359,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
             <h3>Límite de citaciones excedida...</h3>
           )}
         </Col>
-        <Col span={24} xl={{ span: 12 }}>
+        <Col span={24} xl={{ span: 10 }}>
           <hr />
           <List
             header={<b>Historial de citaciones</b>}

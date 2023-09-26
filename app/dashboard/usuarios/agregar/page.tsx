@@ -539,7 +539,7 @@ const AgregarUsuarios = () => {
                                     <p>
                                       <span>Fecha de nacimiento: </span>
                                       {dayjs(persona.f_nacimiento).format(
-                                        "DD/MM/YYYY"
+                                        "dd-mm-yyyy"
                                       )}
                                     </p>
                                   </Col>

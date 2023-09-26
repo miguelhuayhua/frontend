@@ -56,7 +56,7 @@ const SeguimientoCuenta: NextPage<Props> = (props) => {
       key: "fecha_hora_accion",
       render(_, accion) {
         return (
-          dayjs(accion.fecha_hora_accion).format("DD/MM/YYYY-hh:mm:ss")
+          dayjs(accion.fecha_hora_accion).format("DD/MM/YYYY-HH:mm:ss")
         );
       },
       width: 200,
@@ -99,7 +99,7 @@ const SeguimientoCuenta: NextPage<Props> = (props) => {
       dataIndex: "fecha_hora_acceso",
       className: "text-center",
       render(_, acceso) {
-        return `${dayjs(acceso.fecha_hora_acceso).format("DD/MM/YYYY-hh:mm:ss")}`
+        return `${dayjs(acceso.fecha_hora_acceso).format("DD/MM/YYYY-HH:mm:ss")}`
       }
     },
     {
@@ -109,7 +109,7 @@ const SeguimientoCuenta: NextPage<Props> = (props) => {
       dataIndex: "fecha_hora_acceso",
       className: "text-center",
       render(_, acceso) {
-        return `${dayjs(acceso.fecha_hora_salida).format("DD/MM/YYYY-hh:mm:ss")}`
+        return `${dayjs(acceso.fecha_hora_salida).format("DD/MM/YYYY-HH:mm:ss")}`
       }
     },
   ];

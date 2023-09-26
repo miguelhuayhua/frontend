@@ -59,11 +59,11 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
       <Row gutter={[24, 24]}>
         <Col span={24} xl={{ span: 12 }}>
           <div className="detalle-seguimiento">
-            <p style={{ textAlign: "start", display: "flex" }}>
-              <b>Fecha de seguimiento: </b>{" "}
+            <p style={{ textAlign: "start", display: "flex", flexDirection: 'column' }}>
+              <b>Fecha de seguimiento: </b>
               {props.seguimiento.fecha_seguimiento}
               <br />
-              <b style={{ marginLeft: 20 }}>Adulto mayor implicado: </b>
+              <b>Adulto mayor implicado: </b>
               {props.adulto.nombre +
                 " " +
                 props.adulto.paterno +

@@ -146,7 +146,7 @@ export let dataDatosDenunciado = {
 
 }
 export let dataDatosDenuncia = {
-    fecha_registro: dayjs().format('DD-MM-YYYY'),
+    fecha_registro: dayjs().format('YYYY-MM-DD'),
     hora_registro: dayjs().format('HH:mm:ss'),
     tipologia: "Abandono",
     nro_caso: ""

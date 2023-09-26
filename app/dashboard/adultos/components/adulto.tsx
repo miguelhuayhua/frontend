@@ -111,7 +111,7 @@ const AdultoModal: NextPage<Props> = (props) => {
                   <p style={{ color: "gray" }}>
                     <span>Última modifcación: </span>
                     {moment(props.adulto.ult_modificacion).format(
-                      "DD-MM-YYYY HH:mm:ss"
+                      "dd-mm-yyyy HH:mm:ss"
                     )}
                   </p>
                 </Col>

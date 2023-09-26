@@ -233,7 +233,7 @@ const Formulario: NextPage<Props> = (props) => {
       }
       setDatosGenerales({
         ...datosGenerales,
-        f_nacimiento: dayjs(value.$d).format("DD/MM/YYYY"),
+        f_nacimiento: dayjs(value.$d).format("YYYY-MM-DD"),
         edad,
       });
     }
@@ -322,7 +322,6 @@ const Formulario: NextPage<Props> = (props) => {
               <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
                 <Form.Item label={"Fecha de Registro"}>
                   <DatePicker
-                    format={"DD-MM-YYYY"}
                     className="normal-input"
                     disabled
                     locale={{
@@ -333,7 +332,7 @@ const Formulario: NextPage<Props> = (props) => {
                         shortMonths: meses,
                       },
                     }}
-                    value={dayjs(now())}
+                    value={dayjs(dataDatosDenuncia.fecha_registro)}
                   ></DatePicker>
                 </Form.Item>
               </Col>
@@ -442,7 +441,6 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>
                   <Form.Item label={"Fecha de Nacimiento:"}>
                     <DatePicker
-                      format={"DD-MM-YYYY"}
                       defaultValue={dayjs(datosGenerales.f_nacimiento)}
                       placeholder="Ingrese su fecha de Nacimiento"
                       className="normal-input"

@@ -189,7 +189,7 @@ const PdfAcciones = () => {
                         HISTORIAL DE ACCIONES DE {`${persona.nombres.toUpperCase()} ${persona.paterno.toUpperCase()} ${persona.materno.toUpperCase()}`}
                     </Text>
                     <Text style={{ ...styles.parraf, color: 'gray' }}>
-                        {rangeAcciones.de ? `Datos filtrados desde el ${dayjs(rangeAcciones.de).format("DD/MM/YYYY-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcciones.hasta).format("DD/MM/YYYY-hh:mm:ss")} ` : null}
+                        {rangeAcciones.de ? `Datos filtrados desde el ${dayjs(rangeAcciones.de).format("dd-mm-yyyy-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcciones.hasta).format("dd-mm-yyyy-hh:mm:ss")} ` : null}
                     </Text>
                     <View style={styles.table}>
                         <View style={styles.row}>
@@ -223,7 +223,7 @@ const PdfAcciones = () => {
                                     </View>
                                     <View style={styles.cell}>
                                         <Text>
-                                            {dayjs(value.fecha_hora_accion).format("hh:mm:ss")}
+                                            {dayjs(value.fecha_hora_accion).format("HH:mm:ss")}
                                         </Text>
                                     </View>
 

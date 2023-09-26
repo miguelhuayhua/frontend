@@ -75,12 +75,11 @@ export interface Seguimiento {
 export let dataSeguimiento: Seguimiento = {
     detalle_seguimiento: "",
     estado: 1,
-    fecha_seguimiento: dayjs().format('DD-MM-YYYY'),
+    fecha_seguimiento: dayjs().format('YYYY-MM-DD'),
     hora_seguimiento: dayjs().format('HH:mm:ss'),
     id_caso: "",
     id_seguimiento: "",
     ult_modificacion: ""
-
 }
 
 
@@ -99,9 +98,9 @@ export interface Citacion {
 export let dataCitacion: Citacion = {
     id_citacion: "",
     id_caso: "",
-    fecha_citacion: dayjs().format("DD-MM-YYYY"),
+    fecha_citacion: dayjs().format("YYYY-MM-DD"),
     hora_citacion: dayjs().format("HH:mm:ss"),
-    fecha_creacion: dayjs().format("DD-MM-YYYY"),
+    fecha_creacion: dayjs().format("YYYY-MM-DD"),
     ult_moficacion: "",
     suspendido: 0,
     numero: 0,

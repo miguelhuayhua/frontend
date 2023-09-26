@@ -64,12 +64,11 @@ label {
   color: white !important;
 }
 
-.ant-picker-content {
-  width: 100% !important;
-}
-
 .ant-picker-content th {
   background-color: #1f96be !important;
+}
+.ant-picker-content {
+  width: 100% !important;
 }
 
 .ant-select-item-option-selected {
@@ -120,6 +119,9 @@ th {
 .ant-switch.ant-switch-checked {
   background-color: #2cbdee;
 }
+.ant-switch {
+  width: 40px;
+}
 
 //BUTTON
 .ant-btn-primary {
@@ -128,6 +130,8 @@ th {
 }
 .ant-modal-footer {
   display: flex;
+  align-items: center;
+  justify-content: end;
 }
 //RADIO BUTTON
 .ant-radio-checked .ant-radio-inner {
@@ -154,4 +158,6 @@ th {
   padding: 0 8px;
   color: rgba(0, 0, 0, 0.88);
   border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  margin: 0 auto !important;
+  width: 100%;
 }

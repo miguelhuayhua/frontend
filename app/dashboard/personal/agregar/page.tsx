@@ -255,7 +255,6 @@ const AgregarPersonal = () => {
                         <Col span={24} md={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label={"Fecha de nacimiento"}>
                             <DatePicker
-                              format={"DD-MM-YYYY"}
                               style={{ width: "100%" }}
                               locale={{
                                 ...locale,
@@ -397,7 +396,7 @@ const AgregarPersonal = () => {
                                 <p>
                                   <span>Fecha de nacimiento: </span>
                                   {dayjs(persona.f_nacimiento).format(
-                                    "DD/MM/YYYY"
+                                    "dd-mm-yyyy"
                                   )}
                                 </p>
                               </Col>

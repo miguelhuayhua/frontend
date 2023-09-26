@@ -1,11 +1,10 @@
 "use client";
-import { Button, Card, Col, DatePicker, Form, Input, Layout, List, Modal, Row, Skeleton, Tooltip } from "antd";
+import { Button, Col, Input, Layout, List, Modal, Row, Select, Tooltip, notification } from "antd";
 import locale from "antd/es/date-picker/locale/es_ES";
-import isBeetwen from "dayjs/plugin/isBetween";
 import { Content } from "antd/es/layout/layout";
 //estilos
 //env
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MenuSider from "../../components/MenuSider";
 import Navbar from "../../components/Navbar";
 import './estilos.scss';
@@ -18,10 +17,12 @@ import { Persona, dataPersona } from "../../personal/agregar/data";
 import { Usuario, dataUsuario } from "../../usuarios/data";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Caso, datosCaso } from "../data";
+import { Caso, Denunciado, datosCaso } from "../data";
 import { AdultoMayor2, dataDatosGenerales, dias, meses } from "../nuevocaso/data";
-import dayjs from "dayjs";
-import { now } from "moment";
+import { PDFViewer, pdf } from "@react-pdf/renderer";
+import ReporteCaso from "./reporte";
+import { dataDenunciado } from "../../denunciados/data";
+import { Hijo } from "../../hijos/data";
 export default function Reportes() {
   //open
   const [open1, setOpen1] = useState(false);
@@ -31,6 +32,7 @@ export default function Reportes() {
   //cargado de datos desde la API
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
+  const [denunciado, setDenunciado] = useState<Denunciado>(dataDenunciado);
   //cargado de datos desde la API
   const { data } = useSession();
   const [caso, setCaso] = useState<Caso>(datosCaso);
@@ -39,11 +41,9 @@ export default function Reportes() {
   const [adultoMayor, setAdultoMayor] =
     useState<AdultoMayor2>(dataDatosGenerales);
   const [adultos, setAdultos] = useState<AdultoMayor2[]>([]);
-  const [displayAdultos, setDisplayAdultos] = useState<AdultoMayor2[]>([]);
   //RANGEPICKER
-  const { RangePicker } = DatePicker;
   //filtros
-  const [filtros, setFiltros] = useState({ nombres_apellidos: "", accionRealizada: "", tipologia: "" });
+  const [filtros, setFiltros] = useState({ nombres_apellidos: "", accionRealizada: "", tipologia: "", nro_caso: "" });
   useEffect(() => {
     if (data) {
       let { usuario, persona } = data?.user as {
@@ -87,10 +87,10 @@ export default function Reportes() {
                 className="site-layout"
                 style={{ padding: "0 50px", position: "relative" }}
               >
-
+                <h1 className="text-center mt-4">REPORTES - CASOS</h1>
                 <Row className="mt-5">
                   <Col span={24}>
-                    <h1 className="text-center my-sm-4" style={{ fontSize: "1.75em" }}>Seleccione los filtros</h1>
+                    <h3 className="text-center my-2 my-sm-4" style={{ fontSize: "1.75em" }}>Seleccione los filtros</h3>
                   </Col>
                   <Col span={20} offset={2} md={{ span: 10, offset: 2 }} lg={{ span: 8, offset: 4 }}>
                     <Button onClick={() => {
@@ -111,7 +111,7 @@ export default function Reportes() {
                   }} className="filter-button g-4" icon={<MdElderly className="icon" />}> <p style={{ flexWrap: 'wrap' }}>Por Adulto Involucrado</p> </Button>
                   </Col>
                 </Row>
-                <Row>
+                <Row className="my-4">
                   <Col span={24}>
                     <h2 className="text-center mt-5 h4">Listado de casos</h2>
                     <List
@@ -128,7 +128,48 @@ export default function Reportes() {
                           <List.Item
                             actions={[
                               <Tooltip key={item.id_caso + "tool"} title="Generar Reporte">
-                                <Button icon={<AiFillFilePdf color="#A00" />} className="center"></Button>
+                                <Button style={{ width: 40, height: 40 }} icon={<AiFillFilePdf color="#A00" fontSize={25} />} onClick={() => {
+                                  setCaso(item);
+                                  axios
+                                    .post<
+                                      { adulto: AdultoMayor2, hijos: Hijo[] }
+                                    >(process.env.BACKEND_URL + "/adulto/get", {
+                                      id_adulto: item.id_adulto,
+                                    })
+                                    .then((res) => {
+                                      setAdultoMayor(res.data.adulto);
+                                    });
+                                  axios
+                                    .post(process.env.BACKEND_URL + "/denunciado/get", {
+                                      id_caso: item.id_caso,
+                                    })
+                                    .then((res) => {
+                                      setDenunciado(res.data);
+                                      pdf(
+                                        <ReporteCaso adulto={adulto!} caso={item} denunciado={res.data} persona={persona} />
+                                      )
+                                        .toBlob()
+                                        .then((blob) => {
+                                          notification.success({
+                                            message: "¡Guardado y generado con éxito!",
+                                          });
+                                          const url = URL.createObjectURL(blob);
+                                          const link = document.createElement("a");
+                                          link.href = url;
+                                          let { nro_caso } = caso;
+
+                                          link.setAttribute(
+                                            "download",
+                                            nro_caso +
+                                            "-reporte.pdf"
+                                          );
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          document.body.removeChild(link);
+                                        });
+                                    });
+
+                                }} className="center"></Button>
                               </Tooltip>
                             ]}
                           >
@@ -141,67 +182,125 @@ export default function Reportes() {
                       }}
                     />
                   </Col>
+
                 </Row>
               </Content>
             </Layout>
           </Content>
         </Layout>
       </Layout >
-      <Modal okText="Filtrar" cancelText="Cancelar" title="Seleccione un rango" open={open1} onOk={() => {
-
+      <Modal okText="Filtrar" cancelText="Cancelar" title="Especifique el caso: N°/AÑO" open={open1} onOk={() => {
+        setDisplayCasos(casos.filter(value => {
+          return value.nro_caso.toLowerCase().includes(filtros.nro_caso.toLowerCase())
+        }))
+        setOpen1(false);
       }} onCancel={() => {
-        setOpen1(false)
+        setOpen1(false);
+      }}>
+        <Input
+          placeholder="Nro. de caso..."
+          value={filtros.nro_caso}
+          onChange={(ev) => {
+            setFiltros({ accionRealizada: "", nombres_apellidos: "", tipologia: "", nro_caso: ev.target.value })
+          }}
+        />
+
+      </Modal>
+      <Modal okText="Filtrar" cancelText="Cancelar" title="Seleccione la tipología" open={open2} onOk={() => {
+        setDisplayCasos(casos.filter(value => {
+          return value.tipologia == filtros.tipologia;
+        }))
+        setOpen2(false);
+      }} onCancel={() => {
+        setOpen2(false)
+      }}>
+        <Select
+          style={{ width: "100%" }}
+          value={filtros.tipologia}
+          onChange={(value) => {
+            setFiltros({ accionRealizada: "", nombres_apellidos: "", nro_caso: "", tipologia: value })
+          }}
+        >
+          <Select.Option value="Extravio">Extravío</Select.Option>
+          <Select.Option value="Maltrato">Maltrato</Select.Option>
+          <Select.Option value="Abandono">Abandono</Select.Option>
+          <Select.Option value="Despojo">Despojo</Select.Option>
+          <Select.Option value="Orientacion Legal">
+            Orientación Legal
+          </Select.Option>
+          <Select.Option value="Desaparecidos">
+            Desaparecidos
+          </Select.Option>
+          <Select.Option value="Desapoderamiento">
+            Desapoderamiento
+          </Select.Option>
+          <Select.Option value="Gestion Derechos">
+            Gestión de derechos
+          </Select.Option>
+        </Select>
+      </Modal>
+      <Modal okText="Filtrar" cancelText="Cancelar" title="Seleccione la acción realizada" open={open3} onOk={() => {
+        setDisplayCasos(casos.filter(value => {
+          return value.accion_realizada == filtros.accionRealizada;
+        }))
+        setOpen3(false);
+      }} onCancel={() => {
+        setOpen3(false)
+      }}>
+        <Select
+          onChange={(value) => {
+            setFiltros({ accionRealizada: value, nombres_apellidos: "", nro_caso: "", tipologia: "" })
+          }}
+          style={{ width: "100%" }}
+        >
+          <Select.Option value="Apertura">
+            Apertura de Caso
+          </Select.Option>
+          <Select.Option value="Orientacion">
+            Orientación
+          </Select.Option>
+          <Select.Option value="Citacion">Citación</Select.Option>
+          <Select.Option value="Derivacion">
+            Derivación
+          </Select.Option>
+        </Select>
+      </Modal>
+      <Modal okText="Filtrar" cancelText="Cancelar" title="Basic Modal" open={open4} onOk={() => {
+        if (filtros.nombres_apellidos == "") {
+          setDisplayCasos(casos);
+        } else {
+          let adulto = adultos.filter((value) => {
+            return (
+              value.nombre +
+              " " +
+              value.paterno +
+              " " +
+              value.materno
+            )
+              .toLowerCase()
+              .includes(filtros.nombres_apellidos.toLowerCase());
+          });
+          setDisplayCasos(
+            casos.filter((caso) => {
+              return adulto.some(
+                (value) => value.id_adulto == caso.id_adulto
+              );
+            })
+          );
+          setOpen4(false);
+        }
+      }} onCancel={() => {
+        setOpen4(false)
       }}>
         <Input
           placeholder="Adulto Implicado"
           value={filtros.nombres_apellidos}
           onChange={(ev) => {
-
-            if (ev.target.value == "") {
-              setDisplayCasos(casos);
-            } else {
-              let adulto = adultos.filter((value) => {
-                return (
-                  value.nombre +
-                  " " +
-                  value.paterno +
-                  " " +
-                  value.materno
-                )
-                  .toLowerCase()
-                  .includes(ev.target.value.toLowerCase());
-              });
-              setDisplayCasos(
-                casos.filter((caso) => {
-                  return adulto.some(
-                    (value) => value.id_adulto == caso.id_adulto
-                  );
-                })
-              );
-            }
+            setFiltros({ accionRealizada: "", tipologia: "", nro_caso: "", nombres_apellidos: ev.target.value })
           }}
         />
-
       </Modal>
-      <Modal okText="Filtrar" cancelText="Cancelar" title="Basic Modal" open={open2} onOk={() => {
 
-      }} onCancel={() => {
-        setOpen2(false)
-      }}>
-
-      </Modal>
-      <Modal okText="Filtrar" cancelText="Cancelar" title="Basic Modal" open={open3} onOk={() => {
-
-      }} onCancel={() => {
-        setOpen3(false)
-      }}>
-      </Modal>
-      <Modal okText="Filtrar" cancelText="Cancelar" title="Basic Modal" open={open4} onOk={() => {
-
-      }} onCancel={() => {
-        setOpen4(false)
-      }}>
-      </Modal>
     </main >
   );
 }
