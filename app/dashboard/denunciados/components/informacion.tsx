@@ -329,7 +329,7 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Nombres y apellidos:">
               <Input
                 placeholder="Por favor, ingrese el nombre y apellidos a buscar"

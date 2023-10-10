@@ -146,6 +146,7 @@ const PdfPersonal = () => {
               top: 15,
               left: 5,
             }}
+            
             src={"/assets/logo-elalto.png"}
           ></Image>
           <Image

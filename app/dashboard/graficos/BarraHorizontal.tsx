@@ -34,10 +34,10 @@ const GraficoBarraHorizontal = ({ data, keys, keyTitle }: Props) => {
         <BarChart layout="vertical" data={mainData}>
           <CartesianGrid />
           <XAxis type="number" />
-          <YAxis dataKey={keyTitle} type="category" />
+          <YAxis width={80} dataKey={keyTitle} type="category" />
           <Tooltip />
           <Legend />
-          <Bar dataKey="Cantidad" barSize={20}>
+          <Bar markerWidth={100} dataKey="Cantidad" barSize={20}>
             {mainData.map((entry: any, index: any) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}

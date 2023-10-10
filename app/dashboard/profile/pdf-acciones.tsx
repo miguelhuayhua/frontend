@@ -151,6 +151,7 @@ const PdfAcciones = () => {
                         src={"/assets/logo-elalto.png"}
                     ></Image>
                     <Image
+                    
                         style={{
                             width: 80,
                             height: 50,

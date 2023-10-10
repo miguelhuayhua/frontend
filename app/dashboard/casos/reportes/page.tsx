@@ -1,6 +1,5 @@
 "use client";
 import { Button, Col, Input, Layout, List, Modal, Row, Select, Tooltip, notification } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
 import { Content } from "antd/es/layout/layout";
 //estilos
 //env
@@ -14,15 +13,16 @@ import { AiFillCalendar, AiFillFilePdf } from 'react-icons/ai';
 import { VscTypeHierarchy } from 'react-icons/vsc';
 import { MdWork, MdElderly } from 'react-icons/md';
 import { Persona, dataPersona } from "../../personal/agregar/data";
-import { Usuario, dataUsuario } from "../../usuarios/data";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Caso, Denunciado, datosCaso } from "../data";
-import { AdultoMayor2, dataDatosGenerales, dias, meses } from "../nuevocaso/data";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { Caso, Denunciado} from "../data";
+import { AdultoMayor2, dataDatosGenerales } from "../nuevocaso/data";
 import ReporteCaso from "./reporte";
 import { dataDenunciado } from "../../denunciados/data";
 import { Hijo } from "../../hijos/data";
+import Link from "next/link";
+import { pdf } from "@react-pdf/renderer";
+
 export default function Reportes() {
   //open
   const [open1, setOpen1] = useState(false);
@@ -31,34 +31,23 @@ export default function Reportes() {
   const [open4, setOpen4] = useState(false);
   //cargado de datos desde la API
   const [persona, setPersona] = useState<Persona>(dataPersona);
-  const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   const [denunciado, setDenunciado] = useState<Denunciado>(dataDenunciado);
   //cargado de datos desde la API
   const { data } = useSession();
-  const [caso, setCaso] = useState<Caso>(datosCaso);
   const [casos, setCasos] = useState<Caso[]>([]);
   const [displayCasos, setDisplayCasos] = useState<Caso[]>([]);
   const [adultoMayor, setAdultoMayor] =
     useState<AdultoMayor2>(dataDatosGenerales);
   const [adultos, setAdultos] = useState<AdultoMayor2[]>([]);
-  //RANGEPICKER
   //filtros
   const [filtros, setFiltros] = useState({ nombres_apellidos: "", accionRealizada: "", tipologia: "", nro_caso: "" });
   useEffect(() => {
     if (data) {
-      let { usuario, persona } = data?.user as {
-        usuario: {
-          usuario: string;
-          estado: number;
-          fotografia: string;
-          id_persona: string;
-          id_usuario: string;
-        };
+      let { persona } = data?.user as {
         persona: Persona;
       };
 
       setPersona(persona);
-      setUsuario({ ...usuario, password: "", ult_modificacion: "" })
       axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
         setCasos(res.data);
         setDisplayCasos(res.data);
@@ -95,20 +84,25 @@ export default function Reportes() {
                   <Col span={20} offset={2} md={{ span: 10, offset: 2 }} lg={{ span: 8, offset: 4 }}>
                     <Button onClick={() => {
                       setOpen1(true)
-                    }} className="filter-button g-1" icon={<AiFillCalendar className="icon" />}>Por N° de Caso </Button>
+                    }} className="filter-button g-1" icon={<AiFillCalendar className="icon" />}>Por N° de Caso
+                    </Button>
                   </Col>
                   <Col span={20} offset={2} md={{ span: 10, offset: 0 }} lg={{ span: 8 }}>
                     <Button onClick={() => {
                       setOpen2(true)
-                    }} className="filter-button g-2" icon={<VscTypeHierarchy className="icon" />}>Por Tipología </Button>
+                    }} className="filter-button g-2" icon={<VscTypeHierarchy className="icon" />}>Por Tipología
+                    </Button>
                   </Col>
-                  <Col span={20} offset={2} md={{ span: 10, offset: 2 }} lg={{ span: 8, offset: 4 }}>                    <Button onClick={() => {
-                    setOpen3(true)
-                  }} className="filter-button g-3" icon={<MdWork className="icon" />}>Por Acción Realizada </Button>
+                  <Col span={20} offset={2} md={{ span: 10, offset: 2 }} lg={{ span: 8, offset: 4 }}>
+                    <Button onClick={() => {
+                      setOpen3(true)
+                    }} className="filter-button g-3" icon={<MdWork className="icon" />}>Por Acción Realizada </Button>
                   </Col>
-                  <Col span={20} offset={2} md={{ span: 10, offset: 0 }} lg={{ span: 8 }}>                    <Button onClick={() => {
-                    setOpen4(true)
-                  }} className="filter-button g-4" icon={<MdElderly className="icon" />}> <p style={{ flexWrap: 'wrap' }}>Por Adulto Involucrado</p> </Button>
+                  <Col span={20} offset={2} md={{ span: 10, offset: 0 }} lg={{ span: 8 }}>
+                    <Button onClick={() => {
+                      setOpen4(true)
+                    }} className="filter-button g-4 text-white" style={{color:"#AAA"}} icon={<MdElderly className="icon" />}> <p style={{ flexWrap: 'wrap' }}>Por Adulto Involucrado</p>
+                    </Button>
                   </Col>
                 </Row>
                 <Row className="my-4">
@@ -129,7 +123,6 @@ export default function Reportes() {
                             actions={[
                               <Tooltip key={item.id_caso + "tool"} title="Generar Reporte">
                                 <Button style={{ width: 40, height: 40 }} icon={<AiFillFilePdf color="#A00" fontSize={25} />} onClick={() => {
-                                  setCaso(item);
                                   axios
                                     .post<
                                       { adulto: AdultoMayor2, hijos: Hijo[] }
@@ -156,7 +149,7 @@ export default function Reportes() {
                                           const url = URL.createObjectURL(blob);
                                           const link = document.createElement("a");
                                           link.href = url;
-                                          let { nro_caso } = caso;
+                                          let { nro_caso } = item;
 
                                           link.setAttribute(
                                             "download",
@@ -174,7 +167,7 @@ export default function Reportes() {
                             ]}
                           >
                             <List.Item.Meta
-                              title={<a href="https://ant.design">{item.nro_caso}</a>}
+                              title={<Link href={"/dashboard/casos/accion?id_caso=" + item.id_caso}>{item.nro_caso}</Link>}
                               description={`${adulto?.nombre} ${adulto?.paterno} ${adulto?.materno}`}
                             />
                           </List.Item>
@@ -182,7 +175,6 @@ export default function Reportes() {
                       }}
                     />
                   </Col>
-
                 </Row>
               </Content>
             </Layout>

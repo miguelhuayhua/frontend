@@ -114,7 +114,8 @@ export let dataDatosGenerales = {
     grado: "Primaria",
     beneficios: "Ninguno",
     ocupacion: "",
-    id_adulto: ""
+    id_adulto: "",
+    expedido:"LP"
 };
 
 export let dataDatosUbicacion = {

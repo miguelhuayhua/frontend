@@ -12,7 +12,7 @@
     top: 0;
     background-size: cover;
     filter: contrast(1.25);
-    filter: brightness(0.55);
+    filter: brightness(0.2);
   }
 }
 
@@ -33,35 +33,28 @@
     margin: 0 auto !important;
     height: 70px;
     top: -20px;
-    color: white;
+    color: rgb(9, 95, 126);
     font-weight: bold;
-    background: linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25));
+    background: white;
     display: flex;
     align-items: center;
+    border: 1px solid rgb(12, 126, 187);
     justify-content: center;
     border-radius: 5px;
   }
-  Button {
-    color: white;
-    font-weight: bold;
-    background: linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25));
-    width: 70%;
-    display: block;
-    min-width: 300px;
-    margin: 0 auto !important;
-    &:hover {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.267);
-    }
-  }
+
 }
 .input-style {
-  border: 0.5px solid rgb(179, 179, 179);
+  border: none;
+  border-bottom: 1px solid gray;
+  border-radius: 0 !important;
+  background-color: white !important;
   box-shadow: 0 0 5px white;
-
-  transition: border 1s;
-  &:hover {
-    box-shadow: 0 0 5px rgb(185, 185, 185);
-    border: 1px solid black !important;
-    transition: border 1s, box-shadow 1s;
-  }
+}
+.label {
+  font-weight: bold;
+}
+.ant-input {
+  border-radius: 0 !important;
+  background-color: white !important;
 }

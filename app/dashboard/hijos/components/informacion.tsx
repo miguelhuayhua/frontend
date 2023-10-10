@@ -308,7 +308,7 @@ const Informacion = () => {
       </Row>
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+          <Col span={24}  lg={{ span: 10 }}>
             <Form.Item label="ID Hijo: ">
               <Input
                 placeholder="Introduzca el ID del hijo"
@@ -325,7 +325,7 @@ const Informacion = () => {
             </Form.Item>
           </Col>
 
-          <Col span={24} lg={{ span: 8 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Filtrar por nombres y apellidos:">
               <Input
                 placeholder="Introduzca el nombre del hijo..."

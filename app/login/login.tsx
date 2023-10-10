@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Col, Form, Input, Row, message, Image } from "antd";
+import { Button, Col, Form, Input, Row, } from "antd";
 import { signIn } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import Link from "next/link";
+import Image from 'next/legacy/image'
 export const LoginForm = () => {
   const router = useRouter();
   const [formValues, setFormValues] = useState({
@@ -16,6 +16,7 @@ export const LoginForm = () => {
   return (
     <>
       <img
+        height={100}
         src={"/assets/logo-gamea.png"}
         width={180}
         style={{ position: "absolute", top: 20, left: 20 }}
@@ -23,7 +24,8 @@ export const LoginForm = () => {
 
       <img
         src={"/assets/logo-elalto.png"}
-        width={120}
+        width={150}
+        height={100}
         style={{ position: "absolute", top: 20, right: 20 }}
       />
       <Row>
@@ -48,7 +50,7 @@ export const LoginForm = () => {
           >
             <h1>Iniciar Sesión</h1>
             <Form.Item className="mt-5" name={"usuario"}>
-              <span>Nombre de usuario:</span>
+              <span className="label">Nombre de usuario:</span>
               <Input
                 type="text"
                 className="input-style"
@@ -59,7 +61,7 @@ export const LoginForm = () => {
               ></Input>
             </Form.Item>
             <Form.Item name={"password"}>
-              <span>Contraseña:</span>
+              <span className="label">Contraseña:</span>
               <Input.Password
                 className="input-style"
                 placeholder="Ingrese su contraseña..."
@@ -79,17 +81,7 @@ export const LoginForm = () => {
                 Usuarios y contraseña inválidos...
               </p>
             ) : null}
-            <Link
-              className="py-3"
-              style={{
-                color: "black",
-                textAlign: "center",
-                display: "block",
-              }}
-              href={"/forgotpassword"}
-            >
-              Olvidé mi contraseña
-            </Link>
+
             <Button htmlType="submit">Iniciar Sesión </Button>
           </Form>
         </Col>

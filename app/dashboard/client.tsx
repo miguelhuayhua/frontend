@@ -326,7 +326,7 @@ export default function Dashboard() {
                           </Col>
                         </Card>
                       </Col>
-                      <Col span={24} xl={{ span: 6 }}>
+                      <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title="NÚMERO DE CASOS POR GÉNERO"
                           bordered={false}
@@ -339,7 +339,7 @@ export default function Dashboard() {
                           ></GraficoBarra>
                         </Card>
                       </Col>
-                      <Col span={24} xl={{ span: 10 }}>
+                      <Col span={24} lg={{ span: 16 }}>
                         <Card
                           title={
                             "CANTIDAD DE CASOS POR MES - " + dayjs().year()
@@ -357,7 +357,7 @@ export default function Dashboard() {
                           ></GraficoLinea>
                         </Card>
                       </Col>
-                      <Col span={24} xl={{ span: 8 }}>
+                      <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title="ÚLTIMOS CASOS AÑADIDOS"
                           extra={
@@ -426,7 +426,7 @@ export default function Dashboard() {
                           />
                         </Card>
                       </Col>
-                      <Col span={24} lg={{ span: 6 }}>
+                      <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title={
                             <>
@@ -500,31 +500,7 @@ export default function Dashboard() {
                           />
                         </Card>
                       </Col>
-                      <Col span={24} lg={{ span: 6 }}>
-                        <Card
-                          title="Cantidad de caso por tipologías"
-                          bordered={false}
-                        >
-                          <GraficoBarraHorizontal
-                            data={dashboardData?.conteo_tipologia.cantidad}
-                            keyTitle="Tipologia"
-                            keys={dashboardData?.conteo_tipologia.tipologia}
-                          />
-                        </Card>
-                      </Col>
-                      <Col span={24} lg={{ span: 6 }}>
-                        <Card
-                          title="Cantidad de acciones tomadas"
-                          bordered={false}
-                        >
-                          <GraficoPastel
-                            data={dashboardData?.acciones_x_casos.cantidad}
-                            keyTitle="name"
-                            keys={dashboardData?.acciones_x_casos.accion}
-                          ></GraficoPastel>
-                        </Card>
-                      </Col>
-                      <Col span={24} lg={{ span: 6 }}>
+                      <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title="Histograma de edades - denuncia"
                           bordered={false}
@@ -536,6 +512,31 @@ export default function Dashboard() {
                           />
                         </Card>
                       </Col>
+                      <Col span={24} lg={{ span: 12 }}>
+                        <Card
+                          title="Cantidad de caso por tipologías"
+                          bordered={false}
+                        >
+                          <GraficoBarraHorizontal
+                            data={dashboardData?.conteo_tipologia.cantidad}
+                            keyTitle="Tipologia"
+                            keys={dashboardData?.conteo_tipologia.tipologia}
+                          />
+                        </Card>
+                      </Col>
+                      <Col span={24} lg={{ span: 12 }}>
+                        <Card
+                          title="Cantidad de acciones tomadas"
+                          bordered={false}
+                        >
+                          <GraficoPastel
+                            data={dashboardData?.acciones_x_casos.cantidad}
+                            keyTitle="name"
+                            keys={dashboardData?.acciones_x_casos.accion}
+                          ></GraficoPastel>
+                        </Card>
+                      </Col>
+
                     </Row>
                   </Col>
                 </Row>

@@ -18,6 +18,7 @@ import {
   DatosUbicacion,
 } from "../nuevocaso/data";
 import { Persona } from "../../personal/agregar/data";
+import dayjs from "dayjs";
 
 //estilos
 const styles = StyleSheet.create({
@@ -199,7 +200,7 @@ const Formulario = () => {
             {"Tipología: " + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: " + datosDenuncia.nro_caso}
+            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
           </Text>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 15, marginBottom: 2.5 }}>
@@ -342,7 +343,8 @@ const Formulario = () => {
             </View>
           </View>
           <View style={{ marginTop: 2, ...styles.horizontal }}>
-            <Text style={styles.text}>DOMICILIO: PROPIO </Text>
+            <Text style={styles.textBold}>DOMICILIO: </Text>
+            <Text style={styles.text}> PROPIO </Text>
             <Text style={styles.checker}>
               {datosUbicacion.tipo_domicilio == "Propio" ? "X" : ""}
             </Text>
@@ -517,6 +519,16 @@ const Formulario = () => {
           </View>
         </View>
         <View fixed style={{ position: "absolute", bottom: 10, left: 20 }}>
+          <Svg height="3" width="600">
+            <Line
+              x1="90"
+              y1="95%"
+              x2="470"
+              y2="95%"
+              strokeWidth={1}
+              stroke="rgb(0,0,0)"
+            />
+          </Svg>
           <Text style={{ width: "100%", fontSize: 7, textAlign: "center" }}>
             Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
             Torres y Hernán Siles.

@@ -120,18 +120,13 @@ th {
   background-color: #2cbdee;
 }
 .ant-switch {
-  width: 40px;
+  width: 60px;
 }
 
 //BUTTON
 .ant-btn-primary {
   background-color: #26a6d1;
   font-weight: bold;
-}
-.ant-modal-footer {
-  display: flex;
-  align-items: center;
-  justify-content: end;
 }
 //RADIO BUTTON
 .ant-radio-checked .ant-radio-inner {
@@ -160,4 +155,31 @@ th {
   border-bottom: 1px solid rgba(5, 5, 5, 0.06);
   margin: 0 auto !important;
   width: 100%;
+}
+
+//animaciones
+.to-right {
+  animation: to-right 2s;
+}
+
+@keyframes to-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.to-left {
+  animation: to-left 2s;
+}
+
+@keyframes to-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 }

@@ -498,7 +498,7 @@ const Formulario: NextPage<Props> = (props) => {
                 <Col span={6}>
                   <Form.Item label="Expedido: ">
                     <Select
-                      defaultValue="LP"
+                      value={datosGenerales.expedido}
                       onChange={(ev) => {
                         setDatosGenerales({ ...datosGenerales, expedido: ev });
                       }}
@@ -656,7 +656,7 @@ const Formulario: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Col>
                 {datosUbicacion.area == "Otro" ||
-                datosUbicacion.area == "Rural" ? null : (
+                  datosUbicacion.area == "Rural" ? null : (
                   <Col span={24} md={{ span: 10 }} xl={{ span: 4 }}>
                     <Form.Item className="normal-input" label="Distrito:">
                       <Select defaultValue={1} onChange={handleDistrito}>

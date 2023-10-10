@@ -33,7 +33,7 @@ import { Persona, dataPersona } from "../agregar/data";
 import PersonaModal from "./personal";
 import dayjs from "dayjs";
 import Link from "next/link";
-import {  pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import PdfPersonal from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -339,31 +339,41 @@ const Informacion = () => {
             <Form.Item label="ID de persona: ">
               <Input
                 onChange={(ev) => {
-                  setDisplayPersonas(
-                    personas.filter((persona) => {
-                      return persona.id_persona
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
+                  if (ev.target.value == '') {
+                    setDisplayPersonas(personas.filter(value => value.id_persona != usuario.id_persona));
+                  }
+                  else {
+                    setDisplayPersonas(
+                      personas.filter((persona) => {
+                        return persona.id_persona
+                          .toLocaleLowerCase()
+                          .includes(ev.target.value.toLocaleLowerCase()) && persona.id_persona != usuario.id_persona;
+                      })
+                    );
+                  }
                 }}
                 placeholder="Introduzca el ID del persona"
               />
             </Form.Item>
           </Col>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+          <Col span={24} md={{ span: 24 }} xl={{ span: 10 }}>
             <Form.Item label="Nombre de Persona">
               <Input
                 onChange={(ev) => {
-                  setDisplayPersonas(
-                    personas.filter((value) => {
-                      return `${value.nombres} ${value.paterno} ${value.materno}`
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
+                  if (ev.target.value == "") {
+                    setDisplayPersonas(personas.filter(value => value.id_persona != usuario.id_persona))
+                  }
+                  else {
+                    setDisplayPersonas(
+                      personas.filter((value) => {
+                        return `${value.nombres} ${value.paterno} ${value.materno}`
+                          .toLocaleLowerCase()
+                          .includes(ev.target.value.toLocaleLowerCase()) && value.id_persona != usuario.id_persona;
+                      })
+                    );
+                  }
                 }}
-                placeholder="Introduzca el ID del persona"
+                placeholder="Introduzca el nombre de la persona"
               />
             </Form.Item>
           </Col>

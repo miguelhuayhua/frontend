@@ -174,7 +174,7 @@ const Informacion = () => {
           });
       }
     }
-  }, [data]);
+  }, [data, router]);
 
   return (
     <>
@@ -344,15 +344,23 @@ const Informacion = () => {
         <Row gutter={[12, 0]}>
           <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
             <Form.Item label="ID de usuario: ">
+
               <Input
                 onChange={(ev) => {
-                  setDisplayUsuarios(
-                    usuarios.filter((usuario) => {
-                      return usuario.id_usuario
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
+                  if (ev.target.value != '') {
+                    setDisplayUsuarios(
+                      usuarios.filter((value) => {
+                        return value.id_usuario
+                          .toLocaleLowerCase()
+                          .includes(ev.target.value.toLocaleLowerCase()) && usuario2.id_usuario != value.id_usuario;
+                      })
+                    );
+                  }
+                  else {
+                    setDisplayUsuarios(
+                      usuarios.filter(value => value.id_usuario != usuario2.id_usuario)
+                    );
+                  }
                 }}
                 placeholder="Introduzca el ID del usuario"
               />
@@ -362,15 +370,24 @@ const Informacion = () => {
             <Form.Item label="Nombre de Usuario">
               <Input
                 onChange={(ev) => {
-                  setDisplayUsuarios(
-                    usuarios.filter((usuario) => {
-                      return usuario.usuario
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
+
+                  if (ev.target.value != '') {
+                    setDisplayUsuarios(
+                      usuarios.filter((value) => {
+                        return value.usuario
+                          .toLocaleLowerCase()
+                          .includes(ev.target.value.toLocaleLowerCase()) && usuario2.usuario != value.usuario;
+
+                      })
+                    );
+                  }
+                  else {
+                    setDisplayUsuarios(
+                      usuarios.filter(value => value.id_usuario != usuario2.id_usuario)
+                    );
+                  }
                 }}
-                placeholder="Introduzca el ID del usuario"
+                placeholder="Introduzca el nombre de usuario"
               />
             </Form.Item>
           </Col>
@@ -379,13 +396,18 @@ const Informacion = () => {
             <Form.Item label="ID de persona: ">
               <Input
                 onChange={(ev) => {
-                  setDisplayUsuarios(
-                    usuarios.filter((usuario) => {
-                      return usuario.id_persona
-                        .toLocaleLowerCase()
-                        .includes(ev.target.value.toLocaleLowerCase());
-                    })
-                  );
+                  if (ev.target.value != '') {
+                    setDisplayUsuarios(
+                      usuarios.filter((value) => {
+                        return value.id_persona
+                          .toLocaleLowerCase()
+                          .includes(ev.target.value.toLocaleLowerCase()) && value.id_persona != usuario2.id_persona;
+                      })
+                    );
+                  }
+                  else {
+                    setDisplayUsuarios(usuarios.filter(value => value.id_persona != usuario2.id_persona));
+                  }
                 }}
                 placeholder="Introduzca el ID de la persona"
               />

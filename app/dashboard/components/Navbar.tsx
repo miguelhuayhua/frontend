@@ -40,7 +40,7 @@ const Navbar = () => {
       setPersona(persona);
     }
   }, [data]);
-  
+
   return (
     <Affix>
       <Row>
@@ -64,13 +64,11 @@ const Navbar = () => {
             >
               <span>
                 <FaCalendarAlt style={{ marginRight: 10 }} />
-                {`${
-                  dayjs().date() < 10 ? "0" + dayjs().date() : dayjs().date()
-                }/${
-                  dayjs().month() + 1 < 10
+                {`${dayjs().date() < 10 ? "0" + dayjs().date() : dayjs().date()
+                  }/${dayjs().month() + 1 < 10
                     ? "0" + (dayjs().month() + 1)
                     : dayjs().month() + 1
-                }/${dayjs().year()}`}
+                  }/${dayjs().year()}`}
               </span>
             </div>
             {/* <div style={{ position: "absolute", right: 180 }}>
@@ -145,7 +143,7 @@ const Navbar = () => {
                             })
                             .then((res) => {
                               if (res.data.status == 1) {
-                                signOut({ redirect: true });
+                                signOut({ callbackUrl: "/", redirect: true });
                               }
                             });
                         }}
