@@ -33,6 +33,7 @@ interface Props {
   persona1: Persona;
   usuario: Usuario
 }
+
 const PersonaModal: NextPage<Props> = (props) => {
   const handleConfirm = () => {
     axios
@@ -84,7 +85,6 @@ const PersonaModal: NextPage<Props> = (props) => {
         onCancel={() => {
           props.setOpen(false);
         }}
-        width={"90%"}
         footer={[
           <Popconfirm
             key="popconfirm"
@@ -94,7 +94,7 @@ const PersonaModal: NextPage<Props> = (props) => {
             cancelText="No"
           >
             <Button
-              style={{ margin: "10px auto", width: 250 }}
+              style={{ margin: "10px auto" }}
               htmlType="submit"
               type="primary"
             >
@@ -114,7 +114,7 @@ const PersonaModal: NextPage<Props> = (props) => {
         {props.loaded ? (
           <Form>
             <Row gutter={[12, 12]}>
-              <Col span={4}>
+              <Col span={4} offset={10}>
                 <Avatar
                   style={{
                     backgroundColor:
@@ -133,7 +133,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   icon={<UserOutlined />}
                 ></Avatar>
               </Col>
-              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+              <Col span={24}>
                 <Form.Item
                   rules={[
                     {
@@ -170,7 +170,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   </Space.Compact>
                 </Form.Item>
               </Col>
-              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+              <Col span={24} >
                 <Form.Item label="Apellido Paterno: ">
                   <Input
                     name="paterno"
@@ -184,7 +184,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   ></Input>
                 </Form.Item>
               </Col>
-              <Col span={24} sm={{ span: 12 }} lg={{ span: 8 }}>
+              <Col span={24} >
                 <Form.Item label="Apellido Materno: ">
                   <Input
                     name="materno"
@@ -198,8 +198,8 @@ const PersonaModal: NextPage<Props> = (props) => {
                   ></Input>
                 </Form.Item>
               </Col>
-              <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
-                <Space.Compact>
+              <Col span={24}>
+                <Space.Compact direction="horizontal">
                   <Form.Item label="C.I. / Expedido:">
                     <InputNumber
                       required
@@ -214,8 +214,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   <Form.Item>
                     <Select
                       aria-required
-                      style={{ width: 120 }}
-                      defaultValue="LP"
+                      className="w-100" defaultValue="LP"
                       options={departamentos}
                       value={props.persona.expedido!}
                       onChange={(value) => {
@@ -225,7 +224,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   </Form.Item>
                 </Space.Compact>
               </Col>
-              <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
+              <Col span={24} >
                 <Form.Item label="Celular: ">
                   <InputNumber
                     name="celular"
@@ -240,7 +239,7 @@ const PersonaModal: NextPage<Props> = (props) => {
                   ></InputNumber>
                 </Form.Item>
               </Col>
-              <Col span={24} md={{ span: 8 }}>
+              <Col span={24}>
                 <Form.Item label="Género:">
                   <Radio.Group
                     value={props.persona.genero}
@@ -258,7 +257,7 @@ const PersonaModal: NextPage<Props> = (props) => {
               </Col>
               {props.persona1.cargo == "1" &&
                 props.persona.id_persona != props.persona1.id_persona ? (
-                <Col span={24} sm={{ span: 12 }} lg={{ span: 6 }}>
+                <Col span={24}>
                   <Form.Item label="Cargo: ">
                     <Select
                       value={props.persona.cargo}

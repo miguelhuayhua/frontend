@@ -164,7 +164,6 @@ const ReporteAdulto = (props: Props) => {
                 <Text style={{ ...styles.textCenter, ...styles.textBold }}>
                     HISTORIAL DE CASOS
                 </Text>
-
                 <View style={styles.table}>
                     <View style={styles.row}>
                         <View style={styles.cellHeader}>

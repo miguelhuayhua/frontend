@@ -19,32 +19,41 @@ import { createContext, useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import FormularioSeguimiento from "./pdf-seguimiento";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Hijo } from "../../hijos/data";
 import { AiOutlineFilePdf } from "react-icons/ai";
 export const DataContext = createContext({});
 import "./estilos.scss";
 import { Usuario } from "../../usuarios/data";
+import dayjs from "dayjs";
 interface Props {
   caso: Caso;
   adulto: Adulto;
   seguimiento: Seguimiento;
   setSeguimiento: any;
-  data: any;
   persona: Persona;
   usuario: Usuario;
 }
 
+interface Props {
+  caso: Caso;
+  adulto: Adulto;
+  seguimiento: Seguimiento;
+  setSeguimiento: any;
+  persona: Persona;
+  usuario: Usuario;
+}
 const SeguimientoOptions: NextPage<Props> = (props) => {
+
+  const params = useSearchParams();
   const [open, setOpen] = useState(false);
   const [seguimientos, setSeguimientos] = useState<Seguimiento[]>([]);
   //cambio del estado de caso
-  const params = useSearchParams();
 
   const getData = () => {
     axios
       .post<Seguimiento[]>(process.env.BACKEND_URL + "/caso/seguimiento/all", {
-        id_caso: params.get("id_caso"),
+        id_caso: params.get('id_caso')
       })
       .then((res) => {
         setSeguimientos(res.data);
@@ -60,10 +69,12 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
         <Col span={24} xl={{ span: 12 }}>
           <div className="detalle-seguimiento">
             <p style={{ textAlign: "start", display: "flex", flexDirection: 'column' }}>
-              <b>Fecha de seguimiento: </b>
-              {props.seguimiento.fecha_seguimiento}
+              <b className="fw-bold">
+                Fecha de seguimiento: </b>
+              {dayjs(props.seguimiento.fecha_seguimiento).format('DD/MM/YYYY')}
               <br />
-              <b>Adulto mayor implicado: </b>
+              <b className="fw-bold">
+                Adulto mayor implicado: </b>
               {props.adulto.nombre +
                 " " +
                 props.adulto.paterno +
@@ -72,8 +83,9 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
             </p>
           </div>
           <Form>
+            <b className="fw-bold">
+              Detalles seguimiento</b>
             <Form.Item
-              label="Detalles seguimiento"
               rules={[
                 {
                   required: true,
@@ -99,7 +111,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
               key="popconfirm"
               title="¿Estás seguro de continuar?"
               onConfirm={() => {
-                notification.info({ message: "Guardando y generando..." });
+                notification.info({ message: "Guardando y generando...", duration: 10 });
                 axios
                   .post(process.env.BACKEND_URL + "/caso/seguimiento/add", {
                     ...props.seguimiento,
@@ -109,21 +121,17 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                   .then((res) => {
                     if (res.data.status == 1) {
                       pdf(
-                        <DataContext.Provider
-                          value={{
-                            adulto: props.adulto,
-                            caso: props.caso,
-                            seguimiento: props.seguimiento,
-                            persona: props.persona,
-                          }}
-                        >
-                          <FormularioSeguimiento />
-                        </DataContext.Provider>
+
+                        <FormularioSeguimiento adulto={props.adulto}
+                          caso={props.caso}
+                          seguimiento={props.seguimiento}
+                          persona={props.persona} />
                       )
                         .toBlob()
                         .then((blob) => {
                           notification.success({
                             message: "¡Guardado y generado con éxito!",
+                            duration: 10
                           });
                           getData();
                           const url = URL.createObjectURL(blob);
@@ -182,8 +190,9 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
             renderItem={(item, index) => (
               <List.Item>
                 <>
-                  <p style={{ fontSize: 10, paddingRight: 20 }}>
-                    <b>Fecha y hora: </b>
+                  <p style={{ fontSize: 11, }}>
+                    <b className="fw-bold">Fecha y hora: </b>
+                    <br />
                     {item.fecha_seguimiento + " " + item.hora_seguimiento}
                   </p>
 
@@ -193,8 +202,9 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                       expandable: true,
                       symbol: "Expandir",
                     }}
+                    style={{ fontSize: 11 }}
                   >
-                    <b>Detalles: </b>
+                    <b className="fw-bold">Detalles: </b>
                     {item.detalle_seguimiento}
                   </Typography.Paragraph>
                   <Button
@@ -215,16 +225,10 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                             )
                             .then((res) => {
                               pdf(
-                                <DataContext.Provider
-                                  value={{
-                                    adulto: res.data.adulto,
-                                    caso: caso,
-                                    seguimiento: item,
-                                    persona: props.persona,
-                                  }}
-                                >
-                                  <FormularioSeguimiento />
-                                </DataContext.Provider>
+                                <FormularioSeguimiento adulto={res.data.adulto}
+                                  caso={props.caso}
+                                  seguimiento={item}
+                                  persona={props.persona} />
                               )
                                 .toBlob()
                                 .then((blob) => {
@@ -274,16 +278,10 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
         open={open}
       >
         <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
-          <DataContext.Provider
-            value={{
-              adulto: props.adulto,
-              caso: props.caso,
-              seguimiento: props.seguimiento,
-              persona: props.persona,
-            }}
-          >
-            <FormularioSeguimiento />
-          </DataContext.Provider>
+          <FormularioSeguimiento adulto={props.adulto}
+            caso={props.caso}
+            seguimiento={props.seguimiento}
+            persona={props.persona} />
         </PDFViewer>
       </Drawer>
     </>

@@ -1,5 +1,5 @@
 "use client";
-import { Button, Col, Input, Layout, List, Modal, Row, Select, Tooltip, notification } from "antd";
+import { Button, Col, Input, Layout, List, Modal, Row, Select, Space, Tooltip, notification } from "antd";
 import { Content } from "antd/es/layout/layout";
 //estilos
 //env
@@ -15,13 +15,14 @@ import { MdWork, MdElderly } from 'react-icons/md';
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Caso, Denunciado} from "../data";
+import { Caso, Denunciado } from "../data";
 import { AdultoMayor2, dataDatosGenerales } from "../nuevocaso/data";
 import ReporteCaso from "./reporte";
 import { dataDenunciado } from "../../denunciados/data";
 import { Hijo } from "../../hijos/data";
 import Link from "next/link";
 import { pdf } from "@react-pdf/renderer";
+import dayjs from "dayjs";
 
 export default function Reportes() {
   //open
@@ -40,7 +41,7 @@ export default function Reportes() {
     useState<AdultoMayor2>(dataDatosGenerales);
   const [adultos, setAdultos] = useState<AdultoMayor2[]>([]);
   //filtros
-  const [filtros, setFiltros] = useState({ nombres_apellidos: "", accionRealizada: "", tipologia: "", nro_caso: "" });
+  const [filtros, setFiltros] = useState({ nombres_apellidos: "", accionRealizada: "", tipologia: "", nro_caso: "", year_caso: "" });
   useEffect(() => {
     if (data) {
       let { persona } = data?.user as {
@@ -101,8 +102,7 @@ export default function Reportes() {
                   <Col span={20} offset={2} md={{ span: 10, offset: 0 }} lg={{ span: 8 }}>
                     <Button onClick={() => {
                       setOpen4(true)
-                    }} className="filter-button g-4 text-white" style={{color:"#AAA"}} icon={<MdElderly className="icon" />}> <p style={{ flexWrap: 'wrap' }}>Por Adulto Involucrado</p>
-                    </Button>
+                    }} className="filter-button g-4" icon={<MdElderly className="icon" />}>Por Adulto Involucrado </Button>
                   </Col>
                 </Row>
                 <Row className="my-4">
@@ -150,7 +150,6 @@ export default function Reportes() {
                                           const link = document.createElement("a");
                                           link.href = url;
                                           let { nro_caso } = item;
-
                                           link.setAttribute(
                                             "download",
                                             nro_caso +
@@ -161,7 +160,6 @@ export default function Reportes() {
                                           document.body.removeChild(link);
                                         });
                                     });
-
                                 }} className="center"></Button>
                               </Tooltip>
                             ]}
@@ -183,20 +181,33 @@ export default function Reportes() {
       </Layout >
       <Modal okText="Filtrar" cancelText="Cancelar" title="Especifique el caso: N°/AÑO" open={open1} onOk={() => {
         setDisplayCasos(casos.filter(value => {
-          return value.nro_caso.toLowerCase().includes(filtros.nro_caso.toLowerCase())
-        }))
+          let [nro_caso, year_caso] = value.nro_caso.split("/");
+          return nro_caso.toLowerCase().includes(filtros.nro_caso.toLowerCase()) || year_caso.toLocaleLowerCase().includes(filtros.year_caso.toLocaleLowerCase());
+        }));
         setOpen1(false);
       }} onCancel={() => {
         setOpen1(false);
       }}>
-        <Input
-          placeholder="Nro. de caso..."
-          value={filtros.nro_caso}
-          onChange={(ev) => {
-            setFiltros({ accionRealizada: "", nombres_apellidos: "", tipologia: "", nro_caso: ev.target.value })
-          }}
-        />
-
+        <Space.Compact>
+          <Select defaultValue={dayjs().year()} options={[{ label: 2023, value: 2023 },
+          { label: 2024, value: 2024 },
+          { label: 2025, value: 2025 },
+          { label: 2026, value: 2026 },
+          { label: 2027, value: 2027 },
+          { label: 2028, value: 2028 }
+          ]}
+            onChange={(ev) => {
+              setFiltros({ accionRealizada: "", nombres_apellidos: "", tipologia: "", nro_caso: filtros.nro_caso, year_caso: ev.toString() })
+            }}
+          />
+          <Input
+            placeholder="Nro. de caso"
+            value={filtros.nro_caso}
+            onChange={(ev) => {
+              setFiltros({ accionRealizada: "", nombres_apellidos: "", tipologia: "", nro_caso: ev.target.value, year_caso: filtros.year_caso })
+            }}
+          />
+        </Space.Compact>
       </Modal>
       <Modal okText="Filtrar" cancelText="Cancelar" title="Seleccione la tipología" open={open2} onOk={() => {
         setDisplayCasos(casos.filter(value => {
@@ -210,7 +221,7 @@ export default function Reportes() {
           style={{ width: "100%" }}
           value={filtros.tipologia}
           onChange={(value) => {
-            setFiltros({ accionRealizada: "", nombres_apellidos: "", nro_caso: "", tipologia: value })
+            setFiltros({ accionRealizada: "", nombres_apellidos: "", nro_caso: "", tipologia: value, year_caso: "" })
           }}
         >
           <Select.Option value="Extravio">Extravío</Select.Option>
@@ -241,7 +252,7 @@ export default function Reportes() {
       }}>
         <Select
           onChange={(value) => {
-            setFiltros({ accionRealizada: value, nombres_apellidos: "", nro_caso: "", tipologia: "" })
+            setFiltros({ accionRealizada: value, nombres_apellidos: "", nro_caso: "", tipologia: "", year_caso: "" })
           }}
           style={{ width: "100%" }}
         >
@@ -288,7 +299,7 @@ export default function Reportes() {
           placeholder="Adulto Implicado"
           value={filtros.nombres_apellidos}
           onChange={(ev) => {
-            setFiltros({ accionRealizada: "", tipologia: "", nro_caso: "", nombres_apellidos: ev.target.value })
+            setFiltros({ accionRealizada: "", tipologia: "", nro_caso: "", nombres_apellidos: ev.target.value, year_caso: "" })
           }}
         />
       </Modal>

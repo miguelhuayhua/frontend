@@ -26,6 +26,11 @@
   margin: 5px;
 }
 
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
 b {
   color: #167a9b !important;
 }
@@ -43,60 +48,9 @@ label {
   color: #186680 !important;
 }
 
-.ant-modal-title > p {
+.ant-modal-title>p {
   color: #186680;
   font-size: 18px;
-}
-
-//SELECT AND DATE PICKER
-.ant-select-item-option,
-.ant-select-dropdown,
-.ant-picker-header {
-  background-color: #1f96be !important;
-  color: white !important;
-}
-
-.ant-picker-body {
-  padding: 0 !important;
-}
-
-.ant-picker-header button {
-  color: white !important;
-}
-
-.ant-picker-content th {
-  background-color: #1f96be !important;
-}
-.ant-picker-content {
-  width: 100% !important;
-}
-
-.ant-select-item-option-selected {
-  color: #1f96be !important;
-  background-color: white !important;
-}
-
-.ant-picker-cell-selected .ant-picker-cell-inner {
-  background-color: #dc3f4a !important;
-}
-
-.ant-select-item-option-active {
-  color: #1f96be !important;
-  background-color: rgb(243, 243, 243) !important;
-}
-
-//INPUT
-.ant-input,
-.ant-select,
-.ant-picker,
-.ant-input-number-input,
-.ant-select-selector,
-.ant-input-affix-wrapper {
-  background-color: #f5fafb !important;
-
-  &::placeholder {
-    color: gray;
-  }
 }
 
 //CARD
@@ -119,6 +73,7 @@ th {
 .ant-switch.ant-switch-checked {
   background-color: #2cbdee;
 }
+
 .ant-switch {
   width: 60px;
 }
@@ -128,6 +83,7 @@ th {
   background-color: #26a6d1;
   font-weight: bold;
 }
+
 //RADIO BUTTON
 .ant-radio-checked .ant-radio-inner {
   border-color: #dc3f4a;
@@ -143,6 +99,7 @@ th {
     color: white !important;
   }
 }
+
 .ant-float-btn-icon {
   color: white;
 }
@@ -166,6 +123,7 @@ th {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(0%);
   }
@@ -179,6 +137,7 @@ th {
   0% {
     transform: translateX(100%);
   }
+
   100% {
     transform: translateX(0%);
   }

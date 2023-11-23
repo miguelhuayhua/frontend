@@ -44,10 +44,9 @@ export interface Denunciado {
     id_caso: string;
     id_denunciado: string;
     expedido?: string;
-    ci?: number
+    ci?: number;
+    complemento?: string;
 }
-
-
 export let DatosDenunciado = {
     nombres: "",
     paterno: "",
@@ -59,9 +58,9 @@ export let DatosDenunciado = {
     id_caso: "",
     id_denunciado: "",
     expedido: "LP",
-    ci: 0
+    ci: 0,
+    complemento: ""
 }
-
 export interface Seguimiento {
     id_seguimiento: string;
     detalle_seguimiento: string;

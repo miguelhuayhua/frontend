@@ -5,21 +5,23 @@ import './estilos.scss';
 import Image from 'next/legacy/image';
 import { CiLogin } from "react-icons/ci";
 import Link from "next/link";
+import axios from "axios";
 export default function Home() {
   return (
     <main>
       <Layout style={{ backgroundColor: 'transparent' }}>
         <div >
+
           <Header className="main-nav"  >
             <nav className="position-relative">
-              <small>Gobierno Autónomo Municipal de El Alto - 2023</small>
+              <small className="position-absolute" style={{ top: 0, display: 'flex', width: "100%", height: 20, zIndex: 100, justifyContent: 'center', alignItems: 'center' }}>Gobierno Autónomo Municipal de El Alto - 2023</small>
               <Image className="mt-1" alt="" src={"/assets/logo-gamea.png"} width={100} height={60} layout="fixed"></Image>
               <Image className="mt-1" alt="" src={"/assets/escudo-pluri.jpg"} width={150} height={70} layout="fixed"></Image>
-
               <Link style={{ position: 'absolute', right: 0, top: 10 }} href={"/login"} passHref>
                 <Button className="login-btn" icon={<CiLogin className="icon" />}></Button>
               </Link>
             </nav>
+
           </Header>
           <Content className="content-main">
             <Row className="bg-white">

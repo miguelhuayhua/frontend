@@ -10,6 +10,7 @@ export interface Denunciado {
   genero: string;
   ci?: number;
   expedido?: string;
+  complemento?: string;
 }
 
 export let dataDenunciado: Denunciado = {
@@ -24,4 +25,5 @@ export let dataDenunciado: Denunciado = {
   genero: "",
   ci: 0,
   expedido: "LP",
+  complemento: ""
 };

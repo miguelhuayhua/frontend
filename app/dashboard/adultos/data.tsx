@@ -18,6 +18,7 @@ export interface Adulto {
   ult_modificacion: string;
   hijos: Hijo[];
   expedido?: string;
+  complemento?: string;
 }
 
 export let dataAdulto = {

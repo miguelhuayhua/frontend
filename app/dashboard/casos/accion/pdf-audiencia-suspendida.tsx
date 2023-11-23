@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Document,
   Page,
@@ -10,19 +10,14 @@ import {
   Svg,
 } from "@react-pdf/renderer";
 
-import { Persona } from "../../personal/agregar/data";
-import { Caso, Citacion, Compromiso, Denunciado } from "../data";
+import { Caso, Citacion } from "../data";
 import {
   AdultoMayor2,
   Audiencia,
-  Citado,
-  dias,
-  dias2,
   meses,
 } from "../nuevocaso/data";
-import { DataContext2 } from "./citacion";
 import dayjs from "dayjs";
-import { DataContext4 } from "./audiencia";
+import { Persona } from "../../personal/agregar/data";
 const styles = StyleSheet.create({
   textBold: {
     fontFamily: "Helvetica-Bold",
@@ -80,16 +75,15 @@ const styles = StyleSheet.create({
   },
 });
 // Create Document Component
-const FormularioAudienciaSuspendida = () => {
-  const data = useContext(DataContext4);
-  let { caso, persona, adulto, citacion, audiencia } = data as {
-    caso: Caso;
-    persona: Persona;
-    adulto: AdultoMayor2;
-    citacion: Citacion;
-    audiencia: Audiencia;
-  };
-  let fecha_citacion = dayjs(citacion.fecha_citacion);
+const FormularioAudienciaSuspendida = (props: {
+  caso: Caso;
+  persona: Persona;
+  adulto: AdultoMayor2;
+  citacion: Citacion;
+  audiencia: Audiencia;
+}) => {
+  let { caso, persona, adulto, citacion, audiencia } = props;
+  let fecha_citacion = dayjs(citacion.fecha_citacion ? citacion.fecha_citacion : null);
   return (
     <Document>
       <Page size={"LETTER"} style={styles.page}>
@@ -164,9 +158,9 @@ const FormularioAudienciaSuspendida = () => {
             AUDIENCIA SUSPENDIDA
           </Text>
           <Text style={styles.parraf}>
-            En la ciudad de El Alto, a los {fecha_citacion.date()}
-            días del mes de {meses[fecha_citacion.month()]} del año{" "}
-            {fecha_citacion.year()} a horas {citacion.hora_citacion}, en el
+            En la ciudad de El Alto, a los {fecha_citacion ? fecha_citacion.date() : null + " "}
+            días del mes de {fecha_citacion ? meses[fecha_citacion.month()] : null} del año{" "}
+            {fecha_citacion ? fecha_citacion.year() : null} a horas {citacion.hora_citacion}, en el
             marco de la normativa legal vigente aplicable a esta población
             {" (Ley N° 369 y Ley N° 708)"}, en oficinas del Programa de Defensa
             y Restitución de Derechos de los Adultos Mayores, se{" "}
@@ -183,7 +177,7 @@ const FormularioAudienciaSuspendida = () => {
               {audiencia.causa == "ina_adulto" ? (
                 <Text style={{ fontSize: 12, textAlign: "center" }}>X</Text>
               ) : (
-                ""
+                null
               )}
             </View>
           </View>
@@ -197,7 +191,7 @@ const FormularioAudienciaSuspendida = () => {
               {audiencia.causa == "ina_invitado" ? (
                 <Text style={{ fontSize: 12, textAlign: "center" }}>X</Text>
               ) : (
-                ""
+                null
               )}
             </View>
           </View>
@@ -211,7 +205,7 @@ const FormularioAudienciaSuspendida = () => {
               {audiencia.causa == "ambos" ? (
                 <Text style={{ fontSize: 12, textAlign: "center" }}>X</Text>
               ) : (
-                ""
+                null
               )}
             </View>
           </View>

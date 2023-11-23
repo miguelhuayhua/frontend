@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import "./estilos.scss";
 import Formulario from "./components/formulario";
 import Detalles from "./components/detalles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 //env
 import dotenv from "dotenv";
 dotenv.config();
@@ -24,7 +24,21 @@ import {
 } from "./data";
 import Navbar from "../../components/Navbar";
 import MenuSider from "../../components/MenuSider";
+import { useSession } from "next-auth/react";
+import { Persona } from "../../personal/agregar/data";
 export default function NuevoCaso() {
+  const { data } = useSession();
+
+  useEffect(() => {
+    if (data) {
+      let { persona } = data?.user as {
+        persona: Persona;
+      };
+      if (persona.cargo == "3") {
+        router.back();
+      }
+    }
+  }, [data])
   const [datos, setDatos] = useState<{
     datosGenerales: AdultoMayor;
     datosUbicacion: DatosUbicacion;
@@ -38,8 +52,8 @@ export default function NuevoCaso() {
     datosDenunciado: dataDatosDenunciado,
     datosUbicacion: dataDatosUbicacion,
     accionRealizada: "Apertura",
-    descripcionHechos:"",
-    descripcionPeticion:"",
+    descripcionHechos: "",
+    descripcionPeticion: "",
     datosDenuncia: dataDatosDenuncia,
   });
   const [posicion, setPosicion] = useState(0);

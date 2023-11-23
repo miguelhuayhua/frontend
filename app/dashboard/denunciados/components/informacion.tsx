@@ -2,9 +2,7 @@
 import {
   Button,
   Col,
-  DatePicker,
   Empty,
-  FloatButton,
   Form,
   Input,
   Row,
@@ -22,7 +20,6 @@ import Table, { ColumnsType } from "antd/es/table";
 import {
   EditOutlined,
   FilterOutlined,
-  FileDoneOutlined,
   FileExcelFilled,
   FilePdfFilled,
   LoadingOutlined,
@@ -32,10 +29,8 @@ import dayjs from "dayjs";
 import isBeetwen from "dayjs/plugin/isBetween";
 import { Denunciado, dataDenunciado } from "../data";
 import DenunciadoModal from "./denunciado";
-import { Adulto, dataAdulto } from "../../adultos/data";
 import { AiOutlineReload, AiOutlineUserAdd } from "react-icons/ai";
-import Link from "next/link";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import {  pdf } from "@react-pdf/renderer";
 import PdfDenunciado from "./pdf-listado";
 import { useSession } from "next-auth/react";
 import { Persona, dataPersona } from "../../personal/agregar/data";
@@ -49,7 +44,6 @@ const Informacion = () => {
   //estados
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
-
   const columns: ColumnsType<Denunciado> = [
     {
       title: "ID Denunciado",
@@ -60,7 +54,7 @@ const Informacion = () => {
       width: 130,
       render(_, denunciado) {
         return (
-          <Paragraph className="center" copyable>
+          <Paragraph className="center" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
             {denunciado.id_denunciado}
           </Paragraph>
         );
@@ -98,7 +92,7 @@ const Informacion = () => {
       fixed: "right",
       width: 160,
       render: (_, denunciado) => (
-        <div
+        persona.cargo == "3" ? "No disponible" : <div
           key={denunciado.id_denunciado + "d"}
           className="d-flex align-items-center justify-content-around"
         >
@@ -135,9 +129,7 @@ const Informacion = () => {
   const [displayDenunciados, setDisplayDenunciados] = useState<Denunciado[]>(
     []
   );
-
   const [persona, setPersona] = useState<Persona>(dataPersona);
-
   //cargado de datos desde la API
   const { data } = useSession();
   const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
@@ -266,7 +258,7 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Denunciados-" +
-                      dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                      dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                       ".xlsx"
                     );
                     link.click();
@@ -275,7 +267,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Denunciados-" +
-                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                            dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),
@@ -303,6 +295,7 @@ const Informacion = () => {
                   setDenunciados(res.data);
                   setDisplayDenunciados(res.data);
                   message.info("Datos actualizados...");
+
                 });
             }}
           >
@@ -313,8 +306,8 @@ const Informacion = () => {
 
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
-            <Form.Item label="ID de denunciado ">
+          <Col span={24} lg={{ span: 12 }} >
+            <Form.Item label="ID de denunciado">
               <Input
                 placeholder="Introduzca el ID del Denunciado"
                 onChange={(ev) => {
@@ -332,13 +325,13 @@ const Informacion = () => {
           <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Nombres y apellidos:">
               <Input
-                placeholder="Por favor, ingrese el nombre y apellidos a buscar"
+                placeholder="Ingrese nombres y apellidos del denunciado"
                 onChange={(ev) => {
                   setDisplayDenunciados(
                     denunciados.filter((value) => {
                       return `${value.nombres} ${value.paterno} ${value.materno}`
                         .toLocaleLowerCase()
-                        .includes(ev.target.value);
+                        .includes(ev.target.value.toLocaleLowerCase());
                     })
                   );
                 }}
@@ -362,7 +355,7 @@ const Informacion = () => {
           ),
         }}
         dataSource={displayDenunciados}
-        onRow={(value, index) => {
+        onRow={(value) => {
           return {
             onClick: (ev: any) => {
               try {

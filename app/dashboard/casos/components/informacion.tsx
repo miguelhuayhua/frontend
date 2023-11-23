@@ -16,7 +16,7 @@ import {
   message,
   notification,
 } from "antd";
-import locale from "antd/es/date-picker/locale/es_ES";
+import isEqual from 'lodash/isEqual';
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import Table, { ColumnsType } from "antd/es/table";
@@ -79,7 +79,9 @@ const Informacion = () => {
         });
         return (
           <>
-            <Paragraph copyable>{caso.nro_caso}</Paragraph>
+            <Paragraph className="center" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
+
+              {caso.nro_caso}</Paragraph>
 
             {adulto?.nombre + " " + adulto?.paterno + " " + adulto?.materno}
           </>
@@ -126,7 +128,7 @@ const Informacion = () => {
       className: "text-center",
       fixed: "right",
       render: (_, caso) => (
-        <div
+        persona.cargo == "3" ? "No disponible" : <div
           key={caso.id_caso + "d"}
           className="d-flex align-items-center justify-content-around"
         >
@@ -177,12 +179,11 @@ const Informacion = () => {
   const [displayCasos, setDisplayCasos] = useState<Caso[]>([]);
   //router
   const router = useRouter();
+  const { data } = useSession();
   //cargado de datos desde la API
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
   //cargado de datos desde la API
-  const { data } = useSession();
-
   useEffect(() => {
     if (data) {
       let { usuario, persona } = data?.user as {
@@ -195,13 +196,13 @@ const Informacion = () => {
         };
         persona: Persona;
       };
-
       setPersona(persona);
       setUsuario({ ...usuario, password: "", ult_modificacion: "" })
       axios.get<Caso[]>(process.env.BACKEND_URL + "/caso/all").then((res) => {
         setCasos(res.data);
         setDisplayCasos(res.data);
       });
+
       axios
         .get<AdultoMayor2[]>(process.env.BACKEND_URL + "/adulto/all")
         .then((res) => {
@@ -209,9 +210,7 @@ const Informacion = () => {
         });
     }
   }, [data]);
-
   const { RangePicker } = DatePicker;
-
   //cambios en los filtros
   const handleFiltroCaso = (ev: any) => {
     setFiltroCaso(ev.target.value);
@@ -361,7 +360,7 @@ const Informacion = () => {
                     link.href = url;
                     link.setAttribute(
                       "download",
-                      "Casos-" + dayjs().format("dd-mm-yyyy_HH:mm:ss") + ".xlsx"
+                      "Casos-" + dayjs().format("DD/MM/YYYY_HH:mm:ss") + ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -369,7 +368,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Casos-" +
-                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                            dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),
@@ -398,6 +397,9 @@ const Informacion = () => {
                   setDisplayCasos(res.data);
                   message.info("Datos actualizados...");
                 });
+              setFiltroAccionCaso("");
+              setFiltroAdulto("");
+              setFiltroCaso("");
             }}
           >
             <AiOutlineReload fontSize={20} />
@@ -407,7 +409,7 @@ const Informacion = () => {
 
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24} lg={{ span: 12 }} xxl={{ span: 5 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Nro. de Caso: ">
               <Input
                 placeholder="Introduzca el número de caso..."
@@ -416,7 +418,7 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 12 }} xxl={{ span: 7 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Adulto implicado: ">
               <Input
                 placeholder="Adulto Implicado"
@@ -451,28 +453,85 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 12 }} xxl={{ span: 5 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Tipo de acción realizada: ">
-              <Select value={filtroAccionCaso} onChange={handleFiltroAccion}>
-                <Select.Option value="Apertura">Apertura de Caso</Select.Option>
-                <Select.Option value="Orientacion">Orientación</Select.Option>
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
+                onChange={(ev: string[]) => {
+                  setFiltroCaso("");
+                  setFiltroAdulto("");
+                  if (ev.length == 0) {
+                    setDisplayCasos(casos);
+                  }
+                  else {
+                    setDisplayCasos(casos.filter(value => {
+                      const acciones = value.accion_realizada.split("/");
+                      return isEqual(acciones.sort(), ev.sort());
+                    }));
+                  }
+                }}
+              >
+                <Select.Option value="Apertura">
+                  Apertura de Caso
+                </Select.Option>
+                <Select.Option value="Orientacion">
+                  Orientación
+                </Select.Option>
                 <Select.Option value="Citacion">Citación</Select.Option>
-                <Select.Option value="Derivacion">Derivación</Select.Option>
+                <Select.Option value="Derivacion">
+                  Derivación
+                </Select.Option>
               </Select>
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 12 }} xxl={{ span: 7 }}>
+          <Col span={24} lg={{ span: 12 }} >
             <Form.Item label="Filtrar por rango de fechas:">
               <RangePicker
                 locale={{
-                  ...locale,
-                  lang: {
-                    ...locale.lang,
+                  "lang": {
+                    "placeholder": "Seleccionar fecha",
+                    "rangePlaceholder": [
+                      "Fecha inicial",
+                      "Fecha final"
+                    ],
                     shortWeekDays: dias,
                     shortMonths: meses,
+                    "locale": "es_ES",
+                    "today": "Hoy",
+                    "now": "Ahora",
+                    "backToToday": "Volver a hoy",
+                    "ok": "Aceptar",
+                    "clear": "Limpiar",
+                    "month": "Mes",
+                    "year": "Año",
+                    "timeSelect": "Seleccionar hora",
+                    "dateSelect": "Seleccionar fecha",
+                    "monthSelect": "Elegir un mes",
+                    "yearSelect": "Elegir un año",
+                    "decadeSelect": "Elegir una década",
+                    "yearFormat": "YYYY",
+                    "dateFormat": "D/M/YYYY",
+                    "dayFormat": "D",
+                    "dateTimeFormat": "D/M/YYYY HH:mm:ss",
+                    "monthBeforeYear": true,
+                    "previousMonth": "Mes anterior (PageUp)",
+                    "nextMonth": "Mes siguiente (PageDown)",
+                    "previousYear": "Año anterior (Control + left)",
+                    "nextYear": "Año siguiente (Control + right)",
+                    "previousDecade": "Década anterior",
+                    "nextDecade": "Década siguiente",
+                    "previousCentury": "Siglo anterior",
+                    "nextCentury": "Siglo siguiente",
                   },
-                }}
+                  "timePickerLocale": {
+                    "placeholder": "Seleccionar hora"
+                  }
+                }
+                }
                 onChange={handleFiltroRange}
+                className="w-100"
+
               />
             </Form.Item>
           </Col>
@@ -484,7 +543,7 @@ const Informacion = () => {
         scroll={{ x: 800, y: 500 }}
         rowKey={(caso) => caso.id_caso}
         key="table"
-        pagination={{ pageSize: 20, position: ["bottomCenter"] }}
+        pagination={{ pageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}
         columns={columns}
         locale={{
           emptyText: (

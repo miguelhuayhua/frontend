@@ -11,11 +11,11 @@ import {
   Row,
   Select,
   Skeleton,
+  Space,
   notification,
 } from "antd";
 import { NextPage } from "next";
 import { BsTextParagraph, BsFillTrash3Fill, BsPlus } from "react-icons/bs";
-import { AiOutlineFilePdf } from "react-icons/ai";
 import { createContext, useState } from "react";
 import { PiListMagnifyingGlassFill } from "react-icons/pi";
 import { FaEye } from "react-icons/fa";
@@ -23,7 +23,7 @@ import { Adulto } from "../../adultos/data";
 import { Caso, Compromiso, Denunciado, dataCompromiso } from "../data";
 import { Persona } from "../../personal/agregar/data";
 import TextArea from "antd/es/input/TextArea";
-import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import FormularioActaCompromiso from "./pdf-compromiso";
@@ -61,14 +61,12 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
         onCancel={() => {
           props.setOpen(false);
         }}
-        width={"85%"}
         footer={[
           <Button
             key={"btn-vista"}
             onClick={() => {
               setOpen(true);
             }}
-            style={{ height: 45 }}
           >
             Vista previa documento
             <FaEye
@@ -81,23 +79,15 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
 
           <Button
             key={"btn-generar"}
-            style={{ height: 45 }}
+            type="primary"
             onClick={() => {
               setOpen2(true);
             }}
           >
             Aceptar y Generar
-            <AiOutlineFilePdf
-              style={{
-                color: "#b51308",
-                fontSize: 20,
-                marginLeft: 10,
-              }}
-            />
           </Button>,
           <Button
             key="cancel"
-            style={{ height: 45 }}
             onClick={() => {
               props.setOpen(false);
             }}
@@ -109,14 +99,13 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
       >
         {props.loaded ? (
           <Row gutter={24}>
-            <Col span={24} lg={{ span: 12 }}>
+            <Col span={24}>
               <Form>
                 <Row gutter={[12, 30]}>
                   <Col span={24}>
-                    <h6>Lista de compromisos:</h6>
-                    <Form.Item
-                      label={"Compromiso nro. " + (compromisos.length + 1)}
-                    >
+                    <h6 className="text-center">Lista de compromisos:</h6>
+                    <b>{"Compromiso nro. " + (compromisos.length + 1)}</b>
+                    <Form.Item>
                       <TextArea
                         value={compromiso.compromiso}
                         onChange={(ev) => {
@@ -140,8 +129,8 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                     </Button>
                   </Col>
                   <Col span={24}>
-                    <h6>
-                      DENUNCIADO:{" "}
+                    <h6 className="my-0 py-0">
+                      {"Denunciado(a): "}
                       {props.denunciado.nombres +
                         " " +
                         props.denunciado.paterno +
@@ -149,20 +138,35 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                         props.denunciado.materno}
                     </h6>
                   </Col>
-                  <Col span={16}>
-                    <Form.Item label="C.I. denunciado: ">
-                      <Input
-                        placeholder="Introduzca C.I. del denunciado"
-                        onChange={(ev) => {
-                          props.setDenunciado({
-                            ...props.denunciado,
-                            ci: ev.target.value,
-                          });
-                        }}
-                      ></Input>
-                    </Form.Item>
+                  <Col span={24}>
+                    <Space.Compact>
+                      <Form.Item
+                        label="N° de C.I."
+                      >
+                        <Input
+                          minLength={5}
+                          className="w-100"
+                          placeholder="Introduzca el Nro. de C.I. (denunciado)"
+                          onChange={(ev) => {
+                            props.setDenunciado({ ...props.denunciado, ci: ev.target.value })
+                          }}
+                          min={0}
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name={"complemento_d"}
+                      >
+                        <Input
+                          className="w-100"
+                          placeholder="Complemento (Opcional)"
+                          onChange={(ev) => {
+                            props.setDenunciado({ ...props.denunciado, complemento: ev.target.value })
+                          }}
+                        />
+                      </Form.Item>
+                    </Space.Compact>
                   </Col>
-                  <Col span={8}>
+                  <Col span={20} offset={2}>
                     <Form.Item label="Expedido: ">
                       <Select
                         defaultValue="LP"
@@ -189,7 +193,7 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                 </Row>
               </Form>
             </Col>
-            <Col span={24} lg={{ span: 12 }}>
+            <Col span={24}>
               <List
                 locale={{
                   emptyText: (
@@ -302,7 +306,6 @@ const ModalActaCompromiso: NextPage<Props> = (props) => {
                     const link = document.createElement("a");
                     link.href = url;
                     let { nombre, paterno, materno } = props.adulto;
-
                     link.setAttribute(
                       "download",
                       nombre + paterno + materno + ".pdf"

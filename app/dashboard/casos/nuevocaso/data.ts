@@ -22,21 +22,19 @@ export const dias2 = [
 ]
 
 export const meses = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
 ];
-
-
 //esquemas
 export interface AdultoMayor {
 
@@ -54,6 +52,7 @@ export interface AdultoMayor {
     ocupacion: string;
     beneficios: string;
     expedido?: string;
+    complemento?: string;
 
 }
 export interface AdultoMayor2 {
@@ -92,6 +91,9 @@ export interface DatosDenunciado {
     paterno: string;
     materno: string;
     parentezco: string;
+    ci?: string;
+    complemento?: string;
+    expedido?: string;
 };
 export interface DatosDenuncia {
     fecha_registro: string,
@@ -115,7 +117,8 @@ export let dataDatosGenerales = {
     beneficios: "Ninguno",
     ocupacion: "",
     id_adulto: "",
-    expedido:"LP"
+    expedido: "LP",
+    complemento: ""
 };
 
 export let dataDatosUbicacion = {
@@ -144,7 +147,9 @@ export let dataDatosDenunciado = {
     parentezco: "Hijo(a)",
     paterno: "",
     materno: "",
-
+    ci: "",
+    complemento: "",
+    expedido: "LP",
 }
 export let dataDatosDenuncia = {
     fecha_registro: dayjs().format('YYYY-MM-DD'),
@@ -172,7 +177,6 @@ export interface Audiencia {
 
     id_citacion: string;
 }
-
 export let dataAudiencia = {
     id_audiencia_suspendida: "",
     causa: "ina_adulto",
@@ -181,3 +185,126 @@ export let dataAudiencia = {
     estado: 1,
     id_citacion: "",
 }
+export const capitalize = (valor: string) => {
+    if (valor && valor != '') {
+        let transformado = valor.toLocaleLowerCase();
+        transformado = transformado[0].toUpperCase() + transformado.substring(1, transformado.length);
+        return transformado.trim();
+    }
+    else {
+        return "";
+    }
+}
+
+
+//OPCIONES DEL CASCADER
+export interface Option {
+    value: string;
+    label: string;
+    children?: Option[];
+}
+
+export const options: Option[] = [
+    {
+        value: '1grado',
+        label: 'Familiar de 1er grado',
+        children: [
+            {
+                value: 'hijos',
+                label: 'Hijos',
+                children: [
+                    {
+                        value: 'hijo',
+                        label: 'Hijo',
+                    },
+                    {
+                        value: 'hija',
+                        label: 'Hija',
+                    },
+                ],
+            },
+            {
+                value: 'hermanos',
+                label: 'Hermanos',
+                children: [
+                    {
+                        value: 'hermano',
+                        label: 'Hermano',
+                    },
+                    {
+                        value: 'hermana',
+                        label: 'Hermana',
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        value: '2grado',
+        label: 'Familiar de 2do grado',
+        children: [
+
+            {
+                value: 'nietos',
+                label: 'Nietos',
+                children: [
+                    {
+                        value: 'nieto',
+                        label: 'Nieto',
+                    },
+                    {
+                        value: 'nieta',
+                        label: 'Nieta',
+                    },
+                ],
+            },
+
+        ],
+
+    },
+    {
+        label: "Familiar de 3er grado",
+        value: "3grado",
+        children: [
+            {
+                value: 'primos',
+                label: 'Primos',
+                children: [
+                    {
+                        value: 'primo_paterno',
+                        label: 'Primo Paterno',
+                    },
+                    {
+                        value: 'primo_materno',
+                        label: 'Primo Materno',
+                    },
+                    {
+                        value: 'prima_paterna',
+                        label: 'Prima Paterna',
+                    },
+                    {
+                        value: 'prima_materna',
+                        label: 'Prima Materna',
+                    },
+                ],
+            },
+            {
+                value: 'sobrinos',
+                label: 'Sobrinos',
+                children: [
+                    {
+                        value: 'sobrino',
+                        label: 'Sobrino',
+                    },
+                    {
+                        value: 'sobrina',
+                        label: 'Sobrina',
+                    },
+                ],
+            },
+
+        ]
+    },
+    { label: 'Persona Conocida', value: 'conocido' },
+    { label: 'Persona Desconocida', value: 'desconocido' }
+];

@@ -11,8 +11,9 @@ import {
 } from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import { accesoContext } from "./seguimiento-cuenta";
-import { Persona, meses } from "../personal/agregar/data";
 import { AccesoUsuario, AccionesUsuario } from "./data";
+import { Persona, meses } from "../personal/agregar/data";
+
 const PdfAccesos = () => {
     const data = useContext(accesoContext);
     let { persona, accesos, rangeAcceso } = data as {
@@ -189,7 +190,7 @@ const PdfAccesos = () => {
                         HISTORIAL DE ACCESOS DE {`${persona.nombres.toUpperCase()} ${persona.paterno.toUpperCase()} ${persona.materno.toUpperCase()}`}
                     </Text>
                     <Text style={{ ...styles.parraf, color: 'gray' }}>
-                        {rangeAcceso.de ? `Datos filtrados desde el ${dayjs(rangeAcceso.de).format("dd-mm-yyyy-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcceso.hasta).format("dd-mm-yyyy-hh:mm:ss")} ` : null}
+                        {rangeAcceso.de ? `Datos filtrados desde el ${dayjs(rangeAcceso.de).format("DD/MM/YYYY-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcceso.hasta).format("DD/MM/YYYY-hh:mm:ss")} ` : null}
                     </Text>
                     <View style={styles.table}>
                         <View style={styles.row}>

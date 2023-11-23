@@ -1,6 +1,5 @@
 "use client";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
-import locale from "antd/es/date-picker/locale/es_ES";
 import { UserOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -30,7 +29,6 @@ import { PiListMagnifyingGlassFill } from "react-icons/pi";
 import Formulariocitacion from "./pdf-citacion";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { AiOutlineFilePdf } from "react-icons/ai";
 import dayjs, { Dayjs } from "dayjs";
 import { Citado, dias, meses, nro_citacion } from "../nuevocaso/data";
 import moment, { now } from "moment";
@@ -42,7 +40,6 @@ export const DataContext2 = createContext({});
 interface Props {
   caso: Caso;
   adulto: Adulto;
-  data: any;
   persona: Persona;
   citaciones: Citacion[];
   citacion: { citacion: Citacion; size: number };
@@ -60,8 +57,6 @@ const CitacionOptions: NextPage<Props> = (props) => {
   //cambio del estado de caso
   const [citados2, setCitados2] = useState<any[]>([]);
 
-  const params = useSearchParams();
-
   useEffect(() => {
     setCitados([
       ...props.adulto.hijos.map((value) => {
@@ -69,21 +64,23 @@ const CitacionOptions: NextPage<Props> = (props) => {
       }),
     ]);
   }, []);
-
+  const params = useSearchParams();
   return (
     <>
       <Row gutter={[24, 24]}>
-        <Col span={24} xl={{ span: 14 }}>
+        <Col span={24} xl={{ span: 12 }}>
           <div className="detalle-citacion">
             <p>
-              <b style={{ marginRight: 10 }}>Adulto mayor implicado: </b>
+              <b className="fw-bold">Adulto mayor implicado: </b>
+              <br />
               {props.adulto.nombre +
                 " " +
                 props.adulto.paterno +
                 " " +
                 props.adulto.materno}
               <br />
-              <b style={{ marginRight: 5 }}>Fecha: </b>
+              <b className="fw-bold">Fecha: </b>
+              <br />
               {dayjs().date() +
                 " de " +
                 meses[dayjs().month()] +
@@ -97,18 +94,53 @@ const CitacionOptions: NextPage<Props> = (props) => {
                 {nro_citacion[props.citaciones.length]} Citación
               </h6>
               <Row gutter={[24, 12]}>
-                <Col span={24} lg={{ span: 12 }}>
+                <Col span={24} >
                   <Form.Item label={"Fecha de Registro"}>
                     <DatePicker
                       style={{ width: "100%" }}
-                      locale={{
-                        ...locale,
-                        lang: {
-                          ...locale.lang,
-                          shortWeekDays: dias,
-                          shortMonths: meses,
-                        },
-                      }}
+                      locale={
+                        {
+
+                          "lang": {
+                            "placeholder": "Seleccionar fecha",
+                            "rangePlaceholder": [
+                              "Fecha inicial",
+                              "Fecha final"
+                            ],
+                            shortMonths: meses,
+                            shortWeekDays: dias,
+                            "locale": "es_ES",
+                            "today": "Hoy",
+                            "now": "Ahora",
+                            "backToToday": "Volver a hoy",
+                            "ok": "Aceptar",
+                            "clear": "Limpiar",
+                            "month": "Mes",
+                            "year": "Año",
+                            "timeSelect": "Seleccionar hora",
+                            "dateSelect": "Seleccionar fecha",
+                            "monthSelect": "Elegir un mes",
+                            "yearSelect": "Elegir un año",
+                            "decadeSelect": "Elegir una década",
+                            "yearFormat": "YYYY",
+                            "dateFormat": "D/M/YYYY",
+                            "dayFormat": "D",
+                            "dateTimeFormat": "D/M/YYYY HH:mm:ss",
+                            "monthBeforeYear": true,
+                            "previousMonth": "Mes anterior (PageUp)",
+                            "nextMonth": "Mes siguiente (PageDown)",
+                            "previousYear": "Año anterior (Control + left)",
+                            "nextYear": "Año siguiente (Control + right)",
+                            "previousDecade": "Década anterior",
+                            "nextDecade": "Década siguiente",
+                            "previousCentury": "Siglo anterior",
+                            "nextCentury": "Siglo siguiente",
+                          },
+                          "timePickerLocale": {
+                            "placeholder": "Seleccionar hora"
+                          }
+                        }
+                      }
                       disabledDate={(date) => {
                         return (
                           moment().add(-1, "day") >= date || date.day() == 0
@@ -128,10 +160,10 @@ const CitacionOptions: NextPage<Props> = (props) => {
                     ></DatePicker>
                   </Form.Item>
                 </Col>
-                <Col span={24} lg={{ span: 12 }}>
+                <Col span={24}>
                   <Form.Item label="Hora de registro:">
                     <TimePicker
-                      style={{ width: "100%" }}
+                      className="w-100"
                       defaultValue={dayjs(now())}
                       onChange={(ev) => {
                         let fecha = ev as Dayjs;
@@ -146,9 +178,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                     />
                   </Form.Item>
                 </Col>
-
                 <Col span={24}>
-                  <hr />
                   <List
                     className="demo-loadmore-list"
                     locale={{
@@ -164,14 +194,12 @@ const CitacionOptions: NextPage<Props> = (props) => {
                       ),
                     }}
                     header={
-                      <div
-
-                      >
+                      <>
                         <h6 className="text-center">
-                          <b>Lista de citados</b>
+                          Lista de citados
                         </h6>
-                        <Space.Compact>
-                          <Form.Item label="Agregar Citado">
+                        <Space.Compact className="w-100">
+                          <Form.Item label="Agregar Citado" className="w-100">
                             <Input
                               onChange={(ev) => {
                                 setCitado(ev.target.value);
@@ -210,7 +238,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                             Insertar
                           </Button>
                         </Space.Compact>
-                      </div>
+                      </>
                     }
                     itemLayout="horizontal"
                     dataSource={citados}
@@ -305,7 +333,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                     process.env.BACKEND_URL +
                                     "/caso/citacion/all",
                                     {
-                                      id_caso: params.get("id_caso"),
+                                      id_caso: params.get('id_caso')
                                     }
                                   )
                                   .then((res) => {
@@ -339,13 +367,13 @@ const CitacionOptions: NextPage<Props> = (props) => {
                     okText="Sí"
                     cancelText="No"
                   >
-                    <Button type="primary" style={{ marginTop: 20 }}>
+                    <Button type="primary" className="mt-2 me-2">
                       Guardar y generar {nro_citacion[props.citaciones.length]}{" "}
                       Citación
                     </Button>
                   </Popconfirm>
                   <Button
-                    style={{ marginTop: 20, marginLeft: 20 }}
+                    className="mt-2 me-2"
                     onClick={() => {
                       setOpen(true);
                     }}
@@ -356,10 +384,10 @@ const CitacionOptions: NextPage<Props> = (props) => {
               </Row>
             </Form>
           ) : (
-            <h3>Límite de citaciones excedida...</h3>
+            <h3 className="h5">Límite de citaciones excedida...</h3>
           )}
         </Col>
-        <Col span={24} xl={{ span: 10 }}>
+        <Col span={24} xl={{ span: 12 }}>
           <hr />
           <List
             header={<b>Historial de citaciones</b>}
@@ -391,37 +419,79 @@ const CitacionOptions: NextPage<Props> = (props) => {
                       title={
                         <>
                           <span className="number">{item.numero + 1}</span>
-                          <b>{nro_citacion[item.numero]} Citación</b>
+                          <b className="me-4">{nro_citacion[item.numero]} Citación</b>
                           {item.suspendido == 1 ? (
                             <Tag color="#f50">Suspendido</Tag>
+                          ) : item.estado == 0 ? (
+                            <Tag color="#000">Terminado</Tag>
                           ) : diasCitacion < 0 ? (
                             <Tag color="#cd201f">Citación Atrasada</Tag>
                           ) : diasCitacion == 0 ? (
                             <Tag color="#87d068">Hoy</Tag>
-                          ) : (
-                            <Tag color="#108ee9">En {diasCitacion} días</Tag>
+                          ) : item.estado == 0 ? (
+                            <Tag color="#000">Terminado</Tag>
+                          ) : (<Tag color="#108ee9">En {diasCitacion} días</Tag>
                           )}
+                          {item.estado == 1 && item.suspendido != 1 ? (<Popconfirm
+                            key="popconfirm"
+                            title="¿Estás seguro de terminar la citación?"
+                            onConfirm={() => {
+                              axios.post(process.env.BACKEND_URL + "/caso/citacion/terminar", { id_citacion: item.id_citacion }).then(res => {
+                                if (res.data.status == 1) {
+                                  notification.success({ message: "Terminado con éxito" });
+                                  axios
+                                    .post<Citacion[]>(
+                                      process.env.BACKEND_URL + "/caso/citacion/all",
+                                      {
+                                        id_caso: params.get('id_caso')
+                                      }
+                                    )
+                                    .then((res) => {
+                                      props.setCitaciones(res.data);
+                                    });
+                                }
+                                else {
+                                  notification.error({ message: "Error en el servidor" })
+                                }
+                              })
+                            }}
+                            okText="Sí"
+                            cancelText="No"
+                          >
+                            <Button key="ok" className="m-0">
+                              Terminar
+                            </Button>
+                          </Popconfirm>) : null}
                         </>
                       }
                     >
                       <Row>
-                        <Col span={8}>
-                          <p style={{ fontSize: 10, paddingRight: 20 }}>
-                            <b>
+                        <Col span={10}>
+                          <p style={{ fontSize: 10 }}>
+                            <b className="fw-bold">
                               Fecha y hora de citación:{" "}
-                              {item.fecha_citacion + " " + item.hora_citacion}
                             </b>
                             <br />
-                            <b>Creado el: </b>
+                            {item.fecha_citacion ? item.fecha_citacion + " " + item.hora_citacion : null}
+                            <br />
+                            <b className="fw-bold">
+                              Creado el:
+                            </b>
+                            <br />
                             {item.fecha_creacion}
                           </p>
                         </Col>
-                        {item.suspendido == 1 ? (
-                          <Col span={16}></Col>
+                        {item.suspendido == 1 || item.estado == 0 ? (
+                          null
                         ) : (
                           <>
-                            <Col span={8}>
+                            <Col span={14}>
                               <Button
+                                style={{
+                                  backgroundColor: "#b51308",
+                                  color: "white",
+                                  marginRight: 10
+                                }}
                                 onClick={() => {
                                   axios
                                     .post<Citado[]>(
@@ -471,18 +541,9 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                         });
                                     });
                                 }}
-                                style={{ height: 45, margin: "0 auto" }}
                               >
                                 Generar
-                                <AiOutlineFilePdf
-                                  style={{
-                                    color: "#b51308",
-                                    fontSize: 25,
-                                  }}
-                                />
                               </Button>
-                            </Col>
-                            <Col span={8}>
                               <Button
                                 onClick={() => {
                                   setOpen2(true);
@@ -499,11 +560,11 @@ const CitacionOptions: NextPage<Props> = (props) => {
                                       setCitados2(res.data);
                                     });
                                 }}
-                                style={{ marginLeft: 10, height: 45 }}
                               >
                                 Suspender
                               </Button>
                             </Col>
+
                           </>
                         )}
                       </Row>
@@ -513,8 +574,8 @@ const CitacionOptions: NextPage<Props> = (props) => {
               );
             }}
           ></List>
-        </Col>
-      </Row>
+        </Col >
+      </Row >
       <Drawer
         title={`Vista previa del Documento`}
         placement="right"
@@ -541,10 +602,12 @@ const CitacionOptions: NextPage<Props> = (props) => {
       </Drawer>
 
       <ModalAudienciaSuspendida
+        setCitacion={props.setCitacion}
         citados={citados2}
         adulto={props.adulto}
         caso={props.caso}
         citacion={citacion}
+        setCitaciones={props.setCitaciones}
         open2={open2}
         setOpen2={setOpen2}
         persona={props.persona}

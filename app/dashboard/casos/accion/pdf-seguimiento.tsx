@@ -79,14 +79,8 @@ const styles = StyleSheet.create({
   },
 });
 // Create Document Component
-const FormularioSeguimiento = () => {
-  const data = useContext(DataContext);
-  let { caso, persona, seguimiento, adulto } = data as {
-    caso: Caso;
-    persona: Persona;
-    seguimiento: Seguimiento;
-    adulto: AdultoMayor2;
-  };
+const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimiento: Seguimiento, adulto: AdultoMayor2 }) => {
+  let { caso, persona, seguimiento, adulto } = props;
 
   return (
     <Document>

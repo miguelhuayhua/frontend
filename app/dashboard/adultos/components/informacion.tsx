@@ -65,7 +65,8 @@ const Informacion = () => {
       },
       render(_, adulto) {
         return (
-          <Paragraph className="center" copyable>
+
+          <Paragraph className="center" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
             {adulto.id_adulto}
           </Paragraph>
         );
@@ -104,7 +105,7 @@ const Informacion = () => {
       fixed: "right",
       width: 150,
       render: (_, adulto) => (
-        <div
+        persona.cargo == "3" ? "No disponible" : <div
           key={adulto.id_adulto + "d"}
           className="d-flex align-items-center justify-content-around"
         >
@@ -171,7 +172,7 @@ const Informacion = () => {
       <Row>
         <Col span={24} lg={{ span: 10 }}>
           <h5 className="mt-4">
-            {' Filtros para "Adultos"'} <FilterOutlined />
+            {'Filtros para "Adultos"'} <FilterOutlined />
           </h5>
           <small style={{ color: "#999" }}>
             Cada filtro realiza búsquedas por separado...
@@ -266,7 +267,7 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Adultos-" +
-                      dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                      dayjs().format("DD/MM/YYYY-HH:mm:ss") +
                       ".xlsx"
                     );
                     link.click();
@@ -275,7 +276,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Adultos-" +
-                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                            dayjs().format("DD/MM/YYYY-HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),
@@ -313,7 +314,7 @@ const Informacion = () => {
 
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+          <Col span={24} lg={{ span: 12 }} >
             <Form.Item label="ID del adulto: ">
               <Input
                 placeholder="Introduzca el ID del adulto"
@@ -327,14 +328,14 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={{ span: 8 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Nombres o Apellidos: ">
               <Input
                 placeholder="Buscar por nombres o apellidos"
                 onChange={(value) => {
                   setDisplayAdultos(
                     adultos.filter((adulto) => {
-                      return (adulto.nombre + adulto.paterno + adulto.materno)
+                      return (adulto.nombre + " " + adulto.paterno + " " + adulto.materno)
                         .toLocaleLowerCase()
                         .includes(value.target.value.toLocaleLowerCase());
                     })

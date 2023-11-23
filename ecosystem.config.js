@@ -1,13 +1,15 @@
 module.exports = {
   apps: [
     {
-      name: "gamea-next",
+      name: "gamea",
       script: "node_modules/next/dist/bin/next",
       args: "start",
       env: {
         NODE_ENV: "production",
       },
+      max_restarts: 5,
+    
     },
   ],
-  max_restarts: 5,
+
 };

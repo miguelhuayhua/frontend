@@ -31,9 +31,7 @@ import {
   AdultoMayor,
   DatosDenuncia,
   DatosDenunciado,
-  DatosUbicacion,
-  dataDatosDenuncia,
-  dataDatosGenerales,
+  DatosUbicacion
 } from "../data";
 import { createContext, useState } from "react";
 import axios from "axios";
@@ -41,14 +39,12 @@ import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
 import { InfoCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
 import { Persona } from "@/app/dashboard/personal/agregar/data";
+import { Usuario } from "@/app/dashboard/usuarios/data";
+import { useSession } from "next-auth/react";
 export const DataContext = createContext({});
-//
-
-//PDF
-
 const Detalles: NextPage<Props> = (props) => {
+  const { data } = useSession();
   if (typeof window !== "undefined") {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -61,8 +57,6 @@ const Detalles: NextPage<Props> = (props) => {
     props.getPosicion(0);
     notification.info({ message: "Verifique nuevamente los datos..." });
   };
-  const { data } = useSession();
-
   //referencias
   const handleEnviar = async () => {
     setOpen(true);
@@ -75,6 +69,7 @@ const Detalles: NextPage<Props> = (props) => {
       250,
       ["counter"]
     );
+
     if (data) {
       let { usuario, persona } = data?.user as {
         usuario: {
@@ -84,57 +79,59 @@ const Detalles: NextPage<Props> = (props) => {
           id_persona: string;
           id_usuario: string;
         };
-        persona: Persona
+        persona: Persona;
       };
+      axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: persona.id_persona }).then(res => {
+        axios.post<Usuario>(process.env.BACKEND_URL + "/usuario/get", { id_usuario: usuario.id_usuario }).then(res2 => {
+          pdf(
+            <DataContext.Provider value={{ ...props.datos, persona: res.data }}>
+              <MyDocument />
+            </DataContext.Provider>
+          )
+            .toBlob()
+            .then((blob) => {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              let { nombre, paterno, materno } = props.datos.datosGenerales;
 
-      pdf(
-        <DataContext.Provider value={{ ...props.datos, persona: persona }}>
-          <MyDocument />
-        </DataContext.Provider>
-      )
-        .toBlob()
-        .then((blob) => {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          let { nombre, paterno, materno } = props.datos.datosGenerales;
-
-          link.setAttribute(
-            "download",
-            nombre +
-            paterno +
-            materno +
-            "caso.pdf"
-          );
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+              link.setAttribute(
+                "download",
+                nombre +
+                paterno +
+                materno +
+                "caso.pdf"
+              );
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            });
+          axios
+            .post(process.env.BACKEND_URL + "/denuncia/insert", { ...props.datos, usuario: res2.data })
+            .then((res) => {
+              setSuccess(true);
+              setCounter(100);
+              setEstado(false);
+              if (res.data.status == 1) {
+                notification.success({ message: res.data.response });
+                props.router.push("/dashboard/casos");
+              } else {
+                notification.error({ message: res.data.response });
+              }
+            })
+            .catch((err) => {
+              clearInterval(interval);
+              setEstado(true);
+              setSuccess(false);
+            });
         });
-      axios
-        .post(process.env.BACKEND_URL + "/denuncia/insert", { ...props.datos, usuario: usuario })
-        .then((res) => {
-          setSuccess(true);
-          setCounter(100);
-          setEstado(false);
-          if (res.data.status == 1) {
-            notification.success({ message: res.data.response });
-            props.router.push("/dashboard/casos");
-          } else {
-            notification.error({ message: res.data.response });
-          }
-        })
-        .catch((err) => {
-          clearInterval(interval);
-          setEstado(true);
-          setSuccess(false);
-        });
+      });
     }
   };
   const cancel = () => {
     setOpen(false);
     notification.info({ message: "Modifique si desea..." });
   };
-
   return (
     <>
       <Row className="my-4">
@@ -162,9 +159,7 @@ const Detalles: NextPage<Props> = (props) => {
                         <Row>
                           <Col span={24}>
                             <p className="info">
-                              <span>
-                                <b>Fecha de Registro del caso: </b>
-                              </span>
+                              <b>Fecha de Registro del caso: </b>
                               {props.datos.datosDenuncia.fecha_registro}
                             </p>
                           </Col>
@@ -211,22 +206,21 @@ const Detalles: NextPage<Props> = (props) => {
             </Dropdown>
           </Affix>
           <Row className="mt-4 rounded overflow-hidden">
-            <Col span={24}>
-              <Divider orientation="left">
-                <b>Datos Generales</b>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
+              <Divider className="fw-light" style={{ fontSize: 20 }} orientation="left">
+                Datos generales
               </Divider>
             </Col>
-
-            <Col span={24}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Nombres: </p>
                 <p className="contenido">{props.datos.datosGenerales.nombre}</p>
               </div>
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Paterno: </p>
                 <p className="contenido">
@@ -234,7 +228,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido Materno: </p>
                 <p className="contenido">
@@ -242,7 +236,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 14 }} lg={{ span: 8 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Fecha de nacimiento: </p>
                 <p className="contenido">
@@ -250,20 +244,20 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 10 }} lg={{ span: 8 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Edad: </p>
                 <p className="contenido">{props.datos.datosGenerales.edad}</p>
               </div>
             </Col>
 
-            <Col span={24} md={{ span: 8 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">C.I.: </p>
                 <p className="contenido"> {props.datos.datosGenerales.ci}</p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 16 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Estado Civil: </p>
                 <p className="contenido">
@@ -271,7 +265,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Género: </p>
                 <p className="contenido">
@@ -280,7 +274,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo"> Beneficios: </p>
                 <p className="contenido">
@@ -288,13 +282,13 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Nivel de Estudios: </p>
                 <p className="contenido"> {props.datos.datosGenerales.grado}</p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo"> Nro. de referencia: </p>
                 <p className="contenido">
@@ -302,7 +296,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Ocupación: </p>
                 <p className="contenido">
@@ -310,8 +304,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo"> Hijos: </p>
                 <p className="contenido">
@@ -334,15 +327,15 @@ const Detalles: NextPage<Props> = (props) => {
           md={{ span: 22, offset: 1 }}
         >
           <Row className="rounded overflow-hidden">
-            <Col span={24}>
-              <Divider orientation="left">
-                <b>Datos de Ubicación</b>
+            <Col span={20} offset={2}>
+              <Divider className="fw-light" style={{ fontSize: 20 }} orientation="left">
+                Datos de ubicación
               </Divider>
             </Col>
-            <Col span={24}>
+            <Col span={20} offset={2}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Distrito: </p>
                 <p className="contenido">
@@ -350,7 +343,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Área: </p>
                 <p className="contenido">
@@ -363,8 +356,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Calle o avenida: </p>
                 <p className="contenido">
@@ -372,7 +364,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Tipo de domicilio: </p>
                 <p className="contenido">
@@ -381,7 +373,7 @@ const Detalles: NextPage<Props> = (props) => {
               </div>
             </Col>
 
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">N° de vivienda: </p>
                 <p className="contenido">
@@ -389,7 +381,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 10 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Zona: </p>
                 <p className="contenido">{props.datos.datosUbicacion.zona}</p>
@@ -403,15 +395,15 @@ const Detalles: NextPage<Props> = (props) => {
           md={{ span: 22, offset: 1 }}
         >
           <Row className="rounded overflow-hidden">
-            <Col span={24}>
-              <Divider orientation="left">
-                <b>Datos del denunciado</b>
+            <Col span={20} offset={2}>
+              <Divider className="fw-light" style={{ fontSize: 20 }} orientation="left">
+                Datos del denunciado
               </Divider>
             </Col>
-            <Col span={24}>
+            <Col span={20} offset={2}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Nombre del denunciado: </p>
                 <p className="contenido">
@@ -419,16 +411,16 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
+
               <div className="d-flex w-100">
                 <p className="titulo">Apellido paterno: </p>
                 <p className="contenido">
-                  {" "}
                   {props.datos.datosDenunciado.paterno}
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Apellido materno: </p>
                 <p className="contenido">
@@ -436,7 +428,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo">Parentezco: </p>
                 <p className="contenido">
@@ -452,15 +444,16 @@ const Detalles: NextPage<Props> = (props) => {
           md={{ span: 22, offset: 1 }}
         >
           <Row className="rounded overflow-hidden">
-            <Col span={24}>
-              <Divider orientation="left">
-                <b>Descripciones</b>
+
+            <Col span={20} offset={2}>
+              <Divider className="fw-light" style={{ fontSize: 20 }} orientation="left">
+                Descripciones
               </Divider>
             </Col>
-            <Col span={24}>
+            <Col span={20} offset={2}>
               <Badge status="processing" text="Datos Validados" />
             </Col>
-            <Col span={24}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo" style={{ width: "20%" }}>
                   Descripción de los hechos:
@@ -472,7 +465,7 @@ const Detalles: NextPage<Props> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col span={24}>
+            <Col span={24} lg={{ span: 20, offset: 2 }}>
               <div className="d-flex w-100">
                 <p className="titulo" style={{ width: "20%" }}>
                   Descripción de petición:

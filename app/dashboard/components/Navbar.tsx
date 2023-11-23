@@ -1,9 +1,10 @@
 "use client";
-import { BellOutlined, UserOutlined } from "@ant-design/icons";
-import { Affix, Avatar, Badge, Col, Dropdown, MenuProps, Row } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Affix, Avatar, Col, Dropdown, Popover, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
 import axios from "axios";
 import dayjs from "dayjs";
+import { IoMdHelpCircle } from "react-icons/io";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,8 +12,11 @@ import { CiLogout } from "react-icons/ci";
 import { FaCalendarAlt } from "react-icons/fa";
 import { GrConfigure } from "react-icons/gr";
 import { Persona, dataPersona } from "../personal/agregar/data";
-import { dataUsuario } from "../usuarios/data";
+import { Usuario, dataUsuario } from "../usuarios/data";
 import "./estilos.scss";
+
+import Image from 'next/legacy/image';
+import Link from "next/link";
 const Navbar = () => {
   const router = useRouter();
   const { data } = useSession();
@@ -36,11 +40,29 @@ const Navbar = () => {
         };
         persona: Persona;
       };
-      setUsuario({ ...usuario });
-      setPersona(persona);
+      if (usuario && persona) {
+        axios.post<Usuario>(process.env.BACKEND_URL + "/usuario/get", { id_usuario: usuario.id_usuario }).then(res => {
+          if (res.data.estado == 0 || res.data == null) {
+            axios
+              .post(process.env.BACKEND_URL + "/usuario/out", {
+                id_usuario: usuario.id_usuario,
+              })
+              .then((res) => {
+                if (res.data.status == 1) {
+                  signOut({ callbackUrl: "/", redirect: true });
+                }
+              });
+          }
+          else {
+            setUsuario(res.data);
+          }
+        });
+        axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: persona.id_persona }).then(res => {
+          setPersona(res.data);
+        });
+      }
     }
   }, [data]);
-
   return (
     <Affix>
       <Row>
@@ -58,6 +80,18 @@ const Navbar = () => {
             }}
             role="navigation"
           >
+            <Popover placement="bottomRight" title={<p className="text-center" >Tutorial guía de iniciación</p>}
+              content={<><Image src={"/assets/qr-tutorial.png"} width={30} height={30} layout="responsive" />
+
+                <p>O mediante el siguiente link:</p>
+                <Link target="_blank" href={"https://youtu.be/ANX7cVirRZE"}>
+                https://youtu.be/ANX7cVirRZE
+                                </Link>
+              </>}>
+              <>
+                <IoMdHelpCircle style={{ marginLeft: 30 }} fontSize={30} color="graytext" />
+              </>
+            </Popover>
             <div
               className="fecha-container"
               style={{ position: "absolute", right: 240 }}
@@ -71,18 +105,6 @@ const Navbar = () => {
                   }/${dayjs().year()}`}
               </span>
             </div>
-            {/* <div style={{ position: "absolute", right: 180 }}>
-              <Dropdown placement="bottom" menu={{ items }}>
-                <Badge count={99} overflowCount={10} style={{ border: "none" }}>
-                  <Avatar
-                    style={{ backgroundColor: "transparent", color: "gray" }}
-                    icon={<BellOutlined />}
-                    size="large"
-                  />
-                </Badge>
-              </Dropdown>
-            </div> */}
-
             <Dropdown
               trigger={["click"]}
               menu={{

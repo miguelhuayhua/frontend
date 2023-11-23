@@ -28,6 +28,7 @@ import { useState } from "react";
 import { FaRegImage } from "react-icons/fa";
 import bcrypt from "bcryptjs";
 import { Persona } from "../../personal/agregar/data";
+import Paragraph from "antd/es/typography/Paragraph";
 
 //ROUTING
 
@@ -151,7 +152,6 @@ const UsuarioModal: NextPage<Props> = (props) => {
           props.setOpen(false);
           setFile(null);
         }}
-        width={"90%"}
         footer={[
           <Popconfirm
             key="popconfirm"
@@ -186,21 +186,25 @@ const UsuarioModal: NextPage<Props> = (props) => {
       >
         {props.loaded ? (
           <Row gutter={[24, 12]}>
-            <Col span={12}>
-              <p style={{ color: "gray", textAlign: "start" }}>
+            <Col span={24}>
+              <p className="info">
                 <span>Última modifcación: </span>
                 {moment(props.usuario.ult_modificacion).format(
-                  "dd-mm-yyyy HH:mm:ss"
+                  "DD/MM/YYYY HH:mm:ss"
                 )}
               </p>
             </Col>
-            <Col span={12}>
-              <p style={{ color: "gray", textAlign: "start" }}>
+            <Col span={24} className="d-flex align-items-center">
+              <p className="info">
                 <span>Persona encargada/ID: </span>
-                {`${props.persona.nombres} ${props.persona.paterno} ${props.persona.materno}/${props.persona.id_persona}`}
+                {`${props.persona.nombres} ${props.persona.paterno} ${props.persona.materno}/`}
+
               </p>
+              <Paragraph className="my-auto ms-2" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}  >
+                {props.persona.id_persona}
+              </Paragraph>
             </Col>
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24}>
               <div
                 style={{
                   display: "flex",
@@ -215,7 +219,7 @@ const UsuarioModal: NextPage<Props> = (props) => {
                     alt="Foto de perfil"
                     preview={{
                       width: "80%",
-                      mask: <b style={{ color: "white" }}>Ver Imagen</b>,
+                      mask: <b style={{ color: "#FFF" }}>Ver Imagen</b>,
                     }}
                     style={{ width: 350 }}
                     src={
@@ -268,32 +272,16 @@ const UsuarioModal: NextPage<Props> = (props) => {
               </div>
             </Col>
 
-            <Col span={24} md={{ span: 12 }}>
+            <Col span={24}>
               <Form>
                 <Row gutter={[24, 24]}>
-                  <Col span={8}>
+                  <Col span={24}>
                     <b>ID del USUARIO: </b>
-                    {props.usuario.id_usuario}
-                    <Button
-                      style={{ marginLeft: 5 }}
-                      onClick={() => {
-                        const textField = document.createElement("textarea");
-                        textField.innerText = props.usuario.id_usuario;
-                        document.body.appendChild(textField);
-                        textField.select();
-                        navigator.clipboard
-                          .writeText(props.usuario.id_usuario)
-                          .then(() => {
-                            textField.remove();
-                            message.success(
-                              "¡ID - Usuario, copiado al portapapeles!"
-                            );
-                          });
-                      }}
-                      icon={<CopyOutlined color="blue" />}
-                    ></Button>
+                    <Paragraph copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}  >
+                      {props.usuario.id_usuario}
+                    </Paragraph>
                   </Col>
-                  <Col span={24} md={{ span: 16 }}>
+                  <Col span={24}>
                     <Form.Item label="Usuario: ">
                       <Input
                         name="usuario"

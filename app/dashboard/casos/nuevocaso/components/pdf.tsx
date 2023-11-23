@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
 
 // Create Document Component
 const MyDocument = () => {
+
   const data = useContext(DataContext);
   let {
     datosGenerales,
@@ -123,6 +124,7 @@ const MyDocument = () => {
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   };
+  const accionesRealizadas = accionRealizada.split("/");
   let { persona } = data as { persona: Persona };
   return (
     <Document>
@@ -453,21 +455,8 @@ const MyDocument = () => {
             </View>
             <View style={{ width: "100%", ...styles.horizontal }}>
               <Text style={styles.textBold}>PARENTEZCO: </Text>
-              <Text style={styles.text}> HIJO(A)</Text>
-              <Text style={styles.checker}>
-                {datosDenunciado.parentezco == "Hijo(a)" ? "X" : ""}
-              </Text>
-              <Text style={styles.text}>FAMILIAR </Text>
-              <Text style={styles.checker}>
-                {datosDenunciado.parentezco == "Familiar" ? "X" : ""}
-              </Text>
-              <Text style={styles.text}>CONOCIDO </Text>
-              <Text style={styles.checker}>
-                {datosDenunciado.parentezco == "Conocido" ? "X" : ""}
-              </Text>
-              <Text style={styles.text}>DESCONOCIDO </Text>{" "}
-              <Text style={styles.checker}>
-                {datosDenunciado.parentezco == "Desconocido" ? "X" : ""}
+              <Text style={{ ...styles.textContainer, fontSize: 9 }}>
+                {datosDenunciado.parentezco}
               </Text>
             </View>
           </View>
@@ -479,19 +468,19 @@ const MyDocument = () => {
           <View style={{ width: "100%", ...styles.horizontal }}>
             <Text style={styles.text}>APERTURA </Text>
             <Text style={styles.checker}>
-              {accionRealizada == "Apertura" ? "X" : ""}
+              {accionesRealizadas.includes("Apertura") ? "X" : ""}
             </Text>
             <Text style={styles.text}>ORIENTACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada == "Orientacion" ? "X" : ""}
+              {accionRealizada.includes("Orientacion") ? "X" : ""}
             </Text>
             <Text style={styles.text}>CITACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada == "Citacion" ? "X" : ""}
+              {accionRealizada.includes("Citacion") ? "X" : ""}
             </Text>
             <Text style={styles.text}>DERIVACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada == "Derivacion" ? "X" : ""}
+              {accionRealizada.includes("Derivacion") ? "X" : ""}
             </Text>
           </View>
         </View>

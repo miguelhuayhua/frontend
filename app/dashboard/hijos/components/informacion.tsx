@@ -59,7 +59,7 @@ const Informacion = () => {
       width: 120,
       render(_, hijo) {
         return (
-          <Paragraph className="center" copyable>
+          <Paragraph className="center" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
             {hijo.id_hijo}
           </Paragraph>
         );
@@ -99,7 +99,7 @@ const Informacion = () => {
       fixed: "right",
       width: 150,
       render: (_, hijo) => (
-        <div
+        persona.cargo == "3" ? "No disponible" : <div
           key={hijo.id_hijo + "d"}
           className="d-flex align-items-center justify-content-around"
         >
@@ -263,7 +263,7 @@ const Informacion = () => {
                     link.href = url;
                     link.setAttribute(
                       "download",
-                      "Hijos-" + dayjs().format("dd-mm-yyyy_HH:mm:ss") + ".xlsx"
+                      "Hijos-" + dayjs().format("DD/MM/YYYY_HH:mm:ss") + ".xlsx"
                     );
                     link.click();
                     link.remove();
@@ -271,7 +271,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Hijos-" +
-                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                            dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),
@@ -308,7 +308,7 @@ const Informacion = () => {
       </Row>
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24}  lg={{ span: 10 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="ID Hijo: ">
               <Input
                 placeholder="Introduzca el ID del hijo"
@@ -326,7 +326,7 @@ const Informacion = () => {
           </Col>
 
           <Col span={24} lg={{ span: 12 }}>
-            <Form.Item label="Filtrar por nombres y apellidos:">
+            <Form.Item label="Nombres o apellidos:">
               <Input
                 placeholder="Introduzca el nombre del hijo..."
                 onChange={(ev) => {

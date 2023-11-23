@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import MenuSider from "../../components/MenuSider";
 import Navbar from "../../components/Navbar";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import axios from "axios";
 import {
   Caso,
@@ -62,9 +62,8 @@ const AccionCaso = () => {
         .post<Caso>(process.env.BACKEND_URL + "/caso/get", {
           id_caso: params.get("id_caso"),
         })
-
         .then((res) => {
-          if (res.data) {
+          if (res.data && persona.cargo != "3") {
             axios
               .post<Denunciado>(process.env.BACKEND_URL + "/denunciado/get", {
                 id_caso: res.data.id_caso,
@@ -72,7 +71,6 @@ const AccionCaso = () => {
               .then((res) => {
                 setDenunciado(res.data);
               });
-
             setCaso(res.data);
             axios
               .post<{ adulto: Adulto; hijos: Hijo[] }>(
@@ -85,7 +83,7 @@ const AccionCaso = () => {
                 setAdulto({
                   ...res.data.adulto,
                   hijos: res.data.hijos,
-                  expedido: "",
+                  expedido: res.data.adulto.expedido,
                 });
                 setLoaded(true);
               });
@@ -119,7 +117,6 @@ const AccionCaso = () => {
           adulto={adulto}
           persona={persona}
           caso={caso}
-          data={data}
         ></SeguimientoOptions>
       ),
     },
@@ -131,7 +128,6 @@ const AccionCaso = () => {
           usuario={usuario}
           adulto={adulto}
           caso={caso}
-          data={data}
           persona={persona}
           citaciones={citaciones}
           citacion={citacion}
@@ -147,7 +143,7 @@ const AccionCaso = () => {
       <Layout>
         <Layout hasSider>
           <MenuSider defaultOpenKeys={[""]} defaultSelectedKey=""></MenuSider>
-          <Content>
+          <Content >
             <Navbar></Navbar>
             <Breadcrumb
               separator={<b style={{ fontSize: 18 }}>/</b>}
@@ -183,10 +179,10 @@ const AccionCaso = () => {
                       style={{ marginTop: 2.5, fontSize: 15 }}
                       href={
                         "/dashboard/casos/accion?id_caso=" +
-                        params.get("id_caso")
+                        params.get('id_caso')
                       }
                     >
-                      {params.get("id_caso")}
+                      {params.get('id_caso')}
                     </Link>
                   ),
                 },
@@ -194,7 +190,6 @@ const AccionCaso = () => {
             />
             <Layout>
               <Content
-                className="site-layout"
                 style={{ padding: "0 50px", position: "relative" }}
               >
                 <Tabs
@@ -202,6 +197,7 @@ const AccionCaso = () => {
                   style={{ marginTop: 20 }}
                   tabPosition="left"
                   defaultActiveKey="1"
+                  className="bg-white p-5 rounded"
                   items={items}
                 />
               </Content>

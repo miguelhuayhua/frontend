@@ -37,9 +37,12 @@ interface Props {
   citacion: Citacion;
   citados: Citado[];
   usuario: Usuario;
+  setCitaciones: any;
+  setCitacion: any;
 }
 
-export const DataContext4 = createContext({});
+
+
 
 const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
   const [open, setOpen] = useState(false);
@@ -52,7 +55,6 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
         centered
         style={{ textAlign: "center" }}
         open={props.open2}
-        width={"85%"}
         onCancel={() => {
           props.setOpen2(false);
         }}
@@ -62,7 +64,6 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
             onClick={() => {
               setOpen(true);
             }}
-            style={{ height: 45 }}
           >
             Vista previa documento
             <FaEye
@@ -89,17 +90,15 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                   if (res.data.status == 1) {
                     notification.success({ message: res.data.message });
                     pdf(
-                      <DataContext4.Provider
-                        value={{
-                          adulto: props.adulto,
-                          caso: props.caso,
-                          persona: props.persona,
-                          citacion: props.citacion,
-                          audiencia: audiencia,
-                        }}
-                      >
-                        <FormularioAudienciaSuspendida />
-                      </DataContext4.Provider>
+
+                      <FormularioAudienciaSuspendida
+                        adulto={props.adulto}
+                        caso={props.caso}
+                        persona={props.persona}
+                        citacion={props.citacion}
+                        audiencia={audiencia}
+
+                      />
                     )
                       .toBlob()
                       .then((blob) => {
@@ -119,6 +118,21 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                           message: "Formulario generado con éxito...",
                         });
                         props.setOpen2(false);
+                        axios
+                          .post<Citacion[]>(
+                            process.env.BACKEND_URL +
+                            "/caso/citacion/all",
+                            {
+                              id_caso: props.caso.id_caso
+                            }
+                          )
+                          .then((res) => {
+                            props.setCitaciones(res.data);
+                            props.setCitacion({
+                              ...props.citacion,
+                              size: res.data.length,
+                            });
+                          });
                       });
                   } else {
                     notification.error({ message: res.data.message });
@@ -126,7 +140,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                 });
             }}
           >
-            <Button onClick={() => { }} style={{ height: 45 }}>
+            <Button >
               Aceptar y Generar
               <AiOutlineFilePdf
                 style={{
@@ -141,14 +155,14 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
             onClick={() => {
               props.setOpen2(false);
             }}
-            style={{ height: 45 }}
+
           >
             Cancelar
           </Button>,
         ]}
       >
         <Row gutter={24}>
-          <Col span={24} lg={{ span: 12 }}>
+          <Col span={24} >
             <Form>
               <Row>
                 <Col span={24}>
@@ -190,24 +204,27 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
               </Row>
             </Form>
           </Col>
-          <Col span={12}>
+          <Col span={24}>
             <Card bordered={false} title={"Detalles de la suspensión"}>
               <Row>
                 <Col span={8}>
                   <p>
                     <b>Fecha Acordada: </b>
-                    {props.citacion.fecha_citacion}
+                    <br />
+                    {props.citacion.fecha_citacion ? props.citacion.fecha_citacion : null}
                   </p>
                 </Col>
                 <Col span={8}>
                   <p>
                     <b>Hora Acordada:</b>
+                    <br />
                     {props.citacion.hora_citacion}
                   </p>
                 </Col>
                 <Col span={8}>
                   <p>
                     <b>Inicio de caso: </b>
+                    <br />
                     {props.caso.fecha_registro}
                   </p>
                 </Col>
@@ -222,7 +239,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
                     }}
                   >
                     <h6>
-                      <b>Lista de citados</b>
+                      Lista de citados
                     </h6>
                   </div>
                 }
@@ -264,17 +281,14 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
         open={open}
       >
         <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
-          <DataContext4.Provider
-            value={{
-              adulto: props.adulto,
-              caso: props.caso,
-              persona: props.persona,
-              citacion: props.citacion,
-              audiencia: audiencia,
-            }}
-          >
-            <FormularioAudienciaSuspendida />
-          </DataContext4.Provider>
+          <FormularioAudienciaSuspendida
+            adulto={props.adulto}
+            caso={props.caso}
+            persona={props.persona}
+            citacion={props.citacion}
+            audiencia={audiencia}
+
+          />
         </PDFViewer>
       </Drawer>
     </>

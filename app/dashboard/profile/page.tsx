@@ -7,7 +7,6 @@ import {
   Col,
   Layout,
   Row,
-  Segmented,
   Tabs,
   TabsProps,
   Typography,
@@ -28,11 +27,10 @@ import { signOut, useSession } from "next-auth/react";
 import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import axios from "axios";
-import { AccesoUsuario, AccionesUsuario, dataAccionesUsuario } from "./data";
+import { AccesoUsuario, AccionesUsuario } from "./data";
 import SeguimientoCuenta from "./seguimiento-cuenta";
 import Perfil from "./perfil";
 import DatosPersonales from "./datos-personales";
-
 export default function Profile() {
   const { data } = useSession();
   const [usuario, setUsuario] = useState<Usuario>(dataUsuario);
@@ -44,7 +42,6 @@ export default function Profile() {
   const [displayAccionesUsuario, setDisplayAccionesUsuario] = useState<AccionesUsuario[]>([]);
   const [displayAccesosUsuario, setDisplayAccesosUsuario] = useState<AccesoUsuario[]>([]);
   const [file, setFile] = useState<any>(null);
-
   const [persona, setPersona] = useState<Persona>(dataPersona);
   useEffect(() => {
     if (data) {
@@ -90,6 +87,7 @@ export default function Profile() {
       label: "Datos Personales",
       children: (
         <DatosPersonales
+          usuario={usuario}
           setPersona={setPersona}
           persona={persona}
         ></DatosPersonales>
@@ -213,18 +211,24 @@ export default function Profile() {
                                             <>
                                               <Button
                                                 onClick={() => {
-                                                  signOut({ redirect: true });
+                                                  axios
+                                                  .post(process.env.BACKEND_URL + "/usuario/out", {
+                                                    id_usuario: usuario.id_usuario,
+                                                  })
+                                                  .then((res) => {
+                                                    if (res.data.status == 1) {
+                                                      signOut({ callbackUrl: "/", redirect: true });
+                                                    }
+                                                  });
                                                 }}
                                               >
                                                 Cerrar Sesión
                                               </Button>
                                             </>
                                           ),
-
                                         });
                                       }
                                     });
-
                                   onSuccess!(null);
                                 }, 2000);
                               }}
@@ -287,8 +291,15 @@ export default function Profile() {
                                             <>
                                               <Button
                                                 onClick={() => {
-                                                  signOut({ redirect: true });
-                                                }}
+                                                  axios
+                                                  .post(process.env.BACKEND_URL + "/usuario/out", {
+                                                    id_usuario: usuario.id_usuario,
+                                                  })
+                                                  .then((res) => {
+                                                    if (res.data.status == 1) {
+                                                      signOut({ callbackUrl: "/", redirect: true });
+                                                    }
+                                                  });                                                }}
                                               >
                                                 Cerrar Sesión
                                               </Button>
@@ -326,7 +337,7 @@ export default function Profile() {
                             <p>Horas dentro del sistema</p>
                             <span>
                               {accesosUsuario.horas
-                                ? accesosUsuario.horas.toFixed(2)
+                                ? (accesosUsuario.horas / 60 / 60).toFixed(2)
                                 : "0"}{" "}
                               HORAS
                             </span>
@@ -340,7 +351,6 @@ export default function Profile() {
                   <Col span={24}>
                     <Card className="mt-3">
                       <Tabs defaultActiveKey="1" items={items} />
-
                     </Card>
                   </Col>
                 </Row>

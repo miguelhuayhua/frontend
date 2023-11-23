@@ -15,7 +15,6 @@ import Image from "next/legacy/image";
 type MenuItem = Required<MenuProps>["items"][number];
 import MenuItem from "antd/es/menu/MenuItem";
 import {
-  BankOutlined,
   EyeOutlined,
   PlusOutlined,
   BarChartOutlined,
@@ -30,7 +29,6 @@ import Sider from "antd/es/layout/Sider";
 import { useSession } from "next-auth/react";
 import { dataUsuario } from "../usuarios/data";
 import { Persona, dataPersona } from "../personal/agregar/data";
-import axios from "axios";
 import Link from "next/link";
 const MenuSider: NextPage<Props> = (props) => {
   const router = useRouter();
@@ -56,225 +54,224 @@ const MenuSider: NextPage<Props> = (props) => {
         persona: Persona;
       };
       setUsuario({ ...usuario });
-
       setItems(
         persona.cargo == "1"
           ? [
-              {
-                key: "dashboard",
-                label: "Dashboard",
-                icon: <BarChartOutlined />,
-                onClick: () => {
-                  router.push("/dashboard");
+            {
+              key: "dashboard",
+              label: "Dashboard",
+              icon: <BarChartOutlined />,
+              onClick: () => {
+                router.push("/dashboard");
+              },
+            },
+            {
+              key: "caso1",
+              label: "Casos",
+              icon: <GiInjustice />,
+              children: [
+                {
+                  label: "Agregar Caso",
+                  key: "caso1.1",
+                  icon: <PlusOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/casos/nuevocaso");
+                  },
                 },
-              },
-              {
-                key: "caso1",
-                label: "Casos",
-                icon: <GiInjustice />,
-                children: [
-                  {
-                    label: "Agregar Caso",
-                    key: "caso1.1",
-                    icon: <PlusOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/casos/nuevocaso");
-                    },
+                {
+                  label: "Ver Casos",
+                  key: "caso1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/casos");
                   },
-                  {
-                    label: "Ver Casos",
-                    key: "caso1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/casos");
-                    },
-                  },
+                },
 
-                  {
-                    label: "Ver Denunciados",
-                    key: "caso1.4",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/denunciados");
-                    },
+                {
+                  label: "Ver Denunciados",
+                  key: "caso1.4",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/denunciados");
                   },
-                  {
-                    key: "caso1.5",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/casos/reportes");
-                    },
+                },
+                {
+                  key: "caso1.5",
+                  label: "Reportes",
+                  icon: <TbReportAnalytics />,
+                  onClick: () => {
+                    router.push("/dashboard/casos/reportes");
                   },
-                ],
-              },
-              {
-                label: "Personas Adultas",
-                key: "adultos1",
-                icon: <MdElderly></MdElderly>,
-                children: [
-                  {
-                    label: "Ver Adultos",
-                    key: "adultos1.1",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/adultos");
-                    },
-                  },
-                  {
-                    label: "Ver Hijos",
-                    key: "adultos1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/hijos");
-                    },
-                  },
-                  {
-                    key: "adultos1.3",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/adultos/reportes");
-                    },
-                  },
-                ],
-              },
+                },
+              ],
+            },
 
-              {
-                key: "personal",
-                label: "Personal",
-                icon: <TeamOutlined />,
-                children: [
-                  {
-                    label: "Registrar Personal",
-                    key: "personal1.1",
-                    icon: <UsergroupAddOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/personal/agregar");
-                    },
+            {
+              label: "Personas Adultas",
+              key: "adultos1",
+              icon: <MdElderly></MdElderly>,
+              children: [
+                {
+                  label: "Ver Adultos",
+                  key: "adultos1.1",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/adultos");
                   },
-                  {
-                    label: "Ver Personal",
-                    key: "personal1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/personal");
-                    },
-                  }
-            
-                ],
-              },
-              {
-                label: "Usuarios",
-                key: "usuario1",
-                icon: <UserOutlined />,
-                children: [
-                  {
-                    label: "Registrar Usuario",
-                    key: "usuario1.1",
-                    icon: <UserAddOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/usuarios/agregar");
-                    },
+                },
+                {
+                  label: "Ver Hijos",
+                  key: "adultos1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/hijos");
                   },
-                  {
-                    label: "Ver Usuarios",
-                    key: "usuario1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/usuarios");
-                    },
+                },
+                {
+                  key: "adultos1.3",
+                  label: "Reportes",
+                  icon: <TbReportAnalytics />,
+                  onClick: () => {
+                    router.push("/dashboard/adultos/reportes");
                   },
-                 
-                ],
-              },
-            ]
+                },
+              ],
+            },
+
+            {
+              key: "personal",
+              label: "Personal",
+              icon: <TeamOutlined />,
+              children: [
+                {
+                  label: "Registrar Personal",
+                  key: "personal1.1",
+                  icon: <UsergroupAddOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/personal/agregar");
+                  },
+                },
+                {
+                  label: "Ver Personal",
+                  key: "personal1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/personal");
+                  },
+                }
+              ],
+            },
+            {
+              label: "Usuarios",
+              key: "usuario1",
+              icon: <UserOutlined />,
+              children: [
+                {
+                  label: "Registrar Usuario",
+                  key: "usuario1.1",
+                  icon: <UserAddOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/usuarios/agregar");
+                  },
+                },
+                {
+                  label: "Ver Usuarios",
+                  key: "usuario1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/usuarios");
+                  },
+                },
+
+              ],
+            },
+          ]
           : [
-              {
-                key: "dashboard",
-                label: "Dashboard",
-                icon: <BarChartOutlined />,
-                onClick: () => {
-                  router.push("/dashboard");
+            {
+              key: "dashboard",
+              label: "Dashboard",
+              icon: <BarChartOutlined />,
+              onClick: () => {
+                router.push("/dashboard");
+              },
+            },
+            {
+              key: "caso1",
+              label: "Casos",
+              icon: <GiInjustice />,
+              children: [
+                {
+                  label: "Agregar Caso",
+                  key: "caso1.1",
+                  disabled: persona.cargo == "3",
+                  icon: <PlusOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/casos/nuevocaso");
+                  },
                 },
-              },
-              {
-                key: "caso1",
-                label: "Casos",
-                icon: <GiInjustice />,
-                children: [
-                  {
-                    label: "Agregar Caso",
-                    key: "caso1.1",
-                    icon: <PlusOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/casos/nuevocaso");
-                    },
+                {
+                  label: "Ver Casos",
+                  key: "caso1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/casos");
                   },
-                  {
-                    label: "Ver Casos",
-                    key: "caso1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/casos");
-                    },
-                  },
+                },
 
-                  {
-                    label: "Ver Denunciados",
-                    key: "caso1.4",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/denunciados");
-                    },
+                {
+                  label: "Ver Denunciados",
+                  key: "caso1.4",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/denunciados");
                   },
-                  {
-                    key: "caso1.5",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/caso/reportes");
-                    },
+                },
+                {
+                  key: "caso1.5",
+                  label: "Reportes",
+                  icon: <TbReportAnalytics />,
+                  onClick: () => {
+                    router.push("/dashboard/casos/reportes");
                   },
-                ],
-              },
-              {
-                label: "Personas Adultas",
-                key: "adultos1",
-                icon: <MdElderly></MdElderly>,
-                children: [
-                  {
-                    label: "Ver Adultos",
-                    key: "adultos1.1",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/adultos");
-                    },
+                },
+              ],
+            },
+            {
+              label: "Personas Adultas",
+              key: "adultos1",
+              icon: <MdElderly></MdElderly>,
+              children: [
+                {
+                  label: "Ver Adultos",
+                  key: "adultos1.1",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/adultos");
                   },
-                  {
-                    label: "Ver Hijos",
-                    key: "adultos1.2",
-                    icon: <EyeOutlined />,
-                    onClick: () => {
-                      router.push("/dashboard/hijos");
-                    },
+                },
+                {
+                  label: "Ver Hijos",
+                  key: "adultos1.2",
+                  icon: <EyeOutlined />,
+                  onClick: () => {
+                    router.push("/dashboard/hijos");
                   },
-                  {
-                    key: "adultos1.3",
-                    label: "Reportes",
-                    icon: <TbReportAnalytics />,
-                    onClick: () => {
-                      router.push("/dashboard/adultos/reportes");
-                    },
+                },
+                {
+                  key: "adultos1.3",
+                  label: "Reportes",
+                  icon: <TbReportAnalytics />,
+                  onClick: () => {
+                    router.push("/dashboard/adultos/reportes");
                   },
-                ],
-              },
-            ]
+                },
+              ],
+            },
+          ]
       );
     }
   }, [data]);
   const [collapsed, setCollapsed] = useState(false);
-
   return (
     <>
       <Affix>

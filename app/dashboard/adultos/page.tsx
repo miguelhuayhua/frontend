@@ -13,11 +13,9 @@ import Navbar from "../components/Navbar";
 import Informacion from "./components/informacion";
 import "./estilos.scss";
 import Link from "next/link";
+
 export default function NuevoCaso() {
-  const router = useRouter();
-
   //cargado de casos desde la API
-
   return (
     <main>
       <Layout>
@@ -72,3 +70,4 @@ export default function NuevoCaso() {
     </main>
   );
 }
+

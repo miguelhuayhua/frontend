@@ -2,6 +2,7 @@
 import {
   AutoComplete,
   Button,
+  Cascader,
   Col,
   DatePicker,
   Divider,
@@ -14,6 +15,7 @@ import {
   Radio,
   Row,
   Select,
+  Space,
   Tag,
   TimePicker,
   message,
@@ -25,6 +27,7 @@ import {
   DatosDenuncia,
   DatosDenunciado,
   DatosUbicacion,
+  capitalize,
   dataDatosDenuncia,
   dataDatosDenunciado,
   dataDatosGenerales,
@@ -32,11 +35,11 @@ import {
   departamentos,
   dias,
   meses,
+  options,
 } from "../data";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import locale from "antd/es/date-picker/locale/es_ES";
 import moment, { now } from "moment";
 import FormItem from "antd/es/form/FormItem";
 import { NextPage } from "next";
@@ -46,7 +49,6 @@ interface Props {
   getDatos: any;
   getPosicion: any;
 }
-
 const Formulario: NextPage<Props> = (props) => {
   //cargado de datos
   const [nombres, setNombres] = useState<{
@@ -63,12 +65,37 @@ const Formulario: NextPage<Props> = (props) => {
     notification.success({
       message: "Si no existe una observación alguna, puede guardarlo.",
     });
+    let adulto = datosGenerales;
+    let denunciado = datosDenunciado;
+    let nombreAdulto = "";
+    adulto.nombre.split(" ").forEach(value => {
+      nombreAdulto = nombreAdulto + " " + capitalize(value.trim());
+    });
+    adulto.nombre = nombreAdulto;
+    adulto.paterno = capitalize(adulto.paterno);
+    let hijos = adulto.hijos.map(hijo => {
+      let convertido = "";
+      hijo.split(' ').forEach(value => {
+        convertido = convertido + " " + capitalize(value.trim());
+      });
+      return convertido.trim();
+    });
+    adulto.materno = capitalize(adulto.materno);
+    adulto.hijos = hijos;
+    adulto.ocupacion = capitalize(adulto.ocupacion);
+    let nombreDenunciado = "";
+    denunciado.nombres.split(" ").forEach(value => {
+      nombreDenunciado = nombreDenunciado + " " + capitalize(value.trim());
+    });
+    denunciado.nombres = nombreDenunciado;
+    denunciado.paterno = capitalize(denunciado.paterno);
+    denunciado.materno = capitalize(denunciado.materno);
     props.getDatos({
-      datosGenerales,
+      datosGenerales: adulto,
       datosUbicacion,
-      datosDenunciado,
-      descripcionHechos,
-      descripcionPeticion,
+      datosDenunciado: denunciado,
+      descripcionHechos: descripcionHechos && descripcionHechos != "" ? descripcionHechos[0].toUpperCase() + descripcionHechos.substring(1, descripcionHechos.length) : "",
+      descripcionPeticion: descripcionPeticion && descripcionPeticion != "" ? descripcionPeticion[0].toUpperCase() + descripcionPeticion.substring(1, descripcionPeticion.length) : "",
       accionRealizada,
       datosDenuncia,
     });
@@ -95,11 +122,9 @@ const Formulario: NextPage<Props> = (props) => {
   const [hijosValue, setHijosValue] = useState("");
   const [itemHijos, setItemHijos] = useState<string[]>([]);
   const [inputVisible, setInputVisible] = useState(false);
-
   const showInput = () => {
     setInputVisible(true);
   };
-
   useEffect(() => {
     axios.get(process.env.BACKEND_URL + "/adulto/npmunicos").then((res) => {
       let data = res.data as {
@@ -173,7 +198,6 @@ const Formulario: NextPage<Props> = (props) => {
   const handleHijosChange = (e: ChangeEvent<HTMLInputElement>) => {
     setHijosValue(e.target.value);
   };
-
   const handleClose = (removedHijo: string) => {
     const newTags = itemHijos.filter((hijo) => hijo !== removedHijo);
     setItemHijos(newTags);
@@ -300,8 +324,12 @@ const Formulario: NextPage<Props> = (props) => {
     setDatosDenunciado({ ...datosDenunciado, parentezco: value });
   };
 
-  const handleAcciones = (value: any) => {
-    setAccionRealizada(value);
+  const handleAcciones = (value: string[]) => {
+    let accion = "";
+    value.forEach((str) => {
+      accion = accion + "/" + str;
+    });
+    setAccionRealizada(accion.substring(1, accion.length));
   };
   const handleTipologia = (value: any) => {
     setDatosDenuncia({
@@ -310,33 +338,26 @@ const Formulario: NextPage<Props> = (props) => {
     });
   };
 
+
   return (
     <>
-      <h2 style={{ fontWeight: "bold", color: "#064450" }}>
-        FORMULARIO DE REGISTRO DE ATENCIÓN
-      </h2>
-      <Row gutter={[24, 24]}>
-        <Col span={24} offset={0} md={{ span: 20, offset: 2 }}>
+      <Row gutter={[24, 24]} >
+        <Col span={24} offset={0} xl={{ span: 16, offset: 4 }} className="bg-white p-5 pt-2 mt-4 rounded">
+          <h2 className="my-5">
+            FORMULARIO DE REGISTRO DE ATENCIÓN
+          </h2>
           <Form onFinish={handleOpenChange} layout="horizontal">
             <Row gutter={[24, 24]}>
-              <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
+              <Col span={24} lg={{ span: 10, offset: 2 }} >
                 <Form.Item label={"Fecha de Registro"}>
                   <DatePicker
                     className="normal-input"
                     disabled
-                    locale={{
-                      ...locale,
-                      lang: {
-                        ...locale.lang,
-                        shortWeekDays: dias,
-                        shortMonths: meses,
-                      },
-                    }}
                     value={dayjs(dataDatosDenuncia.fecha_registro)}
                   ></DatePicker>
                 </Form.Item>
               </Col>
-              <Col span={24} lg={{ span: 12 }} xxl={{ span: 6 }}>
+              <Col span={24} lg={{ span: 10 }}>
                 <FormItem label="Hora de registro:">
                   <TimePicker
                     className="normal-input"
@@ -345,7 +366,7 @@ const Formulario: NextPage<Props> = (props) => {
                   />
                 </FormItem>
               </Col>
-              <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
+              <Col span={24} lg={{ span: 10, offset: 2 }} >
                 <Form.Item label="Tipología:">
                   <Select
                     defaultValue={dataDatosDenuncia.tipologia}
@@ -370,10 +391,10 @@ const Formulario: NextPage<Props> = (props) => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12} md={{ span: 12 }} xl={{ span: 6 }}>
+              <Col span={24} lg={{ span: 10 }} >
                 <Form.Item label="N° de Caso:">
                   <Input
-                    className="small-input"
+                    className="w-100"
                     suffix={"/2023"}
                     disabled
                     value={datosDenuncia.nro_caso}
@@ -381,102 +402,12 @@ const Formulario: NextPage<Props> = (props) => {
                 </Form.Item>
               </Col>
             </Row>
-            <div className="border position-relative rounded p-4">
-              <p className="titulo-form">
-                1. Datos Generales de la persona adulta mayor
-              </p>
-              <Row gutter={[12, 12]}>
-                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item
-                    name={"nombres"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Por favor introduzca el nombre del adulto ",
-                      },
-                    ]}
-                    label="Nombres:"
-                  >
-                    <AutoComplete
-                      options={nombres.nombres}
-                      onChange={handleNombre}
-                      placeholder="Introduzca el nombre..."
-                      className="normal-input"
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item label="Apellido Paterno:">
-                    <AutoComplete
-                      options={nombres.apellidos}
-                      onChange={handlePaterno}
-                      placeholder="Introduzca su apellido paterno..."
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} xl={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item label="Apellido Materno:">
-                    <AutoComplete
-                      onChange={handleMaterno}
-                      options={nombres.apellidos}
-                      placeholder="Introduzca su apellido materno..."
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 16 }} xl={{ span: 8 }}>
-                  <Form.Item label={"Fecha de Nacimiento:"}>
-                    <DatePicker
-                      defaultValue={dayjs(datosGenerales.f_nacimiento)}
-                      placeholder="Ingrese su fecha de Nacimiento"
-                      className="normal-input"
-                      locale={{
-                        ...locale,
-                        lang: {
-                          ...locale.lang,
-                          shortWeekDays: dias,
-                          shortMonths: meses,
-                        },
-                      }}
-                      onChange={handleNacimiento}
-                    ></DatePicker>
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item
-                    label="Edad"
-                    rules={[
-                      {
-                        min: 60,
-                        message: "No puede tener una edad menor a 60...",
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      className="normal-input"
-                      min={60}
-                      disabled
-                      value={datosGenerales.edad}
-                      name="Edad"
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={18} md={{ span: 12 }} xl={{ span: 4 }}>
+            <Divider style={{ fontSize: 15 }} orientation="left">
+              DATOS DEL ADULTO MAYOR
+            </Divider>
+            <Row gutter={[12, 12]}>
+              <Col span={24} lg={{ span: 12, offset: 2 }} >
+                <Space.Compact>
                   <Form.Item
                     label="N° de C.I."
                     name={"ci"}
@@ -488,386 +419,558 @@ const Formulario: NextPage<Props> = (props) => {
                     ]}
                   >
                     <InputNumber
-                      minLength={7}
-                      className="normal-input"
+                      minLength={5}
+                      className="w-100"
+                      placeholder="Introduzca el Nro. de C.I."
                       onChange={handleCI}
-                      name={"ci"}
+                      min={0}
                     />
                   </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item label="Expedido: ">
-                    <Select
-                      value={datosGenerales.expedido}
+                  <Form.Item
+                    name={"complemento"}
+                  >
+                    <Input
+                      className="w-100"
+                      placeholder="Complemento (Opcional)"
                       onChange={(ev) => {
-                        setDatosGenerales({ ...datosGenerales, expedido: ev });
+                        setDatosGenerales({ ...datosGenerales, complemento: ev.target.value })
                       }}
-                      options={departamentos}
-                    ></Select>
-                  </Form.Item>
-                </Col>
-                <Col span={10} md={{ span: 12 }} xl={{ span: 6 }}>
-                  <Form.Item label="Género:">
-                    <Radio.Group
-                      defaultValue={"Femenino"}
-                      className="normal-input"
-                      onChange={handlegenero}
-                    >
-                      <Radio value="Femenino"> Femenino </Radio>
-                      <Radio value="Masculino"> Masculino </Radio>
-                    </Radio.Group>
-                  </Form.Item>
-                </Col>
-
-                <Col span={12} xl={{ span: 6 }}>
-                  <Form.Item className="normal-input" label="Estado Civil:">
-                    <Select defaultValue={"Viudo"} onChange={handleEstadoCivil}>
-                      <Select.Option value="Soltero(a)">
-                        Soltero(a)
-                      </Select.Option>
-                      <Select.Option value="Casado(a)">Casado(a)</Select.Option>
-                      <Select.Option value="Concubino(a)">
-                        Concubino(a)
-                      </Select.Option>
-                      <Select.Option value="Divorciado(a)">
-                        Divorciado(a)
-                      </Select.Option>
-                      <Select.Option value="Viudo(a)">Viudo(a)</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 12 }}>
-                  <Form.Item
-                    label="N° de Referencia:"
-                    name={"referencia"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte un número de referencia",
-                      },
-                    ]}
-                  >
-                    <InputNumber
-                      onChange={handleReferencia}
-                      minLength={8}
-                      className="normal-input"
                     />
                   </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Divider style={{ fontSize: 12 }} orientation="left">
-                    HIJOS DEL ADULTO MAYOR
-                  </Divider>
-                  <Form.Item
+                </Space.Compact>
+              </Col>
+              <Col span={24} lg={{ span: 8, offset: 0 }}>
+                <Form.Item label="Expedido: ">
+                  <Select
+                    value={datosGenerales.expedido}
+                    onChange={(ev) => {
+                      setDatosGenerales({ ...datosGenerales, expedido: ev });
+                    }}
+                    options={departamentos}
+                  ></Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  name={"nombres"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor introduzca el nombre del adulto ",
+                    },
+                  ]}
+                  label="Nombres:"
+                >
+                  <AutoComplete
+                    options={nombres.nombres}
+                    onChange={handleNombre}
+                    placeholder="Introduzca el nombre del adulto mayor..."
+                    className="normal-input"
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item label="Apellido Paterno:">
+                  <AutoComplete
+                    options={nombres.apellidos}
+                    onChange={handlePaterno}
+                    placeholder="Introduzca su apellido paterno..."
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item label="Apellido Materno:">
+                  <AutoComplete
+                    onChange={handleMaterno}
+                    options={nombres.apellidos}
+                    placeholder="Introduzca su apellido materno..."
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 12, offset: 2 }}>
+                <Form.Item label={"Fecha de Nacimiento:"}>
+                  <DatePicker
+                    defaultValue={dayjs(datosGenerales.f_nacimiento)}
+                    placeholder="Ingrese su fecha de Nacimiento"
+                    className="normal-input"
+                    locale={
+                      {
+
+                        "lang": {
+                          "placeholder": "Seleccionar fecha",
+                          "rangePlaceholder": [
+                            "Fecha inicial",
+                            "Fecha final"
+                          ],
+                          shortMonths: meses,
+                          shortWeekDays: dias,
+                          "locale": "es_ES",
+                          "today": "Hoy",
+                          "now": "Ahora",
+                          "backToToday": "Volver a hoy",
+                          "ok": "Aceptar",
+                          "clear": "Limpiar",
+                          "month": "Mes",
+                          "year": "Año",
+                          "timeSelect": "Seleccionar hora",
+                          "dateSelect": "Seleccionar fecha",
+                          "monthSelect": "Elegir un mes",
+                          "yearSelect": "Elegir un año",
+                          "decadeSelect": "Elegir una década",
+                          "yearFormat": "YYYY",
+                          "dateFormat": "D/M/YYYY",
+                          "dayFormat": "D",
+                          "dateTimeFormat": "D/M/YYYY HH:mm:ss",
+                          "monthBeforeYear": true,
+                          "previousMonth": "Mes anterior (PageUp)",
+                          "nextMonth": "Mes siguiente (PageDown)",
+                          "previousYear": "Año anterior (Control + left)",
+                          "nextYear": "Año siguiente (Control + right)",
+                          "previousDecade": "Década anterior",
+                          "nextDecade": "Década siguiente",
+                          "previousCentury": "Siglo anterior",
+                          "nextCentury": "Siglo siguiente",
+                        },
+                        "timePickerLocale": {
+                          "placeholder": "Seleccionar hora"
+                        }
+                      }
+                    }
+                    onChange={handleNacimiento}
+                  ></DatePicker>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 8 }}>
+                <Form.Item
+                  label="Edad"
+                  rules={[
+                    {
+                      min: 60,
+                      message: "No puede tener una edad menor a 60...",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    className="normal-input"
+                    min={60}
+                    disabled
+                    value={datosGenerales.edad}
+                    name="Edad"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 10, offset: 2 }} >
+                <Form.Item label="Género:">
+                  <Radio.Group
+                    defaultValue={"Femenino"}
+                    className="normal-input"
+                    onChange={handlegenero}
+                  >
+                    <Radio value="Femenino"> Femenino </Radio>
+                    <Radio value="Masculino"> Masculino </Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </Col>
+
+              <Col span={24} lg={{ span: 10 }}>
+                <Form.Item className="normal-input" label="Estado Civil:">
+                  <Select defaultValue={"Viudo"} onChange={handleEstadoCivil}>
+                    <Select.Option value="Soltero(a)">
+                      Soltero(a)
+                    </Select.Option>
+                    <Select.Option value="Casado(a)">Casado(a)</Select.Option>
+                    <Select.Option value="Concubino(a)">
+                      Concubino(a)
+                    </Select.Option>
+                    <Select.Option value="Divorciado(a)">
+                      Divorciado(a)
+                    </Select.Option>
+                    <Select.Option value="Viudo(a)">Viudo(a)</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  label="N° de Referencia/Celular:"
+                  name={"referencia"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte un número de referencia",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    onChange={handleReferencia}
+                    placeholder="Introduzca el Nro. de referencia"
+                    minLength={8}
+                    className="normal-input"
+                  />
+                </Form.Item>
+              </Col>
+              <Divider style={{ fontSize: 15 }} orientation="left">
+                HIJOS DEL ADULTO MAYOR
+              </Divider>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  className="mt-3"
+                >
+                  {itemHijos.map(forMap)}
+                  <Button onClick={showInput} className="tagPlus btn">
+                    <PlusOutlined /> Nuevo(a) Hijo(a)
+                  </Button>
+                  <Input
+                    onChange={handleHijosChange}
+                    ref={inputRef}
+                    hidden={!inputVisible}
+                    placeholder="Introduzca el nombre y apellido del hijo"
+                    onBlur={handleHijosConfirm}
+                    onPressEnter={handleHijosConfirm}
+                  />
+                </Form.Item>
+              </Col>
+              <Divider style={{ fontSize: 15 }} orientation="left">
+                DATOS CATEGÓRICOS
+              </Divider>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  className="normal-input"
+                  label="Grado de Instrucción:"
+                >
+                  <Select
+                    onChange={handleInstruccion}
+                    defaultValue={"Primaria"}
+                  >
+                    <Select.Option value="Primaria">Primaria</Select.Option>
+                    <Select.Option value="Secundaria">
+                      Secundaria
+                    </Select.Option>
+                    <Select.Option value="Tecnico">Técnico</Select.Option>
+                    <Select.Option value="Universitario">
+                      Universitario
+                    </Select.Option>
+                    <Select.Option value="S/Inst.">
+                      Sin Instrucción
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  className="normal-input"
+                  label="Ocupación:"
+                  name={"ocupacion"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte la ocupacion...",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Introduzca la ocupación del adulto mayor" onChange={handleOcupacion} />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item className="normal-input" label="Beneficios:">
+                  <Select
+                    onChange={handleBeneficios}
+                    value={datosGenerales.beneficios}
+                  >
+                    <Select.Option value="Renta Dignidad">
+                      Renta Dignidad
+                    </Select.Option>
+                    <Select.Option value="Jubilado">Jubilado</Select.Option>
+                    <Select.Option value="Ninguno">Ninguno</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Divider style={{ fontSize: 15 }} orientation="left">
+                DATOS DE DOMICILIO
+              </Divider>
+              <Col span={24} lg={{ span: 10, offset: 2 }} >
+                <Form.Item
+                  className="normal-input"
+                  label="Tipo de domicilio:"
+                >
+                  <Select
+                    value={datosUbicacion.tipo_domicilio}
+                    onChange={handleTipoDomicilio}
+                  >
+                    <Select.Option value="Propio">Propio</Select.Option>
+                    <Select.Option value="Alquilado">Alquilado</Select.Option>
+                    <Select.Option value="Anticretico">
+                      Anticrético
+                    </Select.Option>
+                    <Select.Option value="Cedido">Cedido</Select.Option>
+                    <Select.Option value="Otro">Otro</Select.Option>
+                  </Select>
+                  <Input
+                    hidden={datosUbicacion.tipo_domicilio != "Otro"}
+                    placeholder="Especifique"
                     className="normal-input mt-3"
-                    label="Hijos del adulto mayor"
-                  >
-                    {itemHijos.map(forMap)}
-                    <Button onClick={showInput} className="tagPlus btn">
-                      <PlusOutlined /> Nuevo(a) Hijo(a)
-                    </Button>
-
-                    <Input
-                      onChange={handleHijosChange}
-                      className="normal-input"
-                      ref={inputRef}
-                      hidden={!inputVisible}
-                      onBlur={handleHijosConfirm}
-                      onPressEnter={handleHijosConfirm}
-                    />
-                  </Form.Item>
-                  <hr className="mb-3" />
-                </Col>
-                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
-                  <Form.Item
-                    className="normal-input"
-                    label="Grado de Instrucción:"
-                  >
-                    <Select
-                      onChange={handleInstruccion}
-                      defaultValue={"Primaria"}
-                    >
-                      <Select.Option value="Primaria">Primaria</Select.Option>
-                      <Select.Option value="Secundaria">
-                        Secundaria
-                      </Select.Option>
-                      <Select.Option value="Tecnico">Técnico</Select.Option>
-                      <Select.Option value="Universitario">
-                        Universitario
-                      </Select.Option>
-                      <Select.Option value="S/Inst.">
-                        Sin Instrucción
-                      </Select.Option>
+                    onChange={handleOtroDomicilio}
+                  />
+                </Form.Item>
+              </Col>
+              {datosUbicacion.area == "Otro" ||
+                datosUbicacion.area == "Rural" ? null : (
+                <Col span={24} lg={{ span: 10 }}>
+                  <Form.Item className="normal-input" label="Distrito:">
+                    <Select defaultValue={1} onChange={handleDistrito}>
+                      {Array.from({ length: 14 }, (_, i) => i + 1).map(
+                        (value) => (
+                          <Select.Option key={value} value={value}>
+                            {value}
+                          </Select.Option>
+                        )
+                      )}
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
-                  <Form.Item
+              )}
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  label="Zona:"
+                  name={"zona"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte el nombre de la zona...",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Introduzca la zona del adulto mayor" className="normal-input" onChange={handleZona} />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  label="Calle o Av.:"
+                  name={"calle"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte el nombre de la calle...",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Introduzca el nombre de la calle" className="normal-input" onChange={handleCalle} />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 10, offset: 2 }}>
+                <Form.Item
+                  label="N° de Vivienda:"
+                  name={"vivienda"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte el número de la vivienda...",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    onChange={handleNroVivienda}
+                    className="w-100"
+                    placeholder="Introduzca el Nro. de vivienda"
+                    min={1}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 10 }}>
+                <Form.Item className="normal-input" label="Área:">
+                  <Select
+                    defaultValue={datosUbicacion.area}
+                    onChange={handleArea}
+                  >
+                    <Select.Option value="Urbano">Urbano</Select.Option>
+                    <Select.Option value="Rural">Rural</Select.Option>
+                    <Select.Option value="Otro">Otro Municipio</Select.Option>
+                  </Select>
+                  <Input
+                    hidden={datosUbicacion.area != "Otro"}
+                    placeholder="Especifique"
+                    className="normal-input mt-3"
+                    onChange={handleOtraArea}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Divider style={{ fontSize: 15 }} orientation="left">
+              {"DESCRIPCIÓN DE LOS HECHOS (testimonio del adulto mayor)"}
+            </Divider>
+            <Row>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item className="w-100">
+                  <TextArea
+                    placeholder="Introduzca los hechos"
+                    style={{ maxHeight: 200, height: 100, minHeight: 100 }}
+                    onChange={handleDescripcion}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Divider style={{ fontSize: 15 }} orientation="left">
+              PETICIÓN DEL ADULTO MAYOR
+            </Divider>
+            <Row>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item className="w-100">
+                  <TextArea
+                    placeholder="Introduzca la petición"
+                    style={{ maxHeight: 200, height: 100, minHeight: 100 }}
+                    onChange={handlePeticion}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Divider style={{ fontSize: 15 }} orientation="left">
+              DATOS DEL DENUNCIADO
+            </Divider>
+            <Row gutter={[24, 24]}>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  label="Nombres:"
+                  name={"nombred"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Inserte el nombre del denunciado...",
+                    },
+                  ]}
+                >
+                  <AutoComplete
+                    options={nombres.nombres}
+                    onChange={handleNombreDenunciado}
+                    placeholder="Introduzca el nombre..."
                     className="normal-input"
-                    label="Ocupación:"
-                    name={"ocupacion"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte la ocupacion...",
-                      },
-                    ]}
-                  >
-                    <Input onChange={handleOcupacion} />
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
-                  <Form.Item className="normal-input" label="Beneficios:">
-                    <Select
-                      onChange={handleBeneficios}
-                      defaultValue={"Ninguno"}
-                    >
-                      <Select.Option value="Renta Dignidad">
-                        Renta Dignidad
-                      </Select.Option>
-                      <Select.Option value="Jubilado">Jubilado</Select.Option>
-                      <Select.Option value="Ninguno">Ninguno</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={24} md={{ span: 14 }} xl={{ span: 8 }}>
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item label="Apellido Paterno:">
+                  <AutoComplete
+                    options={nombres.apellidos}
+                    onChange={handlePaternoDenunciado}
+                    placeholder="Introduzca su apellido paterno..."
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }} >
+                <Form.Item label="Apellido Materno:">
+                  <AutoComplete
+                    options={nombres.apellidos}
+                    onChange={handleMaternoDenunciado}
+                    placeholder="Introduzca su apellido materno..."
+                    filterOption={(inputValue, option) =>
+                      option!.value
+                        .toUpperCase()
+                        .indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item
+                  className="normal-input"
+                  label="Parentezco con el adulto mayor:"
+                >
+                  <Cascader defaultValue={['1grado', 'hijos', 'hijo']} options={options} onChange={(ev: any) => {
+                    setDatosDenunciado({ ...datosDenunciado, parentezco: ev[ev.length - 1].toString() })
+                  }} />
+                </Form.Item>
+              </Col>
+              <Col span={24} lg={{ span: 12, offset: 2 }}>
+                <Space.Compact>
                   <Form.Item
-                    className="normal-input"
-                    label="Tipo de domicilio:"
-                  >
-                    <Select
-                      defaultValue={"Propio"}
-                      onChange={handleTipoDomicilio}
-                    >
-                      <Select.Option value="Propio">Propio</Select.Option>
-                      <Select.Option value="Alquilado">Alquilado</Select.Option>
-                      <Select.Option value="Anticretico">
-                        Anticrético
-                      </Select.Option>
-                      <Select.Option value="Cedido">Cedido</Select.Option>
-                      <Select.Option value="Otro">Otro</Select.Option>
-                    </Select>
-                    <Input
-                      hidden={datosUbicacion.tipo_domicilio != "Otro"}
-                      placeholder="Especifique"
-                      className="normal-input mt-3"
-                      onChange={handleOtroDomicilio}
-                    />
-                  </Form.Item>
-                </Col>
-                {datosUbicacion.area == "Otro" ||
-                  datosUbicacion.area == "Rural" ? null : (
-                  <Col span={24} md={{ span: 10 }} xl={{ span: 4 }}>
-                    <Form.Item className="normal-input" label="Distrito:">
-                      <Select defaultValue={1} onChange={handleDistrito}>
-                        {Array.from({ length: 14 }, (_, i) => i + 1).map(
-                          (value) => (
-                            <Select.Option key={value} value={value}>
-                              {value}
-                            </Select.Option>
-                          )
-                        )}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                )}
-                <Col span={24} xl={{ span: 12 }}>
-                  <Form.Item
-                    label="Zona:"
-                    name={"zona"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte el nombre de la zona...",
-                      },
-                    ]}
-                  >
-                    <Input className="normal-input" onChange={handleZona} />
-                  </Form.Item>
-                </Col>
-                <Col span={24} xl={{ span: 12 }}>
-                  <Form.Item
-                    label="Calle o Av.:"
-                    name={"calle"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte el nombre de la calle...",
-                      },
-                    ]}
-                  >
-                    <Input className="normal-input" onChange={handleCalle} />
-                  </Form.Item>
-                </Col>
-                <Col span={24} md={{ span: 10 }} xl={{ span: 6 }}>
-                  <Form.Item
-                    label="N° de vivienda:"
-                    name={"vivienda"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte el número de la vivienda...",
-                      },
-                    ]}
+                    label="N° de C.I."
+                    name={"ci_d"}
                   >
                     <InputNumber
-                      onChange={handleNroVivienda}
-                      className="normal-input"
-                      min={1}
+                      minLength={5}
+                      className="w-100"
+                      placeholder="Introduzca el Nro. de C.I. (denunciado)"
+                      onChange={(ev) => {
+                        setDatosDenunciado({ ...datosDenunciado, ci: ev?.toString() })
+                      }}
+                      min={0}
                     />
                   </Form.Item>
-                </Col>
-                <Col span={24} md={{ span: 14 }} xl={{ span: 6 }}>
-                  <Form.Item className="normal-input" label="Área:">
-                    <Select
-                      defaultValue={datosUbicacion.area}
-                      onChange={handleArea}
-                    >
-                      <Select.Option value="Urbano">Urbano</Select.Option>
-                      <Select.Option value="Rural">Rural</Select.Option>
-                      <Select.Option value="Otro">Otro Municipio</Select.Option>
-                    </Select>
+                  <Form.Item
+                    name={"complemento_d"}
+                  >
                     <Input
-                      hidden={datosUbicacion.area != "Otro"}
-                      placeholder="Especifique"
-                      className="normal-input mt-3"
-                      onChange={handleOtraArea}
+                      className="w-100"
+                      placeholder="Complemento (Opcional)"
+                      onChange={(ev) => {
+                        setDatosDenunciado({ ...datosDenunciado, complemento: ev.target.value })
+                      }}
                     />
                   </Form.Item>
-                </Col>
-              </Row>
-            </div>
-            <div className="border position-relative rounded p-4 mt-4">
-              <p className="titulo-form">2. Descripcion de los hechos</p>
-              <Row>
-                <Col span={24}>
-                  <Form.Item className="w-100">
-                    <TextArea
-                      style={{ maxHeight: 200, height: 150, minHeight: 150 }}
-                      onChange={handleDescripcion}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-            <div className="border position-relative rounded p-4 mt-4">
-              <p className="titulo-form">
-                3. Petición de la persona adulta mayor
-              </p>
-              <Row>
-                <Col span={24}>
-                  <Form.Item className="w-100">
-                    <TextArea
-                      style={{ maxHeight: 200, height: 150, minHeight: 150 }}
-                      onChange={handlePeticion}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-            <div className="border position-relative rounded p-4 mt-4">
-              <p className="titulo-form">4. Datos personales del denunciado</p>
-              <Row gutter={[24, 24]}>
-                <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item
-                    label="Nombres:"
-                    name={"nombred"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Inserte el nombre del denunciado...",
-                      },
-                    ]}
+                </Space.Compact>
+              </Col>
+              <Col span={24} lg={{ span: 8, offset: 0 }}>
+                <Form.Item label="Expedido: ">
+                  <Select
+                    value={datosDenunciado.expedido}
+                    onChange={(ev) => {
+                      setDatosDenunciado({ ...datosDenunciado, expedido: ev });
+                    }}
+                    options={departamentos}
+                  ></Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Divider style={{ fontSize: 15 }} orientation="left">
+              ACCIONES REALIZADAS
+            </Divider>
+            <Row>
+              <Col span={24} lg={{ span: 20, offset: 2 }}>
+                <Form.Item className="normal-input">
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    defaultValue={accionRealizada.split('/')}
+                    onChange={handleAcciones}
+                    optionLabelProp="label"
                   >
-                    <AutoComplete
-                      options={nombres.nombres}
-                      onChange={handleNombreDenunciado}
-                      placeholder="Introduzca el nombre..."
-                      className="normal-input"
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 12 }} xxl={{ span: 8 }}>
-                  <Form.Item label="Apellido Paterno:">
-                    <AutoComplete
-                      options={nombres.apellidos}
-                      onChange={handlePaternoDenunciado}
-                      placeholder="Introduzca su apellido paterno..."
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 12 }} xl={{ span: 8 }}>
-                  <Form.Item label="Apellido Materno:">
-                    <AutoComplete
-                      options={nombres.apellidos}
-                      onChange={handleMaternoDenunciado}
-                      placeholder="Introduzca su apellido materno..."
-                      filterOption={(inputValue, option) =>
-                        option!.value
-                          .toUpperCase()
-                          .indexOf(inputValue.toUpperCase()) !== -1
-                      }
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={24} lg={{ span: 12 }}>
-                  <Form.Item
-                    className="normal-input"
-                    label="Parentezco con el adulto mayor:"
-                  >
-                    <Select
-                      defaultValue={dataDatosDenunciado.parentezco}
-                      onChange={handleParentezco}
-                    >
-                      <Select.Option value="Hijo(a)">Hijo(a)</Select.Option>
-                      <Select.Option value="Familiar">
-                        Familiar Cercano
-                      </Select.Option>
-                      <Select.Option value="Conocido">
-                        Persona Conocida
-                      </Select.Option>
-                      <Select.Option value="Desconocido">
-                        Persona Desconocida
-                      </Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-            <div className="border position-relative rounded p-4 mt-4">
-              <p className="titulo-form">5. Acciones Realizadas</p>
-              <Row>
-                <Col offset={4} span={16} md={{ span: 16 }}>
-                  <Form.Item className="normal-input">
-                    <Select
-                      defaultValue={accionRealizada}
-                      onChange={handleAcciones}
-                    >
-                      <Select.Option value="Apertura">
-                        Apertura de Caso
-                      </Select.Option>
-                      <Select.Option value="Orientacion">
-                        Orientación
-                      </Select.Option>
-                      <Select.Option value="Citacion">Citación</Select.Option>
-                      <Select.Option value="Derivacion">
-                        Derivación
-                      </Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
+                    <Select.Option value="Apertura">
+                      Apertura de Caso
+                    </Select.Option>
+                    <Select.Option value="Orientacion">
+                      Orientación
+                    </Select.Option>
+                    <Select.Option value="Citacion">Citación</Select.Option>
+                    <Select.Option value="Derivacion">
+                      Derivación
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
             <Row>
               <Col span={14} offset={5}>
                 <Form.Item>

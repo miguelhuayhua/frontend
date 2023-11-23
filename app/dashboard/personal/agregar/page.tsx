@@ -62,6 +62,7 @@ const AgregarPersonal = () => {
       setUsuario({ ...usuario, ult_modificacion: "", password: "" });
     }
   }, [data]);
+
   return (
     <main>
       <Layout>
@@ -115,7 +116,7 @@ const AgregarPersonal = () => {
             <Layout className="px-3">
               <Content>
                 <Row gutter={[24, 24]} className="mt-2">
-                  <Col span={24} xl={{ span: 16 }}>
+                  <Col span={24} xl={{ span: 12 }}>
                     <h4 style={{ textAlign: "center", marginTop: 20 }}>
                       Agregar Nuevo Personal
                     </h4>
@@ -131,7 +132,7 @@ const AgregarPersonal = () => {
                               {
                                 required: true,
                                 message:
-                                  "Por favor introduzca su nombre paterno",
+                                  "Por favor introduzca su profesión...",
                               },
                             ]}
                             label="Profesión/ Nombres: "
@@ -150,7 +151,7 @@ const AgregarPersonal = () => {
                               />
                               <Input
                                 style={{ width: "70%" }}
-                                placeholder="Introduzca su nombre..."
+                                placeholder="Introduzca el nombre"
                                 onChange={(ev) => {
                                   setPersona({
                                     ...persona,
@@ -163,11 +164,10 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          md={{ span: 12 }}
-                          xxl={{ span: 20, offset: 2 }}
                         >
                           <Form.Item label="Apellido Paterno: ">
                             <Input
+                              placeholder="Introduzca el apellido paterno"
                               name="paterno"
                               onChange={(ev) => {
                                 setPersona({
@@ -180,11 +180,10 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          md={{ span: 12 }}
-                          xxl={{ span: 20, offset: 2 }}
                         >
                           <Form.Item label="Apellido Materno: ">
                             <Input
+                              placeholder="Introduzca el apellido materno"
                               name="materno"
                               onChange={(ev) => {
                                 setPersona({
@@ -197,7 +196,7 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          md={{ span: 12 }}
+                          lg={{ span: 12 }}
                           xxl={{ span: 20, offset: 2 }}
                         >
                           <Space.Compact>
@@ -205,7 +204,7 @@ const AgregarPersonal = () => {
                               <InputNumber
                                 required
                                 name="ci"
-                                style={{ width: "100%" }}
+                                className="w-100"
                                 onChange={(ev: any) => {
                                   setPersona({ ...persona, ci: ev });
                                 }}
@@ -214,7 +213,7 @@ const AgregarPersonal = () => {
                             <Form.Item>
                               <Select
                                 aria-required
-                                style={{ width: 120 }}
+                                className="w-100"
                                 defaultValue="LP"
                                 onChange={(value) => {
                                   setPersona({ ...persona, expedido: value });
@@ -226,8 +225,8 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          md={{ span: 12 }}
-                          xxl={{ span: 10, offset: 2 }}
+                          lg={{ span: 12 }}
+                          xxl={{ span: 20, offset: 2 }}
                         >
                           <Form.Item
                             label="Celular: "
@@ -252,18 +251,53 @@ const AgregarPersonal = () => {
                             ></InputNumber>
                           </Form.Item>
                         </Col>
-                        <Col span={24} md={{ span: 12 }} xxl={{ span: 10 }}>
+                        <Col span={12} lg={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label={"Fecha de nacimiento"}>
                             <DatePicker
                               style={{ width: "100%" }}
-                              locale={{
-                                ...locale,
-                                lang: {
-                                  ...locale.lang,
-                                  shortWeekDays: dias,
-                                  shortMonths: meses,
-                                },
-                              }}
+                              locale={
+                                {
+
+                                  "lang": {
+                                    "placeholder": "Seleccionar fecha",
+                                    "rangePlaceholder": [
+                                      "Fecha inicial",
+                                      "Fecha final"
+                                    ],
+                                    shortMonths: meses,
+                                    shortWeekDays: dias,
+                                    "locale": "es_ES",
+                                    "today": "Hoy",
+                                    "now": "Ahora",
+                                    "backToToday": "Volver a hoy",
+                                    "ok": "Aceptar",
+                                    "clear": "Limpiar",
+                                    "month": "Mes",
+                                    "year": "Año",
+                                    "timeSelect": "Seleccionar hora",
+                                    "dateSelect": "Seleccionar fecha",
+                                    "monthSelect": "Elegir un mes",
+                                    "yearSelect": "Elegir un año",
+                                    "decadeSelect": "Elegir una década",
+                                    "yearFormat": "YYYY",
+                                    "dateFormat": "D/M/YYYY",
+                                    "dayFormat": "D",
+                                    "dateTimeFormat": "D/M/YYYY HH:mm:ss",
+                                    "monthBeforeYear": true,
+                                    "previousMonth": "Mes anterior (PageUp)",
+                                    "nextMonth": "Mes siguiente (PageDown)",
+                                    "previousYear": "Año anterior (Control + left)",
+                                    "nextYear": "Año siguiente (Control + right)",
+                                    "previousDecade": "Década anterior",
+                                    "nextDecade": "Década siguiente",
+                                    "previousCentury": "Siglo anterior",
+                                    "nextCentury": "Siglo siguiente",
+                                  },
+                                  "timePickerLocale": {
+                                    "placeholder": "Seleccionar hora"
+                                  }
+                                }
+                              }
                               value={dayjs(persona.f_nacimiento)}
                               onChange={(ev) => {
                                 setPersona({
@@ -276,7 +310,7 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          md={{ span: 12 }}
+                          lg={{ span: 12 }}
                           xxl={{ span: 10, offset: 2 }}
                         >
                           <Form.Item label="Rol:">
@@ -287,12 +321,13 @@ const AgregarPersonal = () => {
                                 setPersona({ ...persona, cargo: ev });
                               }}
                             >
+                              {persona.cargo == '1' ? <Select.Option value="1">Administrador</Select.Option> : <></>}
                               <Select.Option value="2">Operador</Select.Option>
                               <Select.Option value="3">Visitante</Select.Option>
                             </Select>
                           </Form.Item>
                         </Col>
-                        <Col span={10} md={{ span: 12 }} xxl={{ span: 10 }}>
+                        <Col span={10} lg={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label="Género:">
                             <Radio.Group
                               value={persona.genero}
@@ -323,7 +358,7 @@ const AgregarPersonal = () => {
                       </Button>
                     </Form>
                   </Col>
-                  <Col span={24} xl={{ span: 8 }}>
+                  <Col span={24} xl={{ span: 12 }}>
                     <Card style={{ textAlign: "center" }}>
                       <Meta
                         avatar={
@@ -396,7 +431,7 @@ const AgregarPersonal = () => {
                                 <p>
                                   <span>Fecha de nacimiento: </span>
                                   {dayjs(persona.f_nacimiento).format(
-                                    "dd-mm-yyyy"
+                                    "DD/MM/YYYY"
                                   )}
                                 </p>
                               </Col>
@@ -495,5 +530,6 @@ const AgregarPersonal = () => {
     </main>
   );
 };
+
 
 export default AgregarPersonal;

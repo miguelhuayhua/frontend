@@ -20,6 +20,7 @@ import ReporteAdulto from "./reporte";
 import './estilos.scss';
 import { FaRing } from "react-icons/fa";
 import { AiFillFilePdf } from "react-icons/ai";
+import dayjs from "dayjs";
 export default function Reportes() {
   //open
   const [open1, setOpen1] = useState(false);
@@ -52,14 +53,13 @@ export default function Reportes() {
         });
     }
   }, [data]);
-
   return (
     <main>
       <Layout>
         <Layout hasSider>
           <MenuSider
-            defaultOpenKeys={["adulto1"]}
-            defaultSelectedKey="adulto1.3"
+            defaultOpenKeys={["adultos1"]}
+            defaultSelectedKey="adultos1.3"
           ></MenuSider>
           <Content>
             <Navbar></Navbar>
@@ -84,10 +84,10 @@ export default function Reportes() {
                       setOpen3(true)
                     }} className="filter-button g-3" icon={<HiIdentification className="icon" />}>Por C.I. </Button>
                   </Col>
-                  <Col span={20} offset={2} md={{ span: 10, offset: 0 }} lg={{ span: 8 ,offset:8}}>
+                  <Col span={20} offset={2} md={{ span: 10, offset: 7 }} lg={{ span: 8, offset: 8 }}>
                     <Button onClick={() => {
                       setOpen4(true)
-                    }} className="filter-button g-4" icon={<FaRing className="icon" />}> <p style={{ flexWrap: 'wrap' }}>Por Estado Civil</p> </Button>
+                    }} className="filter-button g-4" icon={<FaRing className="icon" />}> Por Estado Civil </Button>
                   </Col>
                 </Row>
                 <Row className="my-4">
@@ -149,21 +149,20 @@ export default function Reportes() {
                           >
                             <List.Item.Meta
                               title={`${item.nombre} ${item.paterno} ${item.materno}`}
-                              description={`C.I.: ${item.ci}, Fecha Nacimiento: ${item.f_nacimiento}`}
+                              description={`C.I.: ${item.ci}, Fecha Nacimiento: ${dayjs(item.f_nacimiento).format("DD/MM/YYYY")}`}
                             />
                           </List.Item>
                         )
                       }}
                     />
                   </Col>
-
                 </Row>
               </Content>
             </Layout>
           </Content>
         </Layout>
       </Layout >
-      <Modal okText="Filtrar" cancelText="Cancelar" title="Especifique el caso: N°/AÑO" open={open1} onOk={() => {
+      <Modal okText="Filtrar" cancelText="Cancelar" title="Filtre por adulto mayor" open={open1} onOk={() => {
         setDisplayAdultos(adultos.filter(adulto => {
           return `${adulto.nombre} ${adulto.paterno} ${adulto.materno}`.toLowerCase().includes(filtros.nombres_apellidos.toLowerCase())
         }));
@@ -173,6 +172,7 @@ export default function Reportes() {
       }}>
         <Input
           placeholder="Nombres y apellidos del adulto mayor"
+          className="w-100"
           value={filtros.nombres_apellidos}
           onChange={(ev) => {
             setFiltros({ ci: "", nombres_apellidos: ev.target.value, estado_civil: "" })

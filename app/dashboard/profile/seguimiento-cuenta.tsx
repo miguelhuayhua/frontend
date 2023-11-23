@@ -201,7 +201,7 @@ const SeguimientoCuenta: NextPage<Props> = (props) => {
               scroll={{ y: 600 }}
               rowKey={(acceso) => acceso.id_acceso + "T"}
               key="table"
-              pagination={{ pageSize: 20, position: ["bottomCenter"] }}
+              pagination={{ pageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}
               columns={columnaAcceso}
               locale={{
                 emptyText: (
@@ -296,7 +296,7 @@ const SeguimientoCuenta: NextPage<Props> = (props) => {
               scroll={{ y: 500 }}
               rowKey={(accion) => accion.id_accion + "T"}
               key="table"
-              pagination={{ pageSize: 20, position: ["bottomCenter"] }}
+              pagination={{ pageSize: 20, position: ["bottomCenter"], showSizeChanger: false }}
               columns={columnaAcciones}
               locale={{
                 emptyText: (

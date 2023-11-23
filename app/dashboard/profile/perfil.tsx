@@ -1,10 +1,8 @@
 "use client";
 import { Button, Col, Form, Input, InputNumber, Modal, Row, notification } from "antd";
 import bcrypt from "bcryptjs";
-
 import {
   QuestionCircleOutlined,
-  CopyOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
 } from "@ant-design/icons";
@@ -13,11 +11,11 @@ import { Usuario } from "../usuarios/data";
 import { NextPage } from "next";
 import axios from "axios";
 import { useState } from "react";
-import { signOut } from "next-auth/react";
 interface Props {
   usuario: Usuario;
   setUsuario: any;
 }
+
 const Perfil: NextPage<Props> = (props) => {
   const [open, setOpen] = useState(false);
   return (
@@ -43,19 +41,9 @@ const Perfil: NextPage<Props> = (props) => {
               if (res.data.status == 1) {
                 notification.success({
                   message:
-                    "Datos personales modificados con éxito, vuelva a iniciar sesión para cambios",
+                    "Contraseña cambiada correctamente",
                   duration: 10,
-                  btn: (
-                    <>
-                      <Button
-                        onClick={() => {
-                          signOut({ redirect: true });
-                        }}
-                      >
-                        Cerrar Sesión
-                      </Button>
-                    </>
-                  ),
+
                 });
                 setOpen(false);
               } else {
@@ -80,7 +68,7 @@ const Perfil: NextPage<Props> = (props) => {
       </Modal>
       <Content>
         <Row>
-          <Col span={20} offset={2} >
+          <Col span={16} offset={4} >
             <Form onFinish={() => {
               setOpen(true)
             }}>

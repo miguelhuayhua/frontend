@@ -91,7 +91,7 @@ const FormularioSeguimiento = () => {
             style={{
               position: "absolute",
               top: 0,
-              right: 50,
+              right: 30,
               color: "gray",
               fontSize: 8,
             }}
@@ -109,7 +109,7 @@ const FormularioSeguimiento = () => {
             src={"/assets/logo-elalto.png"}
           ></Image>
           <Text
-            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 20 }}
+            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 10 }}
           >
             GOBIERNO AUTÓNOMO DE EL ALTO
           </Text>
@@ -162,8 +162,8 @@ const FormularioSeguimiento = () => {
           <Text style={styles.parraf}>
             Apersonarse ante estas dependencias Unidad de Adultos Mayores,
             PLANTA BAJA JACHA UTA,(Alcaldía Municipal) para el día{" "}
-            {dias2[fecha.day()]} {fecha.date()} de {meses[fecha.month()]} DE{" "}
-            {fecha.year()} a horas {citacion.hora_citacion}, a objeto de tratar
+            {dias2[fecha ? fecha.day() : 0]+ " "} {fecha ? fecha.date() : null} de {meses[fecha ? fecha.month() : 0]} DE{" "}
+            {fecha ? fecha.year() : 0} a horas {citacion.hora_citacion}, a objeto de tratar
             la situación{" "}
             {adulto.genero == "Masculino" ? "del Adulto" : "la Adulta "}Mayor{" "}
             <Text style={styles.textBold}>
@@ -199,7 +199,6 @@ const FormularioSeguimiento = () => {
             El Alto, {fecha_creacion.date()} de {meses[fecha_creacion.month()]}{" "}
             de {fecha_creacion.year()}
           </Text>
-
           <View
             style={{
               width: 200,

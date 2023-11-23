@@ -11,8 +11,9 @@ import {
 } from "@react-pdf/renderer";
 import dayjs from "dayjs";
 import { accionesContext } from "./seguimiento-cuenta";
-import { Persona, meses } from "../personal/agregar/data";
 import { AccionesUsuario } from "./data";
+import { Persona, meses } from "../personal/agregar/data";
+
 const PdfAcciones = () => {
     const data = useContext(accionesContext);
     let { persona, acciones, rangeAcciones } = data as {
@@ -190,7 +191,7 @@ const PdfAcciones = () => {
                         HISTORIAL DE ACCIONES DE {`${persona.nombres.toUpperCase()} ${persona.paterno.toUpperCase()} ${persona.materno.toUpperCase()}`}
                     </Text>
                     <Text style={{ ...styles.parraf, color: 'gray' }}>
-                        {rangeAcciones.de ? `Datos filtrados desde el ${dayjs(rangeAcciones.de).format("dd-mm-yyyy-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcciones.hasta).format("dd-mm-yyyy-hh:mm:ss")} ` : null}
+                        {rangeAcciones.de ? `Datos filtrados desde el ${dayjs(rangeAcciones.de).format("DD/MM/YYYY-hh:mm:ss")} ---- hasta el ${dayjs(rangeAcciones.hasta).format("DD/MM/YYYY-hh:mm:ss")} ` : null}
                     </Text>
                     <View style={styles.table}>
                         <View style={styles.row}>

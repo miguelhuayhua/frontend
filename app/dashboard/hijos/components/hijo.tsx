@@ -23,10 +23,8 @@ import moment from "moment";
 import { Hijo } from "../data";
 import { Adulto } from "../../adultos/data";
 import { Usuario } from "../../usuarios/data";
+import Paragraph from "antd/es/typography/Paragraph";
 export const DataContext = createContext({});
-//ROUTING
-
-//PDF
 interface Props {
   setOpen: any;
   open: boolean;
@@ -75,7 +73,6 @@ const HijoModal: NextPage<Props> = (props) => {
         onCancel={() => {
           props.setOpen(false);
         }}
-        width={"90%"}
         footer={[
           <Popconfirm
             key="popconfirm"
@@ -96,52 +93,38 @@ const HijoModal: NextPage<Props> = (props) => {
         {props.loaded ? (
           <Row gutter={24}>
             <Col span={24}>
-              <p style={{ color: "gray", textAlign: "start" }}>
+              <p className="info">
                 <span>Última modifcación: </span>
                 {moment(props.hijo.ult_modificacion).format(
-                  "dd-mm-yyyy HH:mm:ss"
+                  "DD/MM/YYYY - HH:mm:ss"
                 )}
               </p>
             </Col>
-            <Col span={4}>
+            <Col span={24}>
               <Avatar
                 style={{
                   backgroundColor:
                     props.hijo.genero == "Femenino" ? "#ff0080" : "#0041c8",
                   color: "white",
-                  width: 70,
-                  height: 70,
-                  fontSize: 40,
+                  width: 40,
+                  height: 40,
+                  fontSize: 20,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   margin: "0 auto",
                 }}
-                icon={<UserOutlined />}
+                icon={<UserOutlined />
+                }
               ></Avatar>
-              <b style={{ marginLeft: 10 }}>ID: </b>
-              {props.hijo.id_hijo}
-              <Button
-                style={{ marginLeft: 5 }}
-                onClick={() => {
-                  const textField = document.createElement("textarea");
-                  textField.innerText = props.adulto.id_adulto;
-                  document.body.appendChild(textField);
-                  textField.select();
-                  navigator.clipboard
-                    .writeText(props.adulto.id_adulto)
-                    .then(() => {
-                      textField.remove();
-                      message.success("¡ID - Hijo, copiado al portapapeles!");
-                    });
-                }}
-                icon={<CopyOutlined color="blue" />}
-              ></Button>
+              <Paragraph copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}  >
+                {props.hijo.id_hijo}
+              </Paragraph>
             </Col>
-            <Col span={20}>
+            <Col span={24}>
               <Form>
                 <Row gutter={[24, 24]}>
-                  <Col span={24} md={{ span: 16 }}>
+                  <Col span={24}>
                     <Form.Item label="Nombres y Apellidos: ">
                       <Input
                         name="nombre"
@@ -155,7 +138,7 @@ const HijoModal: NextPage<Props> = (props) => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={24} md={{ span: 8 }}>
+                  <Col span={24} >
                     <Form.Item label="Género:">
                       <Radio.Group
                         value={props.hijo.genero}

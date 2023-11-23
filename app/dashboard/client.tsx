@@ -48,7 +48,7 @@ import { useRouter } from "next/navigation";
 import GraficoBarraHorizontal from "./graficos/BarraHorizontal";
 import { dataUsuario } from "./usuarios/data";
 import { useSession } from "next-auth/react";
-
+import { Persona, dataPersona } from "./personal/agregar/data";
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState<{
     acciones_x_casos: { accion: string[]; cantidad: number[] };
@@ -71,7 +71,6 @@ export default function Dashboard() {
     };
   }>();
   const [casos, setCasos] = useState<Caso[]>([]);
-  const { data } = useSession();
   const [usuario, setUsuario] = useState<{
     usuario: string;
     estado: number;
@@ -79,11 +78,13 @@ export default function Dashboard() {
     id_persona: string;
     id_usuario: string;
   }>(dataUsuario);
+  const [persona, setPersona] = useState<Persona>(dataPersona);
   const router = useRouter();
+  const { data } = useSession();
 
   useEffect(() => {
     if (data) {
-      let { usuario } = data?.user as {
+      let { usuario, persona } = data?.user as {
         usuario: {
           usuario: string;
           estado: number;
@@ -91,7 +92,9 @@ export default function Dashboard() {
           id_persona: string;
           id_usuario: string;
         };
+        persona: Persona;
       };
+      setPersona(persona);
       setUsuario({ ...usuario });
       axios.get(process.env.BACKEND_URL + "/charts/dashboard").then((res) => {
         setDashboardData(res.data);
@@ -175,7 +178,7 @@ export default function Dashboard() {
                               <p>Ver Adultos</p>
                             </Button>
                           </Link>
-                          <Link
+                          {persona.cargo == "3" ? null : <Link
                             className="custom-btn-dash"
                             href={"/dashboard/casos/nuevocaso"}
                           >
@@ -186,7 +189,7 @@ export default function Dashboard() {
                               />
                               <p>Nuevo Caso</p>
                             </Button>
-                          </Link>
+                          </Link>}
                         </div>
                       </Col>
                     </Row>
@@ -220,19 +223,7 @@ export default function Dashboard() {
                                   " DENUNCIAS"}
                               </span>
                             </Col>
-                            <Col span={6} className="vertical-center">
-                              <AiOutlinePlus color="gray" size={20} />
-                              <span
-                                className="card-text"
-                                style={{ color: "gray", display: 'block', textAlign: 'center' }}
-                              >
-                                {`${dashboardData?.casos_x_dia} (${dashboardData?.casos_x_mes_actual != 0
-                                  ? (dashboardData?.casos_x_dia! * 100) /
-                                  dashboardData?.casos_x_mes_actual!
-                                  : 0
-                                  }%)`}
-                              </span>
-                            </Col>
+                           
                           </Row>
                         </Card>
                       </Col>
@@ -350,156 +341,158 @@ export default function Dashboard() {
                             data={dashboardData?.casos_x_mes.cantidad}
                             keys={dashboardData?.casos_x_mes.mes.map(
                               (value) => {
-                                return meses[value - 1];
+                                return meses[value];
                               }
                             )}
                             keyTitle="Mes"
                           ></GraficoLinea>
                         </Card>
                       </Col>
-                      <Col span={24} lg={{ span: 8 }}>
-                        <Card
-                          title="ÚLTIMOS CASOS AÑADIDOS"
-                          extra={
-                            <Button
-                              style={{ height: 40 }}
-                              onClick={() => {
-                                router.push("/dashboard/casos/nuevocaso");
-                              }}
-                            >
-                              <AiOutlinePlusCircle
-                                size={24}
-                                className="vertical-center"
-                              />
-                            </Button>
-                          }
-                          bordered={false}
-                        >
-                          <List
-                            itemLayout="horizontal"
-                            dataSource={casos}
-                            renderItem={(item, index) => (
-                              <List.Item
-                                actions={[
-                                  <Tooltip
-                                    key={index + "t"}
-                                    title="Entrar al caso"
-                                  >
-                                    <Link
-                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
-                                    >
-                                      <Button>
-                                        <GrView />
-                                      </Button>
-                                    </Link>
-                                  </Tooltip>,
-                                ]}
+                      {persona.cargo == "3" ? null : <>
+                        <Col span={24} lg={{ span: 8 }}>
+                          <Card
+                            title="ÚLTIMOS CASOS AÑADIDOS"
+                            extra={
+                              <Button
+                                style={{ height: 40 }}
+                                onClick={() => {
+                                  router.push("/dashboard/casos/nuevocaso");
+                                }}
                               >
-                                <List.Item.Meta
-                                  avatar={
-                                    <Avatar
-                                      className="center"
-                                      style={{ backgroundColor: "#AF1E28" }}
-                                      icon={
-                                        <FaBalanceScaleLeft
-                                          style={{ backgroundColor: "" }}
-                                        />
-                                      }
-                                    />
-                                  }
-                                  title={
-                                    <Link
-                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
-                                    >
-                                      {item.nro_caso}
-                                    </Link>
-                                  }
-                                  description={
-                                    <>
-                                      <p>{`Caso que inició el ${item.fecha_registro}`}</p>
-                                      <p>Tipología: {item.tipologia}</p>
-                                    </>
-                                  }
+                                <AiOutlinePlusCircle
+                                  size={24}
+                                  className="vertical-center"
                                 />
-                              </List.Item>
-                            )}
-                          />
-                        </Card>
-                      </Col>
-                      <Col span={24} lg={{ span: 8 }}>
-                        <Card
-                          title={
-                            <>
-                              <Row className="py-4">
-                                <Col span={4}>
-                                  <MdCallReceived color="#1677ff" size={40} />
-                                </Col>
-                                <Col span={20}>
-                                  <span style={{ fontSize: 20, color: "gray" }}>
-                                    Total:{" "}
-                                    {dashboardData?.proximas_citaciones.length}
-                                  </span>
-                                  <p style={{ fontSize: 16 }}>
-                                    Citaciones para los próximos 7 días
-                                  </p>
-                                </Col>
-                              </Row>
-                            </>
-                          }
-                          bordered={false}
-                        >
-                          <List
-                            locale={{
-                              emptyText: (
-                                <>
-                                  <PiListMagnifyingGlassFill
-                                    width={50}
-                                    height={50}
-                                    fontSize={50}
+                              </Button>
+                            }
+                            bordered={false}
+                          >
+                            <List
+                              itemLayout="horizontal"
+                              dataSource={casos}
+                              renderItem={(item, index) => (
+                                <List.Item
+                                  actions={[
+                                    <Tooltip
+                                      key={index + "t"}
+                                      title="Entrar al caso"
+                                    >
+                                      <Link
+                                        href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                      >
+                                        <Button>
+                                          <GrView />
+                                        </Button>
+                                      </Link>
+                                    </Tooltip>,
+                                  ]}
+                                >
+                                  <List.Item.Meta
+                                    avatar={
+                                      <Avatar
+                                        className="center"
+                                        style={{ backgroundColor: "#AF1E28" }}
+                                        icon={
+                                          <FaBalanceScaleLeft
+                                            style={{ backgroundColor: "" }}
+                                          />
+                                        }
+                                      />
+                                    }
+                                    title={
+                                      <Link
+                                        href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                      >
+                                        {item.nro_caso}
+                                      </Link>
+                                    }
+                                    description={
+                                      <>
+                                        <p>{`Caso que inició el ${item.fecha_registro}`}</p>
+                                        <p>Tipología: {item.tipologia}</p>
+                                      </>
+                                    }
                                   />
-                                  <p>Sin citaciones cercanas...</p>
-                                </>
-                              ),
-                            }}
-                            dataSource={dashboardData?.proximas_citaciones}
-                            renderItem={(item, index) => (
-                              <List.Item
-                                actions={[
-                                  <Tooltip
-                                    key={index + "to"}
-                                    title="Entrar al caso"
-                                  >
-                                    <Link
-                                      key={index + "i"}
-                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
-                                    >
-                                      <Button>
-                                        <GrView />
-                                      </Button>
-                                    </Link>
-                                  </Tooltip>,
-                                ]}
-                              >
-                                <List.Item.Meta
-                                  avatar={
-                                    <Avatar
-                                      style={{ backgroundColor: "#1677ff" }}
-                                      icon={<FaBalanceScaleLeft />}
+                                </List.Item>
+                              )}
+                            />
+                          </Card>
+                        </Col>
+                        <Col span={24} lg={{ span: 8 }}>
+                          <Card
+                            title={
+                              <>
+                                <Row className="py-4">
+                                  <Col span={4}>
+                                    <MdCallReceived color="#1677ff" size={40} />
+                                  </Col>
+                                  <Col span={20}>
+                                    <span style={{ fontSize: 20, color: "gray" }}>
+                                      Total:{" "}
+                                      {dashboardData?.proximas_citaciones.length}
+                                    </span>
+                                    <p style={{ fontSize: 16 }}>
+                                      Citaciones para los próximos 7 días
+                                    </p>
+                                  </Col>
+                                </Row>
+                              </>
+                            }
+                            bordered={false}
+                          >
+                            <List
+                              locale={{
+                                emptyText: (
+                                  <>
+                                    <PiListMagnifyingGlassFill
+                                      width={50}
+                                      height={50}
+                                      fontSize={50}
                                     />
-                                  }
-                                  title={
-                                    <Link
-                                      href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                    <p>Sin citaciones cercanas...</p>
+                                  </>
+                                ),
+                              }}
+                              dataSource={dashboardData?.proximas_citaciones}
+                              renderItem={(item, index) => (
+                                <List.Item
+                                  actions={[
+                                    <Tooltip
+                                      key={index + "to"}
+                                      title="Entrar al caso"
                                     >
-                                      <p>{`Para el ${item.fecha_citacion}`}</p>
-                                    </Link>
-                                  }
-                                />
-                              </List.Item>
-                            )}
-                          />
-                        </Card>
-                      </Col>
+                                      <Link
+                                        key={index + "i"}
+                                        href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                      >
+                                        <Button>
+                                          <GrView />
+                                        </Button>
+                                      </Link>
+                                    </Tooltip>,
+                                  ]}
+                                >
+                                  <List.Item.Meta
+                                    avatar={
+                                      <Avatar
+                                        style={{ backgroundColor: "#1677ff" }}
+                                        icon={<FaBalanceScaleLeft />}
+                                      />
+                                    }
+                                    title={
+                                      <Link
+                                        href={`/dashboard/casos/accion?id_caso=${item.id_caso}`}
+                                      >
+                                        <p>{`Para el ${item.fecha_citacion}`}</p>
+                                      </Link>
+                                    }
+                                  />
+                                </List.Item>
+                              )}
+                            />
+                          </Card>
+                        </Col>
+                      </>}
                       <Col span={24} lg={{ span: 8 }}>
                         <Card
                           title="Histograma de edades - denuncia"

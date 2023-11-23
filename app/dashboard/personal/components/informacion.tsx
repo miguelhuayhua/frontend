@@ -164,7 +164,7 @@ const Informacion = () => {
           setPersonas(res.data);
           setDisplayPersonas(
             res.data.filter((value) => {
-              return value.id_persona != persona.id_persona;
+              return value.id_persona != persona1.id_persona;
             })
           );
         });
@@ -284,7 +284,7 @@ const Informacion = () => {
                     link.setAttribute(
                       "download",
                       "Personal-" +
-                      dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                      dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                       ".xlsx"
                     );
                     link.click();
@@ -293,7 +293,7 @@ const Informacion = () => {
                       message: (
                         <p style={{ fontSize: 14 }}>
                           {"¡Excel: Personal-" +
-                            dayjs().format("dd-mm-yyyy_HH:mm:ss") +
+                            dayjs().format("DD/MM/YYYY_HH:mm:ss") +
                             ".xlsx, generado con éxito!"}
                         </p>
                       ),
@@ -335,7 +335,7 @@ const Informacion = () => {
 
       <Form layout={"horizontal"} style={{ marginTop: 10 }}>
         <Row gutter={[12, 0]}>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 8 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="ID de persona: ">
               <Input
                 onChange={(ev) => {
@@ -356,7 +356,7 @@ const Informacion = () => {
               />
             </Form.Item>
           </Col>
-          <Col span={24} md={{ span: 24 }} xl={{ span: 10 }}>
+          <Col span={24} lg={{ span: 12 }}>
             <Form.Item label="Nombre de Persona">
               <Input
                 onChange={(ev) => {

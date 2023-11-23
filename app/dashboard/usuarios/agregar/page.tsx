@@ -42,6 +42,7 @@ import Search from "antd/es/input/Search";
 import Dragger from "antd/es/upload/Dragger";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Paragraph from "antd/es/typography/Paragraph";
 const AgregarUsuarios = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -100,6 +101,7 @@ const AgregarUsuarios = () => {
       }
     }
   }, [data]);
+ 
   return (
     <main>
       <Layout>
@@ -154,7 +156,7 @@ const AgregarUsuarios = () => {
               <Content className="site-layout" style={{ padding: "0 50px" }}>
                 <Content>
                   <Row gutter={[24, 24]}>
-                    <Col span={24} lg={{ span: 14 }}>
+                    <Col span={24} lg={{ span: 12 }}>
                       <h4 style={{ marginTop: 20 }}>Crear un nuevo usuario</h4>
                       <Form
                         onFinish={() => {
@@ -395,7 +397,7 @@ const AgregarUsuarios = () => {
                         </Row>
                       </Form>
                     </Col>
-                    <Col style={{ marginTop: 50 }} span={24} lg={10}>
+                    <Col span={24} lg={{ span: 12 }} className="mt-2">
                       <Row gutter={[12, 12]}>
                         <Col span={12}>
                           <b>Buscar por CI:</b>
@@ -435,7 +437,7 @@ const AgregarUsuarios = () => {
                           />
                         </Col>
                       </Row>
-                      <Card style={{ marginTop: 50 }}>
+                      <Card className="mt-2">
                         <Meta
                           avatar={
                             persona.id_persona != "" ? (
@@ -457,30 +459,12 @@ const AgregarUsuarios = () => {
                                   }}
                                   icon={<UserOutlined />}
                                 ></Avatar>
-                                <p>
-                                  <span>C.I.:</span>
-                                  {persona.ci}
-                                  <Button
-                                    style={{ marginLeft: 5 }}
-                                    onClick={() => {
-                                      const textField =
-                                        document.createElement("textarea");
-                                      textField.innerText =
-                                        persona.ci.toString();
-                                      document.body.appendChild(textField);
-                                      textField.select();
-                                      navigator.clipboard
-                                        .writeText(persona.ci.toString())
-                                        .then(() => {
-                                          textField.remove();
-                                          message.success(
-                                            "¡CI - Personal, copiado al portapapeles!"
-                                          );
-                                        });
-                                    }}
-                                    icon={<CopyOutlined color="blue" />}
-                                  ></Button>
-                                </p>
+                                <div className="d-flex align-items-center">
+                                  <b>C.I.:</b>
+                                  <Paragraph className="my-auto" copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
+                                    {persona.ci}
+                                  </Paragraph>
+                                </div>
                               </>
                             ) : (
                               <Avatar
@@ -501,61 +485,44 @@ const AgregarUsuarios = () => {
                           description={
                             <>
                               {persona.id_persona != "" ? (
-                                <Row>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Nombre: </span>
-                                      {persona.nombres}
-                                    </p>
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Ap. Paterno: </span>
-                                      {persona.paterno}
-                                    </p>
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Ap. Materno: </span>
-                                      {persona.materno}
-                                    </p>
-                                  </Col>
-                                  <Col span={24}>
-                                    <hr />
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Celular: </span>
-                                      {persona.celular}
-                                    </p>
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Cargo: </span>
-                                      {persona.cargo}
-                                    </p>
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Fecha de nacimiento: </span>
-                                      {dayjs(persona.f_nacimiento).format(
-                                        "dd-mm-yyyy"
-                                      )}
-                                    </p>
-                                  </Col>
-                                  <Col span={12}>
-                                    <p>
-                                      <span>Edad: </span>
-                                      {
-                                        -dayjs(persona.f_nacimiento).diff(
-                                          now(),
-                                          "years"
-                                        )
-                                      }
-                                      {" años"}
-                                    </p>
-                                  </Col>
-                                </Row>
+                                <>
+                                  <p>
+                                    <span>Nombre: </span>
+                                    {persona.nombres}
+                                  </p>
+                                  <p>
+                                    <span>Ap. Paterno: </span>
+                                    {persona.paterno}
+                                  </p>
+                                  <p>
+                                    <span>Ap. Materno: </span>
+                                    {persona.materno}
+                                  </p>
+                                  <p>
+                                    <span>Celular: </span>
+                                    {persona.celular}
+                                  </p>
+                                  <p>
+                                    <span>Cargo: </span>
+                                    {persona.cargo}
+                                  </p>
+                                  <p>
+                                    <span>Fecha de nacimiento: </span>
+                                    {dayjs(persona.f_nacimiento).format(
+                                      "DD/MM/YYYY"
+                                    )}
+                                  </p>
+                                  <p>
+                                    <span>Edad: </span>
+                                    {
+                                      -dayjs(persona.f_nacimiento).diff(
+                                        now(),
+                                        "years"
+                                      )
+                                    }
+                                    {" años"}
+                                  </p>
+                                </>
                               ) : (
                                 <p>Sin información a mostrar </p>
                               )}
