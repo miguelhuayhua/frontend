@@ -34,6 +34,7 @@ import {
   DatosUbicacion
 } from "../data";
 import { createContext, useState } from "react";
+import parse from 'html-react-parser';
 import axios from "axios";
 import MyDocument from "./pdf";
 import { pdf } from "@react-pdf/renderer";
@@ -458,11 +459,11 @@ const Detalles: NextPage<Props> = (props) => {
                 <p className="titulo" style={{ width: "20%" }}>
                   Descripción de los hechos:
                 </p>
-                <p className="contenido" style={{ width: "80%" }}>
+                <div className="contenido" style={{ width: "80%" }}>
                   {props.datos.descripcionHechos.length == 0
                     ? "No existe descripción"
-                    : props.datos.descripcionHechos}
-                </p>
+                    : parse(props.datos.descripcionHechos)}
+                </div>
               </div>
             </Col>
             <Col span={24} lg={{ span: 20, offset: 2 }}>
@@ -470,11 +471,11 @@ const Detalles: NextPage<Props> = (props) => {
                 <p className="titulo" style={{ width: "20%" }}>
                   Descripción de petición:
                 </p>
-                <p className="contenido" style={{ width: "80%" }}>
+                <div className="contenido" style={{ width: "80%" }}>
                   {props.datos.descripcionPeticion.length == 0
                     ? "No existe descripción"
-                    : props.datos.descripcionPeticion}
-                </p>
+                    : parse(props.datos.descripcionPeticion)}
+                </div>
               </div>
             </Col>
           </Row>
@@ -495,7 +496,7 @@ const Detalles: NextPage<Props> = (props) => {
           style={{ width: "90%", margin: "auto 0" }}
         >
           <Button type="primary" onClick={handleEnviar} className="w-100 my-3">
-            Enviar y Generar Formulario
+            Enviar y Generar
           </Button>
         </Col>
       </Row>
@@ -524,7 +525,6 @@ const Detalles: NextPage<Props> = (props) => {
           />
         </div>
       </Modal>
-      <FloatButton.BackTop />
     </>
   );
 };

@@ -88,8 +88,11 @@ const FormularioAudienciaSuspendida = (props: {
     <Document>
       <Page size={"LETTER"} style={styles.page}>
         <View style={{ position: "relative" }}>
-          <Text
+        <Text
             style={{
+              position: "absolute",
+              top: -15,
+              right: 20,
               color: "gray",
               fontSize: 8,
             }}
@@ -99,33 +102,17 @@ const FormularioAudienciaSuspendida = (props: {
           </Text>
           <Image
             style={{
-              width: 80,
-              height: 50,
+              width: "100%",
+              height: 75,
               position: "absolute",
-              right: -10,
-              top: -15,
+              top: -2.5,
+              left: 0,
             }}
-            src={"/assets/logo-gamea.png"}
+            fixed
+            src={"/assets/cabecera-documentos.png"}
           ></Image>
-          <Text
-            style={{ ...styles.textCenter, ...styles.textBold, marginTop: 10 }}
-          >
-            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-          </Text>
 
-          <Svg height="3" width="600">
-            <Line
-              x1="90"
-              y1="2"
-              x2="470"
-              y2="2"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text
-            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 10 }}
-          >
+          <Text style={{ ...styles.textBold, ...styles.textCenter, marginTop: 70 }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
@@ -135,7 +122,7 @@ const FormularioAudienciaSuspendida = (props: {
             UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+            PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
           <View style={{ ...styles.horizontal, marginTop: 30 }}>
             <Text style={styles.textBold}>CASO N°: </Text>
@@ -162,7 +149,7 @@ const FormularioAudienciaSuspendida = (props: {
             días del mes de {fecha_citacion ? meses[fecha_citacion.month()] : null} del año{" "}
             {fecha_citacion ? fecha_citacion.year() : null} a horas {citacion.hora_citacion}, en el
             marco de la normativa legal vigente aplicable a esta población
-            {" (Ley N° 369 y Ley N° 708)"}, en oficinas del Programa de Defensa
+            {" (Ley N° 369 y Ley N° 708)"}, en oficinas del PROGRAMA: DEFENSA
             y Restitución de Derechos de los Adultos Mayores, se{" "}
             <Text style={styles.textBold}> SUSPENDE LA CONCILIACIÓN </Text>
             señalada para la presente fecha, debido a:
@@ -220,7 +207,7 @@ const FormularioAudienciaSuspendida = (props: {
           style={{
             ...styles.horizontal,
             marginTop: 100,
-            justifyContent: "space-around",
+            justifyContent: "flex-start",
           }}
         >
           <View>
@@ -280,47 +267,20 @@ const FormularioAudienciaSuspendida = (props: {
               </Text>
             </View>
           </View>
-          <View style={styles.signatureBox}>
-            <Text
-              style={{
-                ...styles.parraf,
-                borderTop: "0.5px solid black",
-                paddingTop: 5,
-              }}
-            >
-              {persona.profesion +
-                " " +
-                persona.nombres +
-                " " +
-                persona.paterno +
-                " " +
-                persona.materno}
-            </Text>
-            <Text style={{ ...styles.parraf, marginTop: 2.5 }}>
-              Sello y Firma del (la) profesional
-            </Text>
-          </View>
+
         </View>
-        <View
+
+        <Image
+          style={{
+            width: "90%",
+            height: "auto",
+            position: "absolute",
+            bottom: 10,
+            left: "9%",
+          }}
           fixed
-          style={{ position: "absolute", bottom: 15, marginLeft: 35 }}
-        >
-          <Text
-            fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-          >
-            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-            Torres y Hernán Siles.
-          </Text>
-          <Text
-            fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-          >
-            {
-              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-            }
-          </Text>
-        </View>
+          src={"/assets/footer-pdf.jpg"}
+        ></Image>
       </Page>
     </Document>
   );

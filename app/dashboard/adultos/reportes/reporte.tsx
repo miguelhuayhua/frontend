@@ -121,31 +121,28 @@ const ReporteAdulto = (props: Props) => {
                         color: "gray",
                         fontSize: 8,
                     }}
+                    fixed
                 >
                     Generado por:
                     {`${props.persona.nombres} ${props.persona.paterno} ${props.persona.materno}`}
                 </Text>
                 <Image
                     style={{
-                        width: 80,
-                        height: 50,
+                        width: "105%",
+                        height: "auto",
                         position: "absolute",
                         top: 20,
-                        left: 20,
+                        left: 18,
                     }}
-                    src={"/assets/logo-gamea.png"}
+                    fixed
+                    src={"/assets/cabecera-documentos.png"}
                 ></Image>
                 <Text
-                    style={{ ...styles.textBold, fontSize: 10, position: 'absolute', top: 30, left: 100 }}
+                    style={{ fontSize: 10, position: 'absolute', top: 80, left: 122, textAlign: 'center' }}
                 >
-                    GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
+                    {"DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES"}
                 </Text>
-                <Text
-                    style={{ fontSize: 10, position: 'absolute', top: 42.5, left: 100 }}
-                >
-                    {"DIRECCCIÓN DE DESARROLLO INTEGRAL \n UNIDAD DE ADULTOS MAYORES"}
-                </Text>
-                <Text style={{ ...styles.text, marginTop: 70 }}>
+                <Text style={{ ...styles.text, marginTop: 90 }}>
                     <Text style={styles.textBold}>Nombres: </Text>
                     {props.adulto.nombre}
                 </Text>
@@ -198,34 +195,18 @@ const ReporteAdulto = (props: Props) => {
                         );
                     })}
                 </View>
-                <View style={styles.signatureBox}>
 
-                    <Text style={{ borderTop: "0.5px solid black", paddingTop: 9, fontSize: 12 }}>
-                        {props.persona.profesion +
-                            " " +
-                            props.persona.nombres +
-                            " " +
-                            props.persona.paterno +
-                            " " +
-                            props.persona.materno
-                        }
-                    </Text>
-                    <Text style={styles.textBold}>Sello y Firma del (la) profesional</Text>
-                </View>
-                <View fixed style={{ position: "absolute", bottom: 10, left: 20 }}>
-                    <Text style={{ width: "100%", fontSize: 7, textAlign: "center" }}>
-                        Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-                        Torres y Hernán Siles.
-                    </Text>
-                    <Text
-                        fixed
-                        style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-                    >
-                        {
-                            "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-                        }
-                    </Text>
-                </View>
+                <Image
+                    style={{
+                        width: "90%",
+                        height: "auto",
+                        position: "absolute",
+                        bottom: 10,
+                        left: "9%",
+                    }}
+                    fixed
+                    src={"/assets/footer-pdf.jpg"}
+                ></Image>
             </Page>
         </Document >
     );

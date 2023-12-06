@@ -16,16 +16,24 @@ import { Adulto } from "../../adultos/data";
 import { Caso, Seguimiento } from "../data";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import { createContext, useEffect, useState } from "react";
-import TextArea from "antd/es/input/TextArea";
 import FormularioSeguimiento from "./pdf-seguimiento";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Hijo } from "../../hijos/data";
 import { AiOutlineFilePdf } from "react-icons/ai";
 export const DataContext = createContext({});
 import "./estilos.scss";
 import { Usuario } from "../../usuarios/data";
 import dayjs from "dayjs";
+import { EditorState, } from 'draft-js';
+import dynamic from 'next/dynamic';
+import 'draft-js/dist/Draft.css'; // Importa los estilos de Draft.js
+const DynamicEditor = dynamic(
+  () => import('react-draft-wysiwyg').then((module) => module.Editor),
+  { ssr: false }
+);
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { stateToHTML } from "draft-js-export-html";
 interface Props {
   caso: Caso;
   adulto: Adulto;
@@ -44,7 +52,11 @@ interface Props {
   usuario: Usuario;
 }
 const SeguimientoOptions: NextPage<Props> = (props) => {
-
+  const [editorState, setEditorState] = useState(
+    () => {
+      return EditorState.createEmpty();
+    }
+  );
   const params = useSearchParams();
   const [open, setOpen] = useState(false);
   const [seguimientos, setSeguimientos] = useState<Seguimiento[]>([]);
@@ -83,30 +95,23 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
             </p>
           </div>
           <Form>
-            <b className="fw-bold">
-              Detalles seguimiento</b>
-            <Form.Item
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor, inserte el seguimiento...",
-                },
-              ]}
-            >
-              <TextArea
-                name="detalles"
-                allowClear
-                showCount
-                autoSize={{ maxRows: 10, minRows: 2 }}
-                maxLength={1000}
-                onChange={(ev) => {
-                  props.setSeguimiento({
-                    ...props.seguimiento,
-                    detalle_seguimiento: ev.target.value,
-                  });
+            <Col span={24} className="my-3">
+              <b className="fw-bold">
+                Detalles seguimiento</b>
+              <DynamicEditor
+                editorState={editorState}
+                editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
+                onEditorStateChange={setEditorState}
+                toolbar={{
+                  options: ['inline', 'history',],
+                  inline: {
+                    options: ['bold', 'italic',], // Puedes ajustar las opciones aquí
+                  }
                 }}
-              ></TextArea>
-            </Form.Item>
+              />
+            </Col>
+
+
             <Popconfirm
               key="popconfirm"
               title="¿Estás seguro de continuar?"
@@ -115,6 +120,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                 axios
                   .post(process.env.BACKEND_URL + "/caso/seguimiento/add", {
                     ...props.seguimiento,
+                    detalle_seguimiento: stateToHTML(editorState.getCurrentContent()),
                     id_caso: props.caso.id_caso,
                     usuario: props.usuario
                   })
@@ -169,6 +175,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
               style={{ marginTop: 20, marginLeft: 20 }}
               onClick={() => {
                 setOpen(true);
+                props.setSeguimiento({ ...props.seguimiento, detalle_seguimiento: stateToHTML(editorState.getCurrentContent()) });
               }}
             >
               Vista Previa PDF
@@ -253,8 +260,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                             });
                         });
                     }}
-                    style={{ height: 45, margin: "0 10px" }}
-                  >
+                    style={{ height: 45, margin: "0 10px" }}>
                     <AiOutlineFilePdf
                       style={{
                         color: "#b51308",

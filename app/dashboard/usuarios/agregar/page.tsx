@@ -19,7 +19,6 @@ import MenuSider from "../../components/MenuSider";
 import { Content } from "antd/es/layout/layout";
 import Navbar from "../../components/Navbar";
 import {
-  CopyOutlined,
   UserOutlined,
   QuestionCircleOutlined,
   EyeInvisibleOutlined,

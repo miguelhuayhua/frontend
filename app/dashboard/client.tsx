@@ -152,7 +152,7 @@ export default function Dashboard() {
                           fontSize={35}
                         />
                         <span style={{ fontSize: 18, color: "GrayText" }}>
-                          Hola {usuario.usuario}, me alegra verte hoy...
+                          Bienvenido {usuario.usuario}
                         </span>
                       </Col>
                       <Col span={24} offset={0} lg={{ span: 8, offset: 6 }}>

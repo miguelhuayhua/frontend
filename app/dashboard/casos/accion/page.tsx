@@ -27,6 +27,7 @@ import ModalActaCompromiso from "./acta-compromiso";
 import { dataDenunciado } from "../../denunciados/data";
 import Link from "next/link";
 import { Usuario, dataUsuario } from "../../usuarios/data";
+import ActaOptions from "./acta";
 const AccionCaso = () => {
   const [persona, setPersona] = useState<Persona>(dataPersona);
   const [adulto, setAdulto] = useState<Adulto>(dataAdulto);
@@ -136,6 +137,23 @@ const AccionCaso = () => {
         ></CitacionOptions>
       ),
     },
+    {
+      key: "3",
+      label: `Actas`,
+      children: (
+        <ActaOptions
+          usuario={usuario}
+          setDenunciado={setDenunciado}
+          adulto={adulto}
+          caso={caso}
+          loaded={loaded}
+          open={open}
+          persona={persona}
+          setOpen={setOpen}
+          denunciado={denunciado} 
+             ></ActaOptions>
+      ),
+    },
   ];
 
   return (
@@ -205,27 +223,7 @@ const AccionCaso = () => {
           </Content>
         </Layout>
       </Layout>
-      <FloatButton
-        tooltip={<p>Generar acta de compromiso</p>}
-        onClick={() => {
-          setOpen(true);
-        }}
-        icon={<BiHappyAlt style={{ scale: 1.8 }} />}
-        type="primary"
-        style={{ width: 70, height: 70, fontSize: 30 }}
-      ></FloatButton>
-
-      <ModalActaCompromiso
-        usuario={usuario}
-        setDenunciado={setDenunciado}
-        adulto={adulto}
-        caso={caso}
-        loaded={loaded}
-        open={open}
-        persona={persona}
-        setOpen={setOpen}
-        denunciado={denunciado}
-      ></ModalActaCompromiso>
+     
     </main>
   );
 };

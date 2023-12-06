@@ -154,7 +154,7 @@ const DatosPersonales: NextPage<Props> = (props) => {
                       <Select
                         aria-required
                         value={props.persona.expedido}
-                        style={{ width: 180 }}
+                        style={{ width: "100%" }}
                         defaultValue="LP"
                         options={departamentos}
                         onChange={(value) => {

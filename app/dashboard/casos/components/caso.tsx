@@ -13,11 +13,10 @@ import {
   notification,
 } from "antd";
 import { NextPage } from "next";
-import { createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserOutlined } from "@ant-design/icons";
 import { Caso, Denunciado, datosCaso } from "../data";
-import TextArea from "antd/es/input/TextArea";
 import { AdultoMayor2 } from "../nuevocaso/data";
 import { pdf } from "@react-pdf/renderer";
 import Formulario from "./pdf";
@@ -26,7 +25,17 @@ import { Persona } from "../../personal/agregar/data";
 import "./estilos.scss";
 import { Usuario } from "../../usuarios/data";
 import dayjs from "dayjs";
+import { ContentState, EditorState, convertFromHTML, } from 'draft-js';
+import dynamic from 'next/dynamic';
+import 'draft-js/dist/Draft.css'; // Importa los estilos de Draft.js
+
+const DynamicEditor = dynamic(
+  () => import('react-draft-wysiwyg').then((module) => module.Editor),
+  { ssr: false }
+);
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useSession } from "next-auth/react";
+import { stateToHTML } from "draft-js-export-html";
 export const DataContext = createContext({});
 //ROUTING
 //PDF
@@ -42,18 +51,39 @@ interface Props {
   setDisplayCasos: any;
 }
 const CasoModal: NextPage<Props> = (props) => {
+  useEffect(() => {
+    const contentState = ContentState.createFromBlockArray(convertFromHTML(props.caso.descripcion_hechos).contentBlocks);
+    const contentState2 = ContentState.createFromBlockArray(convertFromHTML(props.caso.peticion).contentBlocks);
+    setEditorState(EditorState.createWithContent(contentState));
+    setEditorState2(EditorState.createWithContent(contentState2));
+
+  }, [props.caso.descripcion_hechos, props.caso.peticion]);
+
   const { data } = useSession();
-  //control del modal
+  const [editorState, setEditorState] = useState(
+    () => {
+      return EditorState.createEmpty();
+    }
+  );
+  const [editorState2, setEditorState2] = useState(
+    () => {
+      return EditorState.createEmpty();
+    }
+  );
   const handleConfirm = () => {
     props.setOpen(false);
     axios
-      .post(process.env.BACKEND_URL + "/caso/update", { ...props.caso, usuario: props.usuario })
+      .post(process.env.BACKEND_URL + "/caso/update", {
+        ...props.caso, descripcion_hechos: stateToHTML(editorState.getCurrentContent()),
+        peticion: stateToHTML(editorState2.getCurrentContent()), usuario: props.usuario
+      })
       .then((res) => {
         if (res.data.status == 1) {
           notification.success({
             message: `El caso ${props.caso.nro_caso} se modificó con éxito`,
             duration: 7,
           });
+          props.setCaso(datosCaso);
           axios
             .get<Caso[]>(process.env.BACKEND_URL + "/caso/all")
             .then((res) => {
@@ -68,20 +98,17 @@ const CasoModal: NextPage<Props> = (props) => {
   const handleHideModal = () => {
     props.setOpen(false);
   };
-  //cambio del estado de caso
-  const handleDescripcion = (value: any) => {
-    props.setCaso({ ...props.caso, descripcion_hechos: value.target.value });
-  };
-  const handlePeticion = (value: any) => {
-    props.setCaso({ ...props.caso, peticion: value.target.value });
-  };
+
   const handleAcciones = (value: any) => {
     let accion = "";
     value.forEach((str: any) => {
       accion = accion + "/" + str;
     });
     props.setCaso({ ...props.caso, accion_realizada: accion.substring(1, accion.length) });
-    props.setCaso({ ...props.caso, accion_realizada: value });
+  };
+
+  const handleEditorChange = (newEditorState: any) => {
+    setEditorState(newEditorState);
   };
   return (
     <>
@@ -214,57 +241,55 @@ const CasoModal: NextPage<Props> = (props) => {
               </Col>
             </Row>
           </Col>
-          <Col span={24}>
-            <Form layout="horizontal">
-              <b className="mt-4">Descripción de los hechos</b>
-              <Form.Item>
-                <TextArea
-                  allowClear
-                  showCount
-                  maxLength={1000}
-                  style={{ height: 150, resize: "none" }}
-                  value={props.caso.descripcion_hechos}
-                  onChange={handleDescripcion}
-                />
-              </Form.Item>
-              <b className="mt-4">Petición del adulto</b>
+          <Col span={24} className="my-3">
+            <b className="mt-4">Descripción de los hechos</b>
+            <DynamicEditor
+              editorState={editorState}
+              editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
+              onEditorStateChange={setEditorState}
+              toolbar={{
+                options: ['inline', 'history',],
+                inline: {
+                  options: ['bold', 'italic',], // Puedes ajustar las opciones aquí
+                }
+              }}
+            />
+          </Col>
+          <Col span={24} className="my-3">
+            <b className="mt-4">Petición del adulto</b>
+            <DynamicEditor
+              editorState={editorState2}
+              editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
+              onEditorStateChange={setEditorState2}
+              toolbar={{
+                options: ['inline', 'history',],
+                inline: {
+                  options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
+                }
+              }}
+            />
+          </Col>
+          <Col span={24} className="my-3">
+            <b className="mt-4">Acciones realizadas con el caso</b>
+            <Select
+              mode="multiple"
 
-              <Form.Item >
-                <TextArea
-                  allowClear
-                  showCount
-                  maxLength={1000}
-                  style={{ height: 150, resize: "none" }}
-                  value={props.caso.peticion}
-                  onChange={handlePeticion}
-                />
-              </Form.Item>
-              <b className="mt-4">Acciones realizadas con el caso</b>
-              <Form.Item
-                className="normal-input"
-              >
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%' }}
-                  defaultValue={props.caso.accion_realizada.split('/')}
-                  onChange={handleAcciones}
-                  optionLabelProp="label"
-                >
-                  <Select.Option value="Apertura">
-                    Apertura de Caso
-                  </Select.Option>
-                  <Select.Option value="Orientacion">
-                    Orientación
-                  </Select.Option>
-                  <Select.Option value="Citacion">Citación</Select.Option>
-                  <Select.Option value="Derivacion">
-                    Derivación
-                  </Select.Option>
-                </Select>
-
-              </Form.Item>
-            </Form>
-
+              style={{ width: '100%' }}
+              value={props.caso.accion_realizada.split('/')}
+              onChange={handleAcciones}
+              optionLabelProp="label"
+            >
+              <Select.Option value="Apertura">
+                Apertura de Caso
+              </Select.Option>
+              <Select.Option value="Orientacion">
+                Orientación
+              </Select.Option>
+              <Select.Option value="Citacion">Citación</Select.Option>
+              <Select.Option value="Derivacion">
+                Derivación
+              </Select.Option>
+            </Select>
           </Col>
           <Col
             span={24}

@@ -91,8 +91,7 @@ export default function Reportes() {
                   </Col>
                 </Row>
                 <Row className="my-4">
-                  <Col span={24}>
-                    <h2 className="text-center mt-5 h4">Listado de adultos</h2>
+                  <Col span={24} sm={{ span: 12, offset: 6 }} lg={{ span: 8, offset: 8 }}>                    <h2 className="text-center mt-5 h4">Listado de adultos</h2>
                     <List
                       className="demo-loadmore-list"
                       itemLayout="horizontal"

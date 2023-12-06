@@ -28,7 +28,7 @@ import {
 
 import Meta from "antd/es/card/Meta";
 import locale from "antd/es/date-picker/locale/es_ES";
-import { Persona, dataPersona, dias, meses } from "./data";
+import { Persona, cargos, dataPersona, dias, meses } from "./data";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import "./estilos.scss";
@@ -196,10 +196,10 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          lg={{ span: 12 }}
+                          lg={{ span: 16, offset: 4 }}
                           xxl={{ span: 20, offset: 2 }}
                         >
-                          <Space.Compact>
+                          <Space.Compact direction="horizontal" >
                             <Form.Item label="C.I. / Expedido:">
                               <InputNumber
                                 required
@@ -207,6 +207,18 @@ const AgregarPersonal = () => {
                                 className="w-100"
                                 onChange={(ev: any) => {
                                   setPersona({ ...persona, ci: ev });
+                                }}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              name={"complemento_d"}
+                            >
+                              <Input
+                                className="w-100"
+                                placeholder="Complemento (Opcional)"
+                                value={persona.complemento}
+                                onChange={(ev) => {
+                                  setPersona({ ...persona, complemento: ev.target.value })
                                 }}
                               />
                             </Form.Item>
@@ -321,7 +333,7 @@ const AgregarPersonal = () => {
                                 setPersona({ ...persona, cargo: ev });
                               }}
                             >
-                              {persona.cargo == '1' ? <Select.Option value="1">Administrador</Select.Option> : <></>}
+                              <Select.Option value="1">Administrador</Select.Option>
                               <Select.Option value="2">Operador</Select.Option>
                               <Select.Option value="3">Visitante</Select.Option>
                             </Select>
@@ -424,7 +436,7 @@ const AgregarPersonal = () => {
                               <Col span={12}>
                                 <p>
                                   <span>Cargo: </span>
-                                  {persona.cargo}
+                                  {cargos[Number.parseInt(persona.cargo)-1]}
                                 </p>
                               </Col>
                               <Col span={12}>

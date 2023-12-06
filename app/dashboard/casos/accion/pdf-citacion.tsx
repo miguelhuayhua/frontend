@@ -87,11 +87,11 @@ const FormularioSeguimiento = () => {
     <Document>
       <Page style={styles.page}>
         <View style={{ position: "relative" }}>
-          <Text
+        <Text
             style={{
               position: "absolute",
-              top: 0,
-              right: 30,
+              top: -15,
+              right: 20,
               color: "gray",
               fontSize: 8,
             }}
@@ -99,31 +99,18 @@ const FormularioSeguimiento = () => {
             Generado por:
             {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
           </Text>
-
           <Image
             style={{
-              width: 80,
-              height: 50,
-              marginHorizontal: "auto",
+              width: "100%",
+              height: 75,
+              position: "absolute",
+              top: -2.5,
+              left: 0,
             }}
-            src={"/assets/logo-elalto.png"}
+            fixed
+            src={"/assets/cabecera-documentos.png"}
           ></Image>
-          <Text
-            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 10 }}
-          >
-            GOBIERNO AUTÓNOMO DE EL ALTO
-          </Text>
-          <Svg height="3" width="600">
-            <Line
-              x1="90"
-              y1="2"
-              x2="470"
-              y2="2"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text style={{ ...styles.textCenter, ...styles.textBold }}>
+          <Text style={{ ...styles.textBold, ...styles.textCenter, marginTop: 70 }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
           <Text style={{ ...styles.textCenter, ...styles.textBold }}>
@@ -133,7 +120,7 @@ const FormularioSeguimiento = () => {
             UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text style={{ ...styles.textCenter, ...styles.textBold }}>
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+            PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
           <Text style={styles.parraf}>TIPOLOGÍA: {caso.tipologia}</Text>
           <Text style={styles.parraf}>N° CASO: {caso.nro_caso}</Text>
@@ -162,7 +149,7 @@ const FormularioSeguimiento = () => {
           <Text style={styles.parraf}>
             Apersonarse ante estas dependencias Unidad de Adultos Mayores,
             PLANTA BAJA JACHA UTA,(Alcaldía Municipal) para el día{" "}
-            {dias2[fecha ? fecha.day() : 0]+ " "} {fecha ? fecha.date() : null} de {meses[fecha ? fecha.month() : 0]} DE{" "}
+            {dias2[fecha ? fecha.day() : 0] + " "} {fecha ? fecha.date() : null} de {meses[fecha ? fecha.month() : 0]} DE{" "}
             {fecha ? fecha.year() : 0} a horas {citacion.hora_citacion}, a objeto de tratar
             la situación{" "}
             {adulto.genero == "Masculino" ? "del Adulto" : "la Adulta "}Mayor{" "}
@@ -180,11 +167,7 @@ const FormularioSeguimiento = () => {
             se le hace conocer que debe respetar sus derechos sin argüir
             desconocimiento.
           </Text>
-          <Text style={{ ...styles.parraf, ...styles.textBold }}>
-            DEBE PORTAR TODAS LAS MEDIDAS DE BIOSEGURIDAD AL MOMENTO DE ASITIR A
-            NUESTRAS DEPENDENCIAS, ESTO CON EL FIN DE EVITAR LA PROPAGACIÓN DEL
-            COVID-19
-          </Text>
+
           <Text
             style={{
               ...styles.parraf,
@@ -199,72 +182,20 @@ const FormularioSeguimiento = () => {
             El Alto, {fecha_creacion.date()} de {meses[fecha_creacion.month()]}{" "}
             de {fecha_creacion.year()}
           </Text>
-          <View
-            style={{
-              width: 200,
-              marginHorizontal: "auto",
-              borderTop: "1px solid black",
-              marginTop: 150,
-            }}
-          >
-            <Text
-              style={{
-                ...styles.parraf,
-                ...styles.textCenter,
-                ...styles.textBold,
-              }}
-            >
-              {persona.profesion +
-                " " +
-                persona.nombres +
-                " " +
-                persona.paterno +
-                " " +
-                persona.materno}
-            </Text>
-            <Text
-              style={{ ...styles.parraf, ...styles.textCenter, marginTop: 0 }}
-            >
-              {"Sello y Firma del (la) profesional"}{" "}
-            </Text>
-          </View>
+
         </View>
-        <View
-          fixed
+
+        <Image
           style={{
+            width: "90%",
+            height: "auto",
             position: "absolute",
-            bottom: 15,
-            width: "100%",
-            marginLeft: 35,
+            bottom: 10,
+            left: "9%",
           }}
-        >
-          <Text
-            fixed
-            style={{
-              ...styles.parraf,
-              ...styles.textCenter,
-              fontSize: 8,
-              width: "100%",
-            }}
-          >
-            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-            Torres y Hernán Siles.
-          </Text>
-          <Text
-            fixed
-            style={{
-              ...styles.parraf,
-              ...styles.textCenter,
-              fontSize: 8,
-              marginTop: 2,
-              width: "100%",
-            }}
-          >
-            {
-              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-            }
-          </Text>
-        </View>
+          fixed
+          src={"/assets/footer-pdf.jpg"}
+        ></Image>
       </Page>
     </Document>
   );

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { MdElderly } from "react-icons//md";
 import { GiInjustice } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
+import { IoMdVideocam } from "react-icons/io";
 interface Props {
   defaultOpenKeys: string[];
   defaultSelectedKey: string;
@@ -185,6 +186,14 @@ const MenuSider: NextPage<Props> = (props) => {
 
               ],
             },
+            {
+              label: "Tutorial",
+              key: "tutorial",
+              icon: <IoMdVideocam />,
+              onClick: () => {
+                router.push("/dashboard/tutorial");
+              }
+            },
           ]
           : [
             {
@@ -266,6 +275,14 @@ const MenuSider: NextPage<Props> = (props) => {
                   },
                 },
               ],
+            },
+            {
+              label: "Tutorial",
+              key: "tutorial",
+              icon: <IoMdVideocam />,
+              onClick: () => {
+                router.push("/dashboard/tutorial");
+              }
             },
           ]
       );

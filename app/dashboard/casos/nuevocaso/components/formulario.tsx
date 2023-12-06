@@ -6,7 +6,6 @@ import {
   Col,
   DatePicker,
   Divider,
-  FloatButton,
   Form,
   Input,
   InputNumber,
@@ -17,7 +16,6 @@ import {
   Select,
   Space,
   Tag,
-  TimePicker,
   message,
   notification,
 } from "antd";
@@ -38,19 +36,36 @@ import {
   options,
 } from "../data";
 import dayjs from "dayjs";
-import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import moment, { now } from "moment";
-import FormItem from "antd/es/form/FormItem";
+import moment from "moment";
 import { NextPage } from "next";
 import axios from "axios";
+import { EditorState } from 'draft-js';
+import dynamic from 'next/dynamic';
+import { stateToHTML } from "draft-js-export-html";
+import 'draft-js/dist/Draft.css'; // Importa los estilos de Draft.js
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
+const DynamicEditor = dynamic(
+  () => import('react-draft-wysiwyg').then((module) => module.Editor),
+  { ssr: false }
+);
 interface Props {
   getDatos: any;
   getPosicion: any;
 }
 const Formulario: NextPage<Props> = (props) => {
   //cargado de datos
+  const [editorState, setEditorState] = useState(
+    () => {
+      return EditorState.createEmpty();
+    }
+  );
+  const [editorState2, setEditorState2] = useState(
+    () => {
+      return EditorState.createEmpty();
+    }
+  );
   const [nombres, setNombres] = useState<{
     nombres: { value: string }[];
     apellidos: { value: string }[];
@@ -65,6 +80,10 @@ const Formulario: NextPage<Props> = (props) => {
     notification.success({
       message: "Si no existe una observación alguna, puede guardarlo.",
     });
+
+    setDescripcionHechos(stateToHTML(editorState.getCurrentContent()));
+    setPeticion(stateToHTML(editorState2.getCurrentContent()));
+    console.log(stateToHTML(editorState.getCurrentContent()), editorState2.getCurrentContent());
     let adulto = datosGenerales;
     let denunciado = datosDenunciado;
     let nombreAdulto = "";
@@ -94,8 +113,8 @@ const Formulario: NextPage<Props> = (props) => {
       datosGenerales: adulto,
       datosUbicacion,
       datosDenunciado: denunciado,
-      descripcionHechos: descripcionHechos && descripcionHechos != "" ? descripcionHechos[0].toUpperCase() + descripcionHechos.substring(1, descripcionHechos.length) : "",
-      descripcionPeticion: descripcionPeticion && descripcionPeticion != "" ? descripcionPeticion[0].toUpperCase() + descripcionPeticion.substring(1, descripcionPeticion.length) : "",
+      descripcionHechos: stateToHTML(editorState.getCurrentContent()),
+      descripcionPeticion: stateToHTML(editorState2.getCurrentContent()),
       accionRealizada,
       datosDenuncia,
     });
@@ -303,12 +322,7 @@ const Formulario: NextPage<Props> = (props) => {
     setDatosUbicacion({ ...datosUbicacion, area: value });
   };
 
-  const handleDescripcion = (value: any) => {
-    setDescripcionHechos(value.target.value);
-  };
-  const handlePeticion = (value: any) => {
-    setPeticion(value.target.value);
-  };
+
   const handleNombreDenunciado = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, nombres: value });
   };
@@ -320,10 +334,6 @@ const Formulario: NextPage<Props> = (props) => {
   const handleMaternoDenunciado = (value: any) => {
     setDatosDenunciado({ ...datosDenunciado, materno: value });
   };
-  const handleParentezco = (value: any) => {
-    setDatosDenunciado({ ...datosDenunciado, parentezco: value });
-  };
-
   const handleAcciones = (value: string[]) => {
     let accion = "";
     value.forEach((str) => {
@@ -337,8 +347,6 @@ const Formulario: NextPage<Props> = (props) => {
       tipologia: value,
     });
   };
-
-
   return (
     <>
       <Row gutter={[24, 24]} >
@@ -348,24 +356,7 @@ const Formulario: NextPage<Props> = (props) => {
           </h2>
           <Form onFinish={handleOpenChange} layout="horizontal">
             <Row gutter={[24, 24]}>
-              <Col span={24} lg={{ span: 10, offset: 2 }} >
-                <Form.Item label={"Fecha de Registro"}>
-                  <DatePicker
-                    className="normal-input"
-                    disabled
-                    value={dayjs(dataDatosDenuncia.fecha_registro)}
-                  ></DatePicker>
-                </Form.Item>
-              </Col>
-              <Col span={24} lg={{ span: 10 }}>
-                <FormItem label="Hora de registro:">
-                  <TimePicker
-                    className="normal-input"
-                    disabled
-                    defaultValue={dayjs(now())}
-                  />
-                </FormItem>
-              </Col>
+
               <Col span={24} lg={{ span: 10, offset: 2 }} >
                 <Form.Item label="Tipología:">
                   <Select
@@ -589,7 +580,7 @@ const Formulario: NextPage<Props> = (props) => {
 
               <Col span={24} lg={{ span: 10 }}>
                 <Form.Item className="normal-input" label="Estado Civil:">
-                  <Select defaultValue={"Viudo"} onChange={handleEstadoCivil}>
+                  <Select value={datosGenerales.estado_civil} onChange={handleEstadoCivil}>
                     <Select.Option value="Soltero(a)">
                       Soltero(a)
                     </Select.Option>
@@ -727,9 +718,28 @@ const Formulario: NextPage<Props> = (props) => {
                   />
                 </Form.Item>
               </Col>
+              <Col span={24} lg={{ span: 10 }}>
+                <Form.Item className="normal-input" label="Área:">
+                  <Select
+                    defaultValue={datosUbicacion.area}
+                    onChange={handleArea}
+                  >
+                    <Select.Option value="Urbano">Urbano</Select.Option>
+                    <Select.Option value="Rural">Rural</Select.Option>
+                    <Select.Option value="Otro">Otro Municipio</Select.Option>
+                  </Select>
+                  <Input
+                    hidden={datosUbicacion.area != "Otro"}
+                    placeholder="Especifique"
+                    className="normal-input mt-3"
+                    onChange={handleOtraArea}
+                  />
+                </Form.Item>
+              </Col>
+
               {datosUbicacion.area == "Otro" ||
                 datosUbicacion.area == "Rural" ? null : (
-                <Col span={24} lg={{ span: 10 }}>
+                <Col span={24} lg={{ span: 10, offset: 2 }}>
                   <Form.Item className="normal-input" label="Distrito:">
                     <Select defaultValue={1} onChange={handleDistrito}>
                       {Array.from({ length: 14 }, (_, i) => i + 1).map(
@@ -790,24 +800,7 @@ const Formulario: NextPage<Props> = (props) => {
                   />
                 </Form.Item>
               </Col>
-              <Col span={24} lg={{ span: 10 }}>
-                <Form.Item className="normal-input" label="Área:">
-                  <Select
-                    defaultValue={datosUbicacion.area}
-                    onChange={handleArea}
-                  >
-                    <Select.Option value="Urbano">Urbano</Select.Option>
-                    <Select.Option value="Rural">Rural</Select.Option>
-                    <Select.Option value="Otro">Otro Municipio</Select.Option>
-                  </Select>
-                  <Input
-                    hidden={datosUbicacion.area != "Otro"}
-                    placeholder="Especifique"
-                    className="normal-input mt-3"
-                    onChange={handleOtraArea}
-                  />
-                </Form.Item>
-              </Col>
+
             </Row>
             <Divider style={{ fontSize: 15 }} orientation="left">
               {"DESCRIPCIÓN DE LOS HECHOS (testimonio del adulto mayor)"}
@@ -815,10 +808,16 @@ const Formulario: NextPage<Props> = (props) => {
             <Row>
               <Col span={24} lg={{ span: 20, offset: 2 }}>
                 <Form.Item className="w-100">
-                  <TextArea
-                    placeholder="Introduzca los hechos"
-                    style={{ maxHeight: 200, height: 100, minHeight: 100 }}
-                    onChange={handleDescripcion}
+                  <DynamicEditor
+                    editorState={editorState}
+                    onEditorStateChange={setEditorState}
+                    editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
+                    toolbar={{
+                      options: ['inline', 'history',],
+                      inline: {
+                        options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
+                      }
+                    }}
                   />
                 </Form.Item>
               </Col>
@@ -828,13 +827,17 @@ const Formulario: NextPage<Props> = (props) => {
             </Divider>
             <Row>
               <Col span={24} lg={{ span: 20, offset: 2 }}>
-                <Form.Item className="w-100">
-                  <TextArea
-                    placeholder="Introduzca la petición"
-                    style={{ maxHeight: 200, height: 100, minHeight: 100 }}
-                    onChange={handlePeticion}
-                  />
-                </Form.Item>
+                <DynamicEditor
+                  editorState={editorState2}
+                  editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
+                  onEditorStateChange={setEditorState2}
+                  toolbar={{
+                    options: ['inline', 'history',],
+                    inline: {
+                      options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
+                    }
+                  }}
+                />
               </Col>
             </Row>
             <Divider style={{ fontSize: 15 }} orientation="left">
@@ -911,6 +914,7 @@ const Formulario: NextPage<Props> = (props) => {
                   >
                     <InputNumber
                       minLength={5}
+                      defaultValue={0}
                       className="w-100"
                       placeholder="Introduzca el Nro. de C.I. (denunciado)"
                       onChange={(ev) => {
@@ -986,7 +990,7 @@ const Formulario: NextPage<Props> = (props) => {
             </Row>
           </Form>
         </Col>
-      </Row>
+      </Row >
       <Modal
         title="¿Continuar?"
         open={open}
@@ -1004,7 +1008,6 @@ const Formulario: NextPage<Props> = (props) => {
           </p>
         </div>
       </Modal>
-      <FloatButton.BackTop />
     </>
   );
 };

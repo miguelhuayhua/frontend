@@ -32,6 +32,7 @@ export interface Persona {
     profesion: string;
     nombres: string;
     paterno: string;
+    complemento?: string;
     materno: string;
     ci: number;
     celular: number;
@@ -56,5 +57,10 @@ export let dataPersona = {
     genero: "Femenino",
     ult_modificacion: "",
     estado: 0,
-    expedido: 'LP'
+    expedido: 'LP',
+    complemento: ''
 }
+
+export let cargos: string[] = [
+    'Administrador', 'Operador', 'Visitante'
+]

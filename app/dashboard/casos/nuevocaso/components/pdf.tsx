@@ -18,6 +18,7 @@ import {
 } from "../data";
 import { Persona } from "@/app/dashboard/personal/agregar/data";
 import dayjs from "dayjs";
+import HTMLReactParser from "html-react-parser";
 
 // Create styles
 //estilos
@@ -124,6 +125,48 @@ const MyDocument = () => {
     accionRealizada: string;
     datosDenuncia: DatosDenuncia;
   };
+  let descripcion: any[] = [];
+  let peticion: any[] = [];
+  const parseToHtml = (text: string) => {
+    let list: any[] = [];
+    HTMLReactParser(text, {
+      transform(node, dom: any, index) {
+        if (dom.type == 'text' && dom.parent.name == 'p') {
+          list.push(<Text key={dom.type + '-' + index} style={styles.text}>{dom.data}</Text>);
+        }
+        else if (dom.type == 'text' && dom.parent.name != 'p' || dom.name == 'p') {
+          return null;
+        }
+        else {
+          if (dom.name == 'strong' && dom.parent != 'em') {
+            list.push(<Text key={dom.type + '-' + index} style={styles.textBold}>
+              {dom.children[0].data}
+            </Text>);
+          }
+          else if (dom.name == 'strong' && dom.parent == 'em') {
+            return null;
+          }
+          else {
+            if (dom.children[0].type == 'text') {
+              list.push(<Text key={dom.type + '-' + index} style={styles.textItalic}>
+                {dom.children[0].data}
+              </Text>);
+            }
+            else {
+              list.push(<Text key={dom.type + '-' + index} style={{ ...styles.textItalic, ...styles.textBold }}>
+                {dom.children[0].children[0].data}
+              </Text>);
+            }
+          }
+        }
+      }
+
+    });
+    return list;
+  }
+  descripcion = parseToHtml(descripcionHechos);
+  peticion = parseToHtml(descripcionPeticion);
+
   const accionesRealizadas = accionRealizada.split("/");
   let { persona } = data as { persona: Persona };
   return (
@@ -190,7 +233,7 @@ const MyDocument = () => {
         <Text
           style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
         >
-          PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+          PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
         </Text>
         <View style={{ ...styles.horizontal, marginTop: 9 }}>
           <Text style={styles.textInfo}>
@@ -430,14 +473,19 @@ const MyDocument = () => {
           II. DESCRIPCIÓN DE LOS HECHOS
         </Text>
         <View style={styles.container}>
-          <Text style={styles.textItalic}>{descripcionHechos}</Text>
+          <Text style={styles.text}>
+            {descripcion}
+          </Text>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
           III. PETICIÓN DE LA PERSONA ADULTA MAYOR
         </Text>
         <View style={styles.container}>
-          <Text style={styles.textItalic}>{descripcionPeticion}</Text>
+          <Text style={styles.text}>
+            {peticion}
+          </Text>
         </View>
+
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
           IV. DATOS PERSONALES DEL DENUNCIADO(A)
         </Text>
@@ -487,50 +535,26 @@ const MyDocument = () => {
         <View
           style={{
             ...styles.horizontal,
-            justifyContent: "space-evenly",
-            marginTop: 30,
+            marginTop: 90,
+            marginLeft:50
           }}
         >
           <Text style={{ ...styles.text, ...styles.textCenter }}>
             {`FIRMA O HUELLA DEL ADULTO(A) MAYOR \n ${datosGenerales.nombre} ${datosGenerales.paterno} ${datosGenerales.materno}`}
           </Text>
-          <View style={styles.signatureBox}>
-            <Text style={{ borderTop: "0.5px solid black", paddingTop: 9 }}>
-              {persona.profesion +
-                " " +
-                persona.nombres +
-                " " +
-                persona.paterno +
-                " " +
-                persona.materno}
-            </Text>
-            <Text>Sello y Firma del (la) profesional</Text>
-          </View>
         </View>
-        <View fixed style={{ position: "absolute", bottom: 10, left: 20 }}>
-          <Svg height="3" width="600">
-            <Line
-              x1="90"
-              y1="95%"
-              x2="470"
-              y2="95%"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text style={{ width: "100%", fontSize: 7, textAlign: "center" }}>
-            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-            Torres y Hernán Siles.
-          </Text>
-          <Text
-            fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-          >
-            {
-              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-            }
-          </Text>
-        </View>
+
+        <Image
+          style={{
+            width: "90%",
+            height: "auto",
+            position: "absolute",
+            bottom: 10,
+            left: "9%",
+          }}
+          fixed
+          src={"/assets/footer-pdf.jpg"}
+        ></Image>
       </Page>
     </Document>
   );

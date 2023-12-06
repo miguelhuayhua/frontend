@@ -65,8 +65,8 @@ const FormularioActaCompromiso = () => {
           <Text
             style={{
               position: "absolute",
-              top: 0,
-              right: 50,
+              top: 5,
+              right: 20,
               color: "gray",
               fontSize: 8,
             }}
@@ -74,37 +74,25 @@ const FormularioActaCompromiso = () => {
             Generado por:
             {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
           </Text>
-
           <Image
             style={{
-              width: 80,
-              height: 50,
-              marginHorizontal: "auto",
-              marginTop: 10,
+              width: "100%",
+              height: "auto",
+              position: "absolute",
+              top: 15,
+              left: 0,
             }}
-            src={"/assets/logo-elalto.png"}
+            fixed
+            src={"/assets/cabecera-documentos.png"}
           ></Image>
-          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-          </Text>
-          <Svg height="3" width="600">
-            <Line
-              x1="90"
-              y1="2"
-              x2="470"
-              y2="2"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          <Text style={{ ...styles.textBold, ...styles.textCenter, marginTop: 95 }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+            PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             ACTA DE COMPROMISO DE BUENA CONDUCTA
@@ -169,26 +157,18 @@ const FormularioActaCompromiso = () => {
             </Text>
           ))}
         </View>
-        <View
+
+        <Image
+          style={{
+            width: "90%",
+            height: "auto",
+            position: "absolute",
+            bottom: 10,
+            left: "9%",
+          }}
           fixed
-          style={{ position: "absolute", bottom: 15, marginLeft: 35 }}
-        >
-          <Text
-            fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-          >
-            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-            Torres y Hernán Siles.
-          </Text>
-          <Text
-            fixed
-            style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-          >
-            {
-              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-            }
-          </Text>
-        </View>
+          src={"/assets/footer-pdf.jpg"}
+        ></Image>
       </Page>
     </Document>
   );

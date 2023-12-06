@@ -144,33 +144,19 @@ const ReporteCaso = (props: Props) => {
                     La víctima del caso siendo ${props.adulto.genero == 'Femenino' ? 'la Sra.' : "el Sr."} ${props.adulto.nombre} ${props.adulto.paterno} ${props.adulto.materno}, llevando a cabo la denuncia correspondiente dirigido ${props.denunciado.genero == 'Femenino' ? 'a la Sra.' : 'al Sr.'}: ${props.denunciado.nombres} ${props.denunciado.paterno} ${props.denunciado.materno}, con una relación de: "${props.denunciado.parentezco}" con el denunciante. 
                     Se llevó a cabo la acción de: "${props.caso.accion_realizada}" sobre el mismo.`}
                 </Text>
-                <View style={styles.signatureBox}>
-                    <Text style={{ borderTop: "0.5px solid black", paddingTop: 9 }}>
-                        {props.persona.profesion +
-                            " " +
-                            props.persona.nombres +
-                            " " +
-                            props.persona.paterno +
-                            " " +
-                            props.persona.materno
-                        }
-                    </Text>
-                    <Text style={styles.textBold}>Sello y Firma del (la) profesional</Text>
-                </View>
-                <View fixed style={{ position: "absolute", bottom: 10, left: 20 }}>
-                    <Text style={{ width: "100%", fontSize: 7, textAlign: "center" }}>
-                        Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-                        Torres y Hernán Siles.
-                    </Text>
-                    <Text
-                        fixed
-                        style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-                    >
-                        {
-                            "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-                        }
-                    </Text>
-                </View>
+
+
+                <Image
+                    style={{
+                        width: "90%",
+                        height: "auto",
+                        position: "absolute",
+                        bottom: 10,
+                        left: "9%",
+                    }}
+                    fixed
+                    src={"/assets/footer-pdf.jpg"}
+                ></Image>
             </Page>
         </Document >
     );

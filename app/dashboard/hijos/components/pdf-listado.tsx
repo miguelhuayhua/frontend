@@ -142,39 +142,18 @@ const PdfHijos = () => {
           </Text>
           <Image
             style={{
-              width: 60,
-              height: 60,
+              width: "100%",
+              height: "110",
               position: "absolute",
-              top: 15,
-              left: 5,
+              top: 20,
+              left: 20,
             }}
-            src={"/assets/logo-elalto.png"}
+            fixed
+            src={"/assets/cabecera-documentos.png"}
           ></Image>
-          <Image
-            style={{
-              width: 80,
-              height: 50,
-              position: "absolute",
-              top: 10,
-              right: 5,
-            }}
-            src={"/assets/logo-gamea.png"}
-          ></Image>
-          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-          </Text>
-          <Svg height="3" width="650">
-            <Line
-              x1="90"
-              y1="2"
-              x2="650"
-              y2="2"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text
-            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 10 }}
+
+              <Text
+            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 80 }}
           >
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
@@ -182,7 +161,7 @@ const PdfHijos = () => {
             DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+            PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
 
           <Text style={{ ...styles.bigTitle, marginVertical: 10 }}>
@@ -229,53 +208,19 @@ const PdfHijos = () => {
             {dayjs().year()}
           </Text>
 
-          <View
-            style={{
-              width: 200,
-              marginHorizontal: "auto",
-              borderTop: "1px solid black",
-              marginTop: 40,
-            }}
-          >
-            <Text
-              style={{
-                ...styles.parraf,
-                ...styles.textCenter,
-                ...styles.textBold,
-              }}
-            >
-              {persona.profesion +
-                " " +
-                persona.nombres +
-                " " +
-                persona.paterno +
-                " " +
-                persona.materno}
-            </Text>
-            <Text
-              style={{ ...styles.parraf, ...styles.textCenter, marginTop: 0 }}
-            >
-              {"Sello y Firma del (la) profesional"}{" "}
-            </Text>
-          </View>
+       
 
-          <View fixed style={{ position: "absolute", bottom: 10, left: 40 }}>
-            <Text
-              fixed
-              style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-            >
-              Avenida Costanera Nro. 5002, urbanización libertad entre calles
-              J.J. Torres y Hernán Siles.
-            </Text>
-            <Text
-              fixed
-              style={{ width: "100%", fontSize: 7, textAlign: "center" }}
-            >
-              {
-                "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-              }
-            </Text>
-          </View>
+        <Image
+            style={{
+              width: "90%",
+              height: "auto",
+              position: "absolute",
+              bottom: 10,
+              left: "9%",
+            }}
+            fixed
+            src={"/assets/footer-pdf.jpg"}
+          ></Image>
         </Page>
       </Document>
     </>

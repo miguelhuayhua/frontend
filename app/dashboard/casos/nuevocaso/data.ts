@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import moment from "moment";
+import moment, { now } from "moment";
 import { Hijo } from "../../hijos/data";
 
 export const dias = [
@@ -152,8 +152,8 @@ export let dataDatosDenunciado = {
     expedido: "LP",
 }
 export let dataDatosDenuncia = {
-    fecha_registro: dayjs().format('YYYY-MM-DD'),
-    hora_registro: dayjs().format('HH:mm:ss'),
+    fecha_registro: dayjs(now()).format('YYYY-MM-DD'),
+    hora_registro: dayjs(now()).format('HH:mm:ss'),
     tipologia: "Abandono",
     nro_caso: ""
 

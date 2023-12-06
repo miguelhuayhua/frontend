@@ -164,7 +164,7 @@ const Informacion = () => {
           setPersonas(res.data);
           setDisplayPersonas(
             res.data.filter((value) => {
-              return value.id_persona != persona1.id_persona;
+              return value.id_persona != persona.id_persona;
             })
           );
         });

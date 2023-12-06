@@ -1,8 +1,9 @@
 @import "/node_modules/bootstrap/scss/bootstrap.scss";
-
 //botones flotantes de exportación
 .info {
   color: rgb(134, 134, 134);
+  font-size: 0.8em !important;
+  margin: 0;
 }
 
 .float-btn {
@@ -32,7 +33,7 @@
 }
 
 b {
-  color: #167a9b !important;
+  color: #0e4d62 !important;
 }
 
 .column-centered {
@@ -122,6 +123,7 @@ th {
 @keyframes to-right {
   0% {
     transform: translateX(-100%);
+
   }
 
   100% {
@@ -141,4 +143,8 @@ th {
   100% {
     transform: translateX(0%);
   }
+}
+
+.ant-segmented-group {
+  flex-wrap: wrap;
 }

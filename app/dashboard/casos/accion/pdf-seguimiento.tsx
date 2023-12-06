@@ -14,11 +14,16 @@ import { Persona } from "../../personal/agregar/data";
 import { Caso, Seguimiento } from "../data";
 import { AdultoMayor2 } from "../nuevocaso/data";
 import { DataContext } from "./seguimiento";
+import HTMLReactParser from "html-react-parser";
 
 // Create styles
 //estilos
 const styles = StyleSheet.create({
   textBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 12,
+  },
+  textBold2: {
     fontFamily: "Helvetica-Bold",
     fontSize: 12,
   },
@@ -60,6 +65,10 @@ const styles = StyleSheet.create({
   underline: {
     textDecoration: "underline",
   },
+  text: {
+    fontSize: 10,
+  },
+  textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
   horizontal: {
     display: "flex",
     flexDirection: "row",
@@ -81,7 +90,43 @@ const styles = StyleSheet.create({
 // Create Document Component
 const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimiento: Seguimiento, adulto: AdultoMayor2 }) => {
   let { caso, persona, seguimiento, adulto } = props;
-
+  const parseToHtml = (text: string) => {
+    let list: any[] = [];
+    HTMLReactParser(text, {
+      transform(node, dom: any, index) {
+        if (dom.type == 'text' && dom.parent.name == 'p') {
+          list.push(<Text key={dom.type + '-' + index} style={styles.text}>{dom.data}</Text>);
+        }
+        else if (dom.type == 'text' && dom.parent.name != 'p' || dom.name == 'p') {
+          return null;
+        }
+        else {
+          if (dom.name == 'strong' && dom.parent != 'em') {
+            list.push(<Text key={dom.type + '-' + index} style={styles.textBold2}>
+              {dom.children[0].data}
+            </Text>);
+          }
+          else if (dom.name == 'strong' && dom.parent == 'em') {
+            return null;
+          }
+          else {
+            if (dom.children[0].type == 'text') {
+              list.push(<Text key={dom.type + '-' + index} style={styles.textItalic}>
+                {dom.children[0].data}
+              </Text>);
+            }
+            else {
+              list.push(<Text key={dom.type + '-' + index} style={{ ...styles.textItalic, ...styles.textBold2 }}>
+                {dom.children[0].children[0].data}
+              </Text>);
+            }
+          }
+        }
+      }
+    });
+    return list;
+  }
+  let detalle = parseToHtml(seguimiento.detalle_seguimiento);
   return (
     <Document>
       <Page style={styles.page}>
@@ -100,48 +145,23 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
           </Text>
           <Image
             style={{
-              width: 70,
-              height: 40,
+              width: "100%",
+              height: "auto",
               position: "absolute",
               top: -2.5,
-              right: 2,
+              left: 0,
             }}
-            src={"/assets/logo-gamea.png"}
+            fixed
+            src={"/assets/cabecera-documentos.png"}
           ></Image>
-
-          <Image
-            style={{
-              width: 65,
-              height: 50,
-              position: "absolute",
-              top: -2.5,
-              left: 2,
-            }}
-            src={"/assets/logo-elalto.png"}
-          ></Image>
-          <Text
-            style={{ ...styles.textBold, ...styles.textCenter, marginTop: 20 }}
-          >
-            GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-          </Text>
-          <Svg height="3" width="600">
-            <Line
-              x1="90"
-              y1="2"
-              x2="470"
-              y2="2"
-              strokeWidth={1}
-              stroke="rgb(0,0,0)"
-            />
-          </Svg>
-          <Text style={{ ...styles.textBold, ...styles.textCenter }}>
+          <Text style={{ ...styles.textBold, ...styles.textCenter, marginTop: 85 }}>
             SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             DIRECCCIÓN DE DESARROLLO INTEGRAL UNIDAD DE ADULTOS MAYORES
           </Text>
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
-            PROGRAMA DE DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
+            PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
           <View style={{ ...styles.horizontal, marginTop: 10 }}>
             <Text style={{ ...styles.parraf, color: "gray", fontSize: 8 }}>
@@ -176,9 +196,9 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
               fontFamily: "Helvetica-Oblique",
             }}
           >
-            {seguimiento.detalle_seguimiento}
+            {detalle}
           </Text>
-          <View style={{ ...styles.horizontal, marginTop: 50 }}>
+          <View style={{ ...styles.horizontal, marginTop: 40, justifyContent: 'flex-start' }}>
             <View>
               <View
                 style={{
@@ -240,56 +260,20 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
                 </Text>
               </View>
             </View>
-            <View style={styles.signatureBox}>
-              <Text style={{ borderTop: "0.5px solid black", paddingTop: 10 }}>
-                {persona.profesion +
-                  " " +
-                  persona.nombres +
-                  " " +
-                  persona.paterno +
-                  " " +
-                  persona.materno}
-              </Text>
-              <Text>Sello y Firma del (la) profesional</Text>
-            </View>
+
           </View>
         </View>
-        <View
-          fixed
+        <Image
           style={{
+            width: "90%",
+            height: "auto",
             position: "absolute",
-            bottom: 15,
-            width: "100%",
-            marginLeft: 35,
+            bottom: 10,
+            left: "9%",
           }}
-        >
-          <Text
-            fixed
-            style={{
-              ...styles.parraf,
-              ...styles.textCenter,
-              fontSize: 8,
-              width: "100%",
-            }}
-          >
-            Avenida Costanera Nro. 5002, urbanización libertad entre calles J.J.
-            Torres y Hernán Siles.
-          </Text>
-          <Text
-            fixed
-            style={{
-              ...styles.parraf,
-              ...styles.textCenter,
-              fontSize: 8,
-              marginTop: 2,
-              width: "100%",
-            }}
-          >
-            {
-              "Zuazo, Casa Municipal (Jach'a Uta), a media cuadra de la Estación de Bomberos El Alto."
-            }
-          </Text>
-        </View>
+          fixed
+          src={"/assets/footer-pdf.jpg"}
+        ></Image>
       </Page>
     </Document>
   );

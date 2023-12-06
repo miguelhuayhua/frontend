@@ -80,18 +80,6 @@ const Navbar = () => {
             }}
             role="navigation"
           >
-            <Popover placement="bottomRight" title={<p className="text-center" >Tutorial guía de iniciación</p>}
-              content={<><Image src={"/assets/qr-tutorial.png"} width={30} height={30} layout="responsive" />
-
-                <p>O mediante el siguiente link:</p>
-                <Link target="_blank" href={"https://youtu.be/ANX7cVirRZE"}>
-                https://youtu.be/ANX7cVirRZE
-                                </Link>
-              </>}>
-              <>
-                <IoMdHelpCircle style={{ marginLeft: 30 }} fontSize={30} color="graytext" />
-              </>
-            </Popover>
             <div
               className="fecha-container"
               style={{ position: "absolute", right: 240 }}

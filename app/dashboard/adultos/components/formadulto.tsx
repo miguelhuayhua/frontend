@@ -230,7 +230,6 @@ const FormAdulto: NextPage<Props> = (props) => {
               <Form.Item label="Estado Civil:">
                 <Select
                   value={props.adulto.estado_civil}
-                  defaultValue={props.adulto.estado_civil}
                   onChange={(value) =>
                     props.setAdulto({
                       ...props.adulto,
@@ -377,37 +376,9 @@ const FormAdulto: NextPage<Props> = (props) => {
                         }
                         title=<b>{item.nombres_apellidos}</b>
                       />
-                      <div>
-                        <Tooltip
-                          title={
-                            <>
-                              Copiar ID:
-                              <b style={{ marginLeft: 5 }}>
-                                {" " + item.id_hijo}
-                              </b>
-                            </>
-                          }
-                        >
-                          <Button
-                            onClick={() => {
-                              const textField =
-                                document.createElement("textarea");
-                              textField.innerText = item.id_hijo;
-                              document.body.appendChild(textField);
-                              textField.select();
-                              navigator.clipboard
-                                .writeText(item.id_hijo)
-                                .then(() => {
-                                  textField.remove();
-                                  message.success(
-                                    "¡ID - Hijo, copiado al portapapeles!"
-                                  );
-                                });
-                            }}
-                            icon={<CopyOutlined color="blue" />}
-                          ></Button>
-                        </Tooltip>
-                      </div>
+                      <Paragraph copyable={{ tooltips: "Copiar", onCopy: () => message.success({ content: "Copiado exitosamente" }) }}>
+                        {item.id_hijo}
+                      </Paragraph>
                     </List.Item>
                   )}
                 />
