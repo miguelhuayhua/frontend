@@ -83,7 +83,6 @@ const Formulario: NextPage<Props> = (props) => {
 
     setDescripcionHechos(stateToHTML(editorState.getCurrentContent()));
     setPeticion(stateToHTML(editorState2.getCurrentContent()));
-    console.log(stateToHTML(editorState.getCurrentContent()), editorState2.getCurrentContent());
     let adulto = datosGenerales;
     let denunciado = datosDenunciado;
     let nombreAdulto = "";
@@ -813,10 +812,11 @@ const Formulario: NextPage<Props> = (props) => {
                     onEditorStateChange={setEditorState}
                     editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
                     toolbar={{
-                      options: ['inline', 'history',],
+                      options: ['inline', 'history', 'list'],  // Agregamos 'list' a las opciones del toolbar
                       inline: {
-                        options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
-                      }
+                        options: ['bold', 'italic'], // Agregamos las opciones de lista
+                      },
+                      list: { options: ['unordered'] }
                     }}
                   />
                 </Form.Item>
@@ -832,10 +832,11 @@ const Formulario: NextPage<Props> = (props) => {
                   editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
                   onEditorStateChange={setEditorState2}
                   toolbar={{
-                    options: ['inline', 'history',],
+                    options: ['inline', 'history', 'list'],  // Agregamos 'list' a las opciones del toolbar
                     inline: {
-                      options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
-                    }
+                      options: ['bold', 'italic'], // Agregamos las opciones de lista
+                    },
+                    list: { options: ['unordered'] }
                   }}
                 />
               </Col>

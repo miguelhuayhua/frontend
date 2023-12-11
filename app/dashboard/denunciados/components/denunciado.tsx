@@ -68,7 +68,6 @@ const DenunciadoModal: NextPage<Props> = (props) => {
   const handleHideModal = () => {
     props.setOpen(false);
   };
-  console.log(props.denunciado)
   return (
     <>
       <Modal

@@ -410,7 +410,6 @@ const AgregarUsuarios = () => {
                               if (personaFinded) {
                                 setPersona(personaFinded);
                               } else {
-                                console.log("no hay persona ");
                                 setPersona(dataPersona);
                               }
                             }}

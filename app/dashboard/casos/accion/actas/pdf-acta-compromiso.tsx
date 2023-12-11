@@ -60,9 +60,7 @@ const parseHtml = (text: string) => {
                             listaP.push(<Text key={dom.type + index} style={styles.text} >{child.data}</Text>)
                         }
                         else {
-                            console.log('es strong :' + child)
                             if (child.name == 'strong') {
-                                console.log(child.children)
                                 if (child.children[0].data == 'under-A') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
                                         <Text style={{ textDecoration: 'underline' }}>PRIMERO</Text>
@@ -163,7 +161,6 @@ interface Props {
 }
 // Create Document Component
 const ActaCompromiso = (props: Props) => {
-    console.log(props)
     return (
         <Document>
             <Page  style={styles.page}>

@@ -25,6 +25,7 @@ export const DataContext = createContext({});
 import "./estilos.scss";
 import { Usuario } from "../../usuarios/data";
 import dayjs from "dayjs";
+import parse from 'html-react-parser';
 import { EditorState, } from 'draft-js';
 import dynamic from 'next/dynamic';
 import 'draft-js/dist/Draft.css'; // Importa los estilos de Draft.js
@@ -103,15 +104,14 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                 editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
                 onEditorStateChange={setEditorState}
                 toolbar={{
-                  options: ['inline', 'history',],
+                  options: ['inline', 'history', 'list'],  // Agregamos 'list' a las opciones del toolbar
                   inline: {
-                    options: ['bold', 'italic',], // Puedes ajustar las opciones aquí
-                  }
+                    options: ['bold', 'italic'], // Agregamos las opciones de lista
+                  },
+                  list: { options: ['unordered'] }
                 }}
               />
             </Col>
-
-
             <Popconfirm
               key="popconfirm"
               title="¿Estás seguro de continuar?"
@@ -212,7 +212,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
                     style={{ fontSize: 11 }}
                   >
                     <b className="fw-bold">Detalles: </b>
-                    {item.detalle_seguimiento}
+                    {parse(item.detalle_seguimiento)};
                   </Typography.Paragraph>
                   <Button
                     onClick={() => {

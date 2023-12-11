@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
-        transform(node, dom: any, index) {
+        transform( dom: any, index:any) {
             if (dom.type == 'tag') {
                 let listaP: any[] = [];
                 if (dom.name == 'p') {

@@ -137,7 +137,6 @@ export default function Reportes() {
                                         link.click();
                                         document.body.removeChild(link);
                                       }).catch((error: any) => {
-                                        console.log(error)
                                       })
 
                                   })

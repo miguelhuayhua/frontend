@@ -13,7 +13,6 @@ import ReactPDF, {
 import { Persona } from "../../personal/agregar/data";
 import { Caso, Seguimiento } from "../data";
 import { AdultoMayor2 } from "../nuevocaso/data";
-import { DataContext } from "./seguimiento";
 import HTMLReactParser from "html-react-parser";
 
 // Create styles
@@ -86,47 +85,82 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 20,
   },
+  textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" }
 });
 // Create Document Component
 const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimiento: Seguimiento, adulto: AdultoMayor2 }) => {
   let { caso, persona, seguimiento, adulto } = props;
-  const parseToHtml = (text: string) => {
+  const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
-      transform(node, dom: any, index) {
-        if (dom.type == 'text' && dom.parent.name == 'p') {
-          list.push(<Text key={dom.type + '-' + index} style={styles.text}>{dom.data}</Text>);
-        }
-        else if (dom.type == 'text' && dom.parent.name != 'p' || dom.name == 'p') {
-          return null;
-        }
-        else {
-          if (dom.name == 'strong' && dom.parent != 'em') {
-            list.push(<Text key={dom.type + '-' + index} style={styles.textBold2}>
-              {dom.children[0].data}
-            </Text>);
-          }
-          else if (dom.name == 'strong' && dom.parent == 'em') {
-            return null;
-          }
-          else {
-            if (dom.children[0].type == 'text') {
-              list.push(<Text key={dom.type + '-' + index} style={styles.textItalic}>
-                {dom.children[0].data}
-              </Text>);
+      transform(dom: any, index: any) {
+        if (dom.type == 'tag') {
+          let listaP: any[] = [];
+          if (dom.name == 'p') {
+            dom.children.forEach((child: any) => {
+              if (child.type == 'text') {
+                listaP.push(<Text key={dom.type + index} style={styles.text} >{child.data}</Text>)
+              }
+              else if (child.name == 'em') {
+                if (child.children[0].type == 'text') {
+                  listaP.push(<Text key={dom.type + index} style={styles.textItalic} >{child.children[0].data}</Text>)
+                }
+                else {
+                  listaP.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child.children[0].children[0].data}</Text>)
+                }
+              }
+              else if (child.name == 'br') {
+                listaP.push(<Text key={dom.type + index} style={styles.text} >{"\n"}</Text>)
+              }
+              else {
+                if (child.name == 'strong') {
+
+                  listaP.push(<Text key={dom.type + index} style={styles.textBold} >{child.children[0].data}</Text>)
+                }
+              }
             }
-            else {
-              list.push(<Text key={dom.type + '-' + index} style={{ ...styles.textItalic, ...styles.textBold2 }}>
-                {dom.children[0].children[0].data}
-              </Text>);
-            }
+            );
+            list.push(listaP);
+          }
+          else if (dom.name == 'ul') {
+            let listaLi: any[] = [];
+            dom.children.forEach((child: any) => {
+              if (child.type == 'tag') {
+                let elemLi: any[] = [];
+                elemLi.push(<Text key={dom.type + "---" + index}>{"\t• "}</Text>)
+                //ENTRA EN EL CASO DE SER li
+                child.children.forEach((child2: any) => {
+                  //revisamos los hijos de li
+                  if (child2.type == 'text') {
+                    elemLi.push(<Text key={dom.type + index} style={styles.text} >{child2.data}</Text>)
+                  }
+                  else {
+                    if (child2.name == 'strong') {
+                      elemLi.push(<Text key={dom.type + index} style={styles.textBold} >{child2.children[0].data}</Text>)
+                    }
+                    else if (child2.name == 'em') {
+                      if (child2.children[0].type == 'text') {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textItalic} >{child2.children[0].data}</Text>)
+                      }
+                      else {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child2.children[0].children[0].data}</Text>)
+                      }
+                    }
+                  }
+                });
+                listaLi.push(<Text key={dom.type + "---" + index} style={styles.text}>{elemLi}</Text>)
+              }
+            });
+            list.push(<View key={dom.type + "----" + index} style={{ marginTop: 7.5, marginBottom: 5.5, marginLeft: 18 }}>{listaLi}</View>);
           }
         }
       }
     });
-    return list;
+    return list
   }
-  let detalle = parseToHtml(seguimiento.detalle_seguimiento);
+  console.log(parseHtml(seguimiento.detalle_seguimiento));
+  let detalle = parseHtml(seguimiento.detalle_seguimiento);
+  console.log(detalle)
   return (
     <Document>
       <Page style={styles.page}>

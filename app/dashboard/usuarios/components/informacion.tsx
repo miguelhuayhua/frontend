@@ -324,8 +324,7 @@ const Informacion = () => {
                 .get<Usuario[]>(process.env.BACKEND_URL + "/usuario/all")
                 .then((res) => {
                   setUsuarios(res.data);
-                  console.log(res.data);
-                  console.log(usuario);
+               
                   setDisplayUsuarios(
                     res.data.filter((value) => {
                       return value.id_usuario != usuario2.id_usuario;
@@ -457,13 +456,11 @@ const Informacion = () => {
                         });
                     });
                 } else if (ev.target.className.includes("ant-btn")) {
-                  console.log(usuario)
                   axios
                     .post<Usuario>(process.env.BACKEND_URL + "/usuario/get", {
                       id_usuario: value.id_usuario,
                     })
                     .then((res) => {
-                      console.log(res.data)
                       setUsuario(res.data);
                       setLoaded(true);
                       axios

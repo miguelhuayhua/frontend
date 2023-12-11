@@ -61,7 +61,6 @@ const parseHtml = (text: string) => {
                             listaP.push(<Text key={dom.type + index} style={styles.text} >{child.data}</Text>)
                         }
                         else {
-                            console.log('es strong :' + child)
                             if (child.name == 'strong') {
                                 if (child.children[0].data == 'under-A') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >

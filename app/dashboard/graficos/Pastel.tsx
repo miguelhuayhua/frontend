@@ -24,7 +24,6 @@ const GraficoPastel = ({ data, keyTitle, keys }: Props) => {
         color: getRandomHexColor(),
       };
     });
-    console.log(keys);
   }
   return (
     <ResponsiveContainer width="100%" height={200}>
