@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
     textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" },
     parraf: {
-        lineHeight: 1.35,
+        lineHeight: 1.25,
         fontFamily: "Helvetica",
         fontSize: 10,
         marginTop: 7.5,
@@ -98,7 +98,7 @@ const parseHtml = (text: string) => {
                             }
                         }
                     });
-                    list.push(listaP);
+                    list.push(<Text style={styles.parraf}>{listaP}</Text>);
                 }
                 else if (dom.name == 'ul') {
                     let listaLi: any[] = [];

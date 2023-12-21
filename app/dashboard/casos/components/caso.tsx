@@ -3,7 +3,6 @@ import {
   Avatar,
   Button,
   Col,
-  Form,
   Modal,
   Popconfirm,
   Row,
@@ -248,10 +247,11 @@ const CasoModal: NextPage<Props> = (props) => {
               editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
               onEditorStateChange={setEditorState}
               toolbar={{
-                options: ['inline', 'history',],
+                options: ['inline', 'history', 'list'],  // Agregamos 'list' a las opciones del toolbar
                 inline: {
-                  options: ['bold', 'italic',], // Puedes ajustar las opciones aquí
-                }
+                  options: ['bold', 'italic'], // Agregamos las opciones de lista
+                },
+                list: { options: ['unordered'] }
               }}
             />
           </Col>
@@ -262,10 +262,11 @@ const CasoModal: NextPage<Props> = (props) => {
               editorStyle={{ border: '1px solid #DDD', borderRadius: 5 }}
               onEditorStateChange={setEditorState2}
               toolbar={{
-                options: ['inline', 'history',],
+                options: ['inline', 'history', 'list'],  // Agregamos 'list' a las opciones del toolbar
                 inline: {
-                  options: ['bold', 'italic'], // Puedes ajustar las opciones aquí
-                }
+                  options: ['bold', 'italic'], // Agregamos las opciones de lista
+                },
+                list: { options: ['unordered'] }
               }}
             />
           </Col>

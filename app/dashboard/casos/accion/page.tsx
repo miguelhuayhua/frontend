@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, FloatButton, Layout, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Layout, Tabs, TabsProps } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,9 +21,7 @@ import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import SeguimientoOptions from "./seguimiento";
 import { Hijo } from "../../hijos/data";
-import { BiHappyAlt } from "react-icons/bi";
 import CitacionOptions from "./citacion";
-import ModalActaCompromiso from "./acta-compromiso";
 import { dataDenunciado } from "../../denunciados/data";
 import Link from "next/link";
 import { Usuario, dataUsuario } from "../../usuarios/data";

@@ -5,12 +5,9 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
-  Svg,
-  Line,
+  Image
 } from "@react-pdf/renderer";
 import dayjs from "dayjs";
-import { Adulto } from "../../adultos/data";
 import { Caso } from "../data";
 import { context } from "./informacion";
 import { Persona, meses } from "../../personal/agregar/data";
@@ -122,7 +119,7 @@ const PdfCasos = () => {
               top: 5,
               left: 50,
               color: "gray",
-              fontSize: 8,
+              fontSize: 7,
             }}
           >
             Generado por:{" "}

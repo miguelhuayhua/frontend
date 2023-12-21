@@ -1,13 +1,11 @@
 import React, { useContext } from "react";
-import ReactPDF, {
+import {
   Document,
   Page,
   Text,
   StyleSheet,
   View,
-  Image,
-  Line,
-  Svg,
+  Image
 } from "@react-pdf/renderer";
 
 import { Persona } from "../../personal/agregar/data";
@@ -15,16 +13,10 @@ import { Caso, Seguimiento } from "../data";
 import { AdultoMayor2 } from "../nuevocaso/data";
 import HTMLReactParser from "html-react-parser";
 
-// Create styles
-//estilos
 const styles = StyleSheet.create({
   textBold: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 12,
-  },
-  textBold2: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 12,
+    fontSize: 10,
   },
   textCenter: {
     textAlign: "center",
@@ -32,29 +24,37 @@ const styles = StyleSheet.create({
   textEnd: {
     textAlign: "right",
   },
+  textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
+  textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" },
   parraf: {
-    lineHeight: 1.3,
+    lineHeight: 1.35,
     fontFamily: "Helvetica",
-    fontSize: 12,
-    marginTop: 12,
+    fontSize: 10,
+    marginTop: 6,
+    textAlign: 'justify'
   },
+ 
   page: {
-    fontFamily: "Helvetica",
-    fontSize: 12,
-    padding: 20,
-    position: "relative",
+    paddingLeft: 25,
+    paddingRight: 30,
+  },
+  listItem: {
+    marginLeft: 40,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 11,
+    fontFamily: 'Helvetica-Bold'
+  },
+  text: {
+    fontSize: 10
   },
   textBox: {
     border: "1px solid black",
     borderRadius: 5,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 7.5,
     paddingVertical: 2,
-  },
-  listItem: {
-    marginLeft: 40,
+    paddingTop: 3
   },
   bigTitle: {
     fontFamily: "Helvetica-Bold",
@@ -64,10 +64,14 @@ const styles = StyleSheet.create({
   underline: {
     textDecoration: "underline",
   },
-  text: {
+  signatureBox: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     fontSize: 10,
+    justifyContent: "center",
+    marginRight: 20,
   },
-  textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
   horizontal: {
     display: "flex",
     flexDirection: "row",
@@ -77,23 +81,14 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 20,
   },
-  signatureBox: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    fontSize: 10,
-    justifyContent: "center",
-    marginRight: 20,
-  },
-  textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" }
 });
-// Create Document Component
 const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimiento: Seguimiento, adulto: AdultoMayor2 }) => {
   let { caso, persona, seguimiento, adulto } = props;
+
   const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
-      transform(dom: any, index: any) {
+      transform(node, dom: any, index: any) {
         if (dom.type == 'tag') {
           let listaP: any[] = [];
           if (dom.name == 'p') {
@@ -120,7 +115,9 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
               }
             }
             );
-            list.push(listaP);
+            list.push(<Text style={styles.parraf}>
+              {listaP}
+            </Text>);
           }
           else if (dom.name == 'ul') {
             let listaLi: any[] = [];
@@ -158,9 +155,8 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
     });
     return list
   }
-  console.log(parseHtml(seguimiento.detalle_seguimiento));
   let detalle = parseHtml(seguimiento.detalle_seguimiento);
-  console.log(detalle)
+
   return (
     <Document>
       <Page style={styles.page}>
@@ -168,10 +164,10 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
           <Text
             style={{
               position: "absolute",
-              top: -15,
+              top: 5,
               right: 20,
               color: "gray",
-              fontSize: 8,
+              fontSize: 7,
             }}
           >
             Generado por:
@@ -182,7 +178,7 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
               width: "100%",
               height: "auto",
               position: "absolute",
-              top: -2.5,
+              top: 20,
               left: 0,
             }}
             fixed
@@ -197,104 +193,107 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
           <Text style={{ ...styles.textBold, ...styles.textCenter }}>
             PROGRAMA: DEFENSA Y RESTITUCIÓN DE DERECHOS DEL ADULTO MAYOR
           </Text>
-          <View style={{ ...styles.horizontal, marginTop: 10 }}>
-            <Text style={{ ...styles.parraf, color: "gray", fontSize: 8 }}>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', marginTop: 10 }}>
+            <Text style={{ color: "gray", fontSize: 8 }}>
               {"Fecha y hora de registro: " +
                 seguimiento.fecha_seguimiento +
                 " " +
                 seguimiento.hora_seguimiento}
-            </Text>
-            <Text style={styles.textBold}>TIPOLOGÍA:</Text>
-            <Text style={{ ...styles.textBox, ...styles.parraf }}>
-              {caso.tipologia}
-            </Text>
-            <Text style={styles.textBold}>N° CASO:</Text>
-            <Text style={{ ...styles.textBox, ...styles.parraf }}>
-              {caso.nro_caso}
-            </Text>
-          </View>
-          <Text style={styles.textBold}>
-            I. NOMBRES Y APELLIDOS DE LA PERSONA ADULTA MAYOR:
-          </Text>
-          <Text style={{ ...styles.textBox, ...styles.parraf, marginTop: 2 }}>
-            {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
-          </Text>
-          <Text style={{ ...styles.textBold, marginTop: 20 }}>
-            II. DETALLES DEL SEGUIMIENTO DEL CASO:
-          </Text>
-          <Text
-            style={{
-              ...styles.textBox,
-              ...styles.parraf,
-              marginTop: 2,
-              fontFamily: "Helvetica-Oblique",
-            }}
-          >
-            {detalle}
-          </Text>
-          <View style={{ ...styles.horizontal, marginTop: 40, justifyContent: 'flex-start' }}>
-            <View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontSize: 10 }}>Firma:</Text>
-                <View
-                  style={{
-                    height: 10,
-                    borderBottom: "0.5px solid black",
-                    width: 150,
-                    marginLeft: 10,
-                  }}
-                ></View>
-              </View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 10 }}>
-                  Nombre Completo:
-                </Text>
-                <Text
-                  style={{
-                    borderBottom: "0.5px solid black",
-                    paddingHorizontal: 10,
-                    fontSize: 10,
-                    marginLeft: 10,
-                  }}
-                >
-                  {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
-                </Text>
-              </View>
-              <View
-                style={{
-                  ...styles.horizontal,
-                  width: 300,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 10 }}>
-                  N° Celular:
-                </Text>
-                <Text
-                  style={{
-                    borderBottom: "0.5px solid black",
-                    fontSize: 10,
-                    paddingHorizontal: 10,
-                    marginLeft: 10,
-                  }}
-                >
-                  {adulto.nro_referencia}
-                </Text>
-              </View>
-            </View>
 
+            </Text>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={styles.textBold}>TIPOLOGÍA: </Text>
+              <Text style={{ ...styles.textBox, ...styles.parraf }}>
+                {caso.tipologia}
+              </Text>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={styles.textBold}>N° CASO: </Text>
+              <Text style={{ ...styles.textBox, ...styles.parraf }}>
+                {caso.nro_caso}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <Text style={styles.textBold}>
+          I. NOMBRES Y APELLIDOS DE LA PERSONA ADULTA MAYOR:
+        </Text>
+        <Text style={{ ...styles.textBox, ...styles.parraf, marginTop: 2 }}>
+          {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
+        </Text>
+        <Text style={{ ...styles.textBold, marginTop: 20 }}>
+          II. DETALLES DEL SEGUIMIENTO DEL CASO:
+        </Text>
+        <View
+          style={{
+            ...styles.textBox,
+
+            marginTop: 2,
+          }}
+        >
+          {detalle}
+        </View>
+        <View style={{ ...styles.horizontal, marginTop: 40, justifyContent: 'flex-start' }}>
+          <View>
+            <View
+              style={{
+                ...styles.horizontal,
+                width: 300,
+                justifyContent: "flex-start",
+              }}
+            >
+              <Text style={{ fontSize: 10 }}>Firma:</Text>
+              <View
+                style={{
+                  height: 10,
+                  borderBottom: "0.5px solid black",
+                  width: 150,
+                  marginLeft: 10,
+                }}
+              ></View>
+            </View>
+            <View
+              style={{
+                ...styles.horizontal,
+                width: 300,
+                justifyContent: "flex-start",
+              }}
+            >
+              <Text style={{ fontWeight: "bold", fontSize: 10 }}>
+                Nombre Completo:
+              </Text>
+              <Text
+                style={{
+                  borderBottom: "0.5px solid black",
+                  paddingHorizontal: 10,
+                  fontSize: 10,
+                  marginLeft: 10,
+                }}
+              >
+                {adulto.nombre + " " + adulto.paterno + " " + adulto.materno}
+              </Text>
+            </View>
+            <View
+              style={{
+                ...styles.horizontal,
+                width: 300,
+                justifyContent: "flex-start",
+              }}
+            >
+              <Text style={{ fontWeight: "bold", fontSize: 10 }}>
+                N° Celular:
+              </Text>
+              <Text
+                style={{
+                  borderBottom: "0.5px solid black",
+                  fontSize: 10,
+                  paddingHorizontal: 10,
+                  marginLeft: 10,
+                }}
+              >
+                {adulto.nro_referencia}
+              </Text>
+            </View>
           </View>
         </View>
         <Image
@@ -309,7 +308,7 @@ const FormularioSeguimiento = (props: { caso: Caso, persona: Persona, seguimient
           src={"/assets/footer-pdf.jpg"}
         ></Image>
       </Page>
-    </Document>
+    </Document >
   );
 };
 export default FormularioSeguimiento;

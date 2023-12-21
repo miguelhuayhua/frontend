@@ -16,7 +16,7 @@ import {
 import { NextPage } from "next";
 import { UserOutlined } from "@ant-design/icons";
 import { AiOutlineFilePdf } from "react-icons/ai";
-import { createContext, useState } from "react";
+import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 
 import { Adulto } from "../../adultos/data";
@@ -40,9 +40,6 @@ interface Props {
   setCitaciones: any;
   setCitacion: any;
 }
-
-
-
 
 const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
   const [open, setOpen] = useState(false);
@@ -280,7 +277,7 @@ const ModalAudienciaSuspendida: NextPage<Props> = (props) => {
         }}
         open={open}
       >
-        <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
+        <PDFViewer showToolbar={false} style={{ width: "100%", height: 650 }}>
           <FormularioAudienciaSuspendida
             adulto={props.adulto}
             caso={props.caso}

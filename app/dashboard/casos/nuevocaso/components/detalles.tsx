@@ -82,49 +82,55 @@ const Detalles: NextPage<Props> = (props) => {
         };
         persona: Persona;
       };
-      axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: persona.id_persona }).then(res => {
+      axios.post<Persona>(process.env.BACKEND_URL + "/persona/get", { id_persona: persona.id_persona }).then(res3 => {
         axios.post<Usuario>(process.env.BACKEND_URL + "/usuario/get", { id_usuario: usuario.id_usuario }).then(res2 => {
-          pdf(
-            <DataContext.Provider value={{ ...props.datos, persona: res.data }}>
-              <MyDocument />
-            </DataContext.Provider>
-          )
-            .toBlob()
-            .then((blob) => {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement("a");
-              link.href = url;
-              let { nombre, paterno, materno } = props.datos.datosGenerales;
-
-              link.setAttribute(
-                "download",
-                nombre +
-                paterno +
-                materno +
-                "caso.pdf"
-              );
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            });
           axios
             .post(process.env.BACKEND_URL + "/denuncia/insert", { ...props.datos, usuario: res2.data })
             .then((res) => {
-              setSuccess(true);
-              setCounter(100);
-              setEstado(false);
-              if (res.data.status == 1) {
-                notification.success({ message: res.data.response });
-                props.router.push("/dashboard/casos");
-              } else {
-                notification.error({ message: res.data.response });
-              }
+              pdf(
+                <MyDocument datosGenerales={props.datos.datosGenerales}
+                  datosUbicacion={props.datos.datosUbicacion}
+                  descripcionHechos={props.datos.descripcionHechos}
+                  datosDenunciado={props.datos.datosDenunciado}
+                  accionRealizada={props.datos.accionRealizada}
+                  persona={res3.data}
+                  datosDenuncia={{...props.datos.datosDenuncia, nro_caso:res.data.nro_caso}}
+                  descripcionPeticion={props.datos.descripcionPeticion} />
+              )
+                .toBlob()
+                .then((blob) => {
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  let { nombre, paterno, materno } = props.datos.datosGenerales;
+                  link.setAttribute(
+                    "download",
+                    nombre +
+                    paterno +
+                    materno +
+                    "caso.pdf"
+                  );
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  setSuccess(true);
+                  setCounter(100);
+                  setEstado(false);
+                  if (res.data.status == 1) {
+                    notification.success({ message: res.data.response });
+                    props.router.push("/dashboard/casos");
+                  } else {
+                    notification.error({ message: res.data.response });
+                  }
+                });
             })
             .catch((err) => {
               clearInterval(interval);
               setEstado(true);
               setSuccess(false);
             });
+
+
         });
       });
     }

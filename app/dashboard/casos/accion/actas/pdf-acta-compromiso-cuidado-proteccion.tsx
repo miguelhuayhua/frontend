@@ -1,14 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
     Document,
     Page,
     Text,
     StyleSheet,
     View,
-    Image,
-    Line,
-    Svg,
-    Font,
+    Image
 } from "@react-pdf/renderer";
 import HTMLReactParser from "html-react-parser";
 import { Adulto } from "@/app/dashboard/adultos/data";
@@ -28,7 +25,7 @@ const styles = StyleSheet.create({
     textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
     textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" },
     parraf: {
-        lineHeight: 1.35,
+        lineHeight: 1.25,
         fontFamily: "Helvetica",
         fontSize: 10,
         marginTop: 7.5,
@@ -53,7 +50,7 @@ const styles = StyleSheet.create({
 const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
-        transform( dom: any, index:any) {
+        transform(node, dom: any, index) {
             if (dom.type == 'tag') {
                 let listaP: any[] = [];
                 if (dom.name == 'p') {
@@ -66,49 +63,60 @@ const parseHtml = (text: string) => {
                                 if (child.children[0].data == 'under-A') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
                                         <Text style={{ textDecoration: 'underline' }}>PRIMERO</Text>
-                                        {" (ANTECEDENTES). -"}
+                                        {" (ANTECEDENTES). - "}
                                     </Text>);
                                 }
                                 else if (child.children[0].data == 'under-D') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
                                         <Text style={{ textDecoration: 'underline' }}>SEGUNDO</Text>
-                                        {" (DECLARACIÓN). -"}
-                                    </Text>);
-                                }
-                                else if (child.children[0].data == 'under-F') {
-                                    listaP.push(<Text key={dom.type + index} style={styles.textBold} >
-                                        <Text style={{ textDecoration: 'underline' }}>TERCERO</Text>
-                                        {" (FUNDAMENTO LEGAL). -"}
+                                        {" (DECLARACIÓN). - "}
                                     </Text>);
                                 }
                                 else if (child.children[0].data == 'under-O') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
                                         <Text style={{ textDecoration: 'underline' }}>CUARTO</Text>
-                                        {" (OBJETO DEL COMPROMISO). -"}
+                                        {" (OBJETO DEL COMPROMISO). - "}
                                     </Text>);
                                 }
                                 else if (child.children[0].data == 'under-I') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
-                                        <Text style={{ textDecoration: 'underline' }}>QUINTO</Text>
-                                        {" (INCUMPLIMIENTO). -"}
+                                        <Text style={{ textDecoration: 'underline' }}>QUITO</Text>
+                                        {" (INCUMPLIMIENTO). - "}
                                     </Text>);
                                 }
                                 else if (child.children[0].data == 'under-CONF') {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >
                                         <Text style={{ textDecoration: 'underline' }}>SEXTO</Text>
-                                        {" (CONFORMIDAD). -"}
+                                        {" (CONFORMIDAD). - "}
                                     </Text>);
-                                }
 
+                                }
+                                else if (child.children[0].data == 'under-F') {
+                                    listaP.push(<Text key={dom.type + index} style={styles.textBold} >
+                                        <Text style={{ textDecoration: 'underline' }}>TERCERO</Text>
+                                        {" (FUNDAMENTO LEGAL). - "}
+                                    </Text>);
+
+                                }
                                 else {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >{child.children[0].data}</Text>)
-                                }
 
+                                }
+                            }
+                            else if (child.name == 'em') {
+                                if (child.children[0].type == 'text') {
+                                    listaP.push(<Text key={dom.type + index} style={styles.textItalic} >{child.children[0].data}</Text>)
+                                }
+                                else {
+                                    listaP.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child.children[0].children[0].data}</Text>)
+                                }
+                            }
+                            else if (child.name == 'br') {
+                                listaP.push(<Text key={dom.type + index} style={styles.text} >{"\n"}</Text>)
                             }
                         }
-                    }
-                    );
-                    list.push(listaP);
+                    });
+                    list.push(<Text style={styles.parraf}>{listaP}</Text>);
                 }
                 else if (dom.name == 'ul') {
                     let listaLi: any[] = [];

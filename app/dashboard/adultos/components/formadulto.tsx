@@ -21,7 +21,7 @@ import { UserOutlined, CopyOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { Adulto } from "../data";
 import dayjs from "dayjs";
-import { dias, meses } from "../../casos/nuevocaso/data";
+import { departamentos, dias, meses } from "../../casos/nuevocaso/data";
 import Paragraph from "antd/es/typography/Paragraph";
 export const DataContext = createContext({});
 
@@ -196,7 +196,6 @@ const FormAdulto: NextPage<Props> = (props) => {
                   />
                 </Form.Item>
                 <Form.Item
-                  name={"complemento_d"}
                 >
                   <Input
                     className="w-100"
@@ -208,6 +207,17 @@ const FormAdulto: NextPage<Props> = (props) => {
                   />
                 </Form.Item>
               </Space.Compact>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="Expedido: ">
+                <Select
+                  value={props.adulto.expedido}
+                  onChange={(ev) => {
+                    props.setAdulto({ ...props.adulto, expedido: ev })
+                  }}
+                  options={departamentos}
+                ></Select>
+              </Form.Item>
             </Col>
             <Col span={24} >
               <Form.Item label="genero:">
@@ -226,7 +236,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 </Radio.Group>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item label="Estado Civil:">
                 <Select
                   value={props.adulto.estado_civil}
@@ -249,7 +259,7 @@ const FormAdulto: NextPage<Props> = (props) => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12} >
+            <Col span={24} >
               <Form.Item
                 label="N° de Referencia/Celular:"
                 rules={[

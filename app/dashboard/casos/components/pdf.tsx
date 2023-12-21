@@ -5,9 +5,7 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
-  Svg,
-  Line,
+  Image
 } from "@react-pdf/renderer";
 import { DataContext } from "./caso";
 
@@ -18,7 +16,6 @@ import {
   DatosUbicacion,
 } from "../nuevocaso/data";
 import { Persona } from "../../personal/agregar/data";
-import dayjs from "dayjs";
 import HTMLReactParser from "html-react-parser";
 //estilos
 const styles = StyleSheet.create({
@@ -28,9 +25,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
+  textBoldItalic: { fontSize: 9, fontFamily: "Helvetica-BoldOblique" },
   page: {
     fontFamily: "Helvetica",
-    fontSize: 12,
     padding: 20,
     position: "relative",
     paddingBottom: 25,
@@ -95,8 +92,6 @@ const styles = StyleSheet.create({
   parraf: {
     lineHeight: 1.3,
     fontFamily: "Helvetica",
-    fontSize: 12,
-    marginTop: 12,
   },
   listItem: {
     marginLeft: 40,
@@ -126,100 +121,106 @@ const Formulario = () => {
   let accionesRealizadas = accionRealizada.split("/");
   let descripcion: any[] = [];
   let peticion: any[] = [];
-  const parseToHtml = (text: string) => {
+  const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
       transform(node, dom: any, index) {
-        if (dom.type == 'text' && dom.parent.name == 'p') {
-          list.push(<Text key={dom.type + '-' + index} style={styles.text}>{dom.data}</Text>);
-        }
-        else if (dom.type == 'text' && dom.parent.name != 'p' || dom.name == 'p') {
-          return null;
-        }
-        else {
-          if (dom.name == 'strong' && dom.parent != 'em') {
-            list.push(<Text key={dom.type + '-' + index} style={styles.textBold}>
-              {dom.children[0].data}
-            </Text>);
+        if (dom.type == 'tag') {
+          let listaP: any[] = [];
+          if (dom.name == 'p') {
+            dom.children.forEach((child: any) => {
+              if (child.type == 'text') {
+                listaP.push(<Text key={dom.type + index} style={styles.text} >{child.data}</Text>)
+              }
+              else {
+                if (child.name == 'strong') {
+                  listaP.push(<Text key={dom.type + index} style={styles.textBold} >{child.children[0].data}</Text>);
+                }
+                else if (child.name == 'em') {
+                  if (child.children[0].type == 'text') {
+                    listaP.push(<Text key={dom.type + index} style={styles.textItalic} >{child.children[0].data}</Text>)
+                  }
+                  else {
+                    listaP.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child.children[0].children[0].data}</Text>)
+                  }
+                }
+                else if (child.name == 'br') {
+                  listaP.push(<Text key={dom.type + index} style={styles.text} >{"\n"}</Text>)
+                }
+              }
+            });
+            list.push(<Text style={styles.parraf}>{listaP}</Text>);
           }
-          else if (dom.name == 'strong' && dom.parent == 'em') {
-            return null;
-          }
-          else {
-            if (dom.children[0].type == 'text') {
-              list.push(<Text key={dom.type + '-' + index} style={styles.textItalic}>
-                {dom.children[0].data}
-              </Text>);
-            }
-            else {
-              list.push(<Text key={dom.type + '-' + index} style={{ ...styles.textItalic, ...styles.textBold }}>
-                {dom.children[0].children[0].data}
-              </Text>);
-            }
+          else if (dom.name == 'ul') {
+            let listaLi: any[] = [];
+            dom.children.forEach((child: any) => {
+              if (child.type == 'tag') {
+                let elemLi: any[] = [];
+                elemLi.push(<Text key={dom.type + "---" + index}>{"\t• "}</Text>)
+                //ENTRA EN EL CASO DE SER li
+                child.children.forEach((child2: any) => {
+                  //revisamos los hijos de li
+                  if (child2.type == 'text') {
+                    elemLi.push(<Text key={dom.type + index} style={styles.text} >{child2.data}</Text>)
+                  }
+                  else {
+                    if (child2.name == 'strong') {
+                      elemLi.push(<Text key={dom.type + index} style={styles.textBold} >{child2.children[0].data}</Text>)
+                    }
+                    else if (child2.name == 'em') {
+                      if (child2.children[0].type == 'text') {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textItalic} >{child2.children[0].data}</Text>)
+                      }
+                      else {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child2.children[0].children[0].data}</Text>)
+                      }
+                    }
+                  }
+                });
+                listaLi.push(<Text key={dom.type + "---" + index} style={styles.text}>{elemLi}</Text>)
+              }
+            });
+            list.push(<View key={dom.type + "----" + index} style={{ marginTop: 7.5, marginBottom: 5.5, marginLeft: 18 }}>{listaLi}</View>);
           }
         }
       }
-
     });
-    return list;
+    return list
   }
-  descripcion = parseToHtml(descripcionHechos);
-  peticion = parseToHtml(descripcionPeticion);
+  descripcion = parseHtml(descripcionHechos);
+  peticion = parseHtml(descripcionPeticion);
+
 
   let { persona } = data as { persona: Persona };
   return (
     <Document>
       <Page style={styles.page}>
         <Text
+          fixed
           style={{
             position: "absolute",
             top: 8,
             right: 20,
             color: "gray",
-            fontSize: 8,
+            fontSize: 7,
           }}
         >
           Generado por:
           {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
         </Text>
         <Image
+          fixed
           style={{
-            width: 80,
-            height: 50,
+            width: 550,
+            height: 80,
             position: "absolute",
             top: 20,
-            right: 2,
+            left: 22,
           }}
-          src={"/assets/logo-gamea.png"}
-        ></Image>
-
-        <Image
-          style={{
-            width: 80,
-            height: 50,
-            position: "absolute",
-            top: 20,
-            left: 2,
-          }}
-          src={"/assets/logo-elalto.png"}
+          src={"/assets/cabecera-documentos.png"}
         ></Image>
         <Text
-          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
-        >
-          GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-        </Text>
-        <Svg height="3" width="600">
-          <Line
-            x1="90"
-            y1="2"
-            x2="470"
-            y2="2"
-            strokeWidth={1}
-            stroke="rgb(0,0,0)"
-          />
-        </Svg>
-        <Text
-          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
+          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10, marginTop: 60 }}
         >
           SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
         </Text>
@@ -244,7 +245,7 @@ const Formulario = () => {
             {"Tipología: " + datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: " + datosDenuncia.nro_caso }
           </Text>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 15, marginBottom: 2.5 }}>
@@ -469,17 +470,17 @@ const Formulario = () => {
           II. DESCRIPCIÓN DE LOS HECHOS
         </Text>
         <View style={styles.container}>
-          <Text style={styles.text}>
+          <View style={styles.text}>
             {descripcion}
-          </Text>
+          </View>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
           III. PETICIÓN DE LA PERSONA ADULTA MAYOR
         </Text>
         <View style={styles.container}>
-          <Text style={styles.text}>
+          <View style={styles.text}>
             {peticion}
-          </Text>
+          </View>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
           IV. DATOS PERSONALES DEL DENUNCIADO(A)
@@ -530,7 +531,7 @@ const Formulario = () => {
         <View
           style={{
             ...styles.horizontal,
-            marginTop: 90,
+            marginTop: 120,
             marginLeft: 50
           }}
         >

@@ -609,6 +609,7 @@ const Formulario: NextPage<Props> = (props) => {
                     onChange={handleReferencia}
                     placeholder="Introduzca el Nro. de referencia"
                     minLength={8}
+                    maxLength={8}
                     className="normal-input"
                   />
                 </Form.Item>
@@ -796,6 +797,7 @@ const Formulario: NextPage<Props> = (props) => {
                     className="w-100"
                     placeholder="Introduzca el Nro. de vivienda"
                     min={1}
+                    maxLength={8}
                   />
                 </Form.Item>
               </Col>

@@ -24,6 +24,6 @@ export let dataDenunciado: Denunciado = {
   parentezco: "",
   genero: "",
   ci: 0,
-  expedido: "LP",
+  expedido: "QR",
   complemento: ""
 };

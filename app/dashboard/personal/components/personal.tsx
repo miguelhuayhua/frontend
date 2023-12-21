@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { Persona } from "../agregar/data";
-import { UserOutlined, CopyOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 
 import {
   Avatar,
@@ -211,18 +211,33 @@ const PersonaModal: NextPage<Props> = (props) => {
                       value={props.persona.ci}
                     ></InputNumber>
                   </Form.Item>
+                  <Form.Item
+                  >
+                    <Input
+                      className="w-100"
+                      placeholder="Complemento (Opcional)"
+                      value={props.persona.complemento}
+                      onChange={(ev) => {
+                        props.setPersona({ ...props.persona, complemento: ev.target.value })
+                      }}
+                    />
+                  </Form.Item>
                   <Form.Item>
                     <Select
-                      aria-required
-                      className="w-100" defaultValue="LP"
+                      className="w-100"
                       options={departamentos}
-                      value={props.persona.expedido!}
+                      value={props.persona.expedido}
                       onChange={(value) => {
                         props.setPersona({ ...props.persona, expedido: value });
                       }}
                     />
                   </Form.Item>
                 </Space.Compact>
+
+
+
+
+
               </Col>
               <Col span={24} >
                 <Form.Item label="Celular: ">

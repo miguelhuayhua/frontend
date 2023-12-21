@@ -14,7 +14,6 @@ import {
   notification,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
-import locale from "antd/es/date-picker/locale/es_ES";
 import { Persona, dias, meses } from "../personal/agregar/data";
 import dayjs from "dayjs";
 import { NextPage } from "next";
@@ -141,7 +140,7 @@ const DatosPersonales: NextPage<Props> = (props) => {
                         required
                         name="ci"
                         value={props.persona.ci}
-                        style={{ width: "100%" }}
+                        style={{ width: 150 }}
                         onChange={(ev) => {
                           props.setPersona({
                             ...props.persona,
@@ -154,8 +153,7 @@ const DatosPersonales: NextPage<Props> = (props) => {
                       <Select
                         aria-required
                         value={props.persona.expedido}
-                        style={{ width: "100%" }}
-                        defaultValue="LP"
+                        style={{ width: 150 }}
                         options={departamentos}
                         onChange={(value) => {
                           props.setPersona({

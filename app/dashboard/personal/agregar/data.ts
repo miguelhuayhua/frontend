@@ -57,7 +57,7 @@ export let dataPersona = {
     genero: "Femenino",
     ult_modificacion: "",
     estado: 0,
-    expedido: 'LP',
+    expedido: 'QR',
     complemento: ''
 }
 

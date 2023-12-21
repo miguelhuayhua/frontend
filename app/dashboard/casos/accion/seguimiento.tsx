@@ -283,7 +283,7 @@ const SeguimientoOptions: NextPage<Props> = (props) => {
         }}
         open={open}
       >
-        <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
+        <PDFViewer showToolbar={false} style={{ width: "100%", height: 650 }}>
           <FormularioSeguimiento adulto={props.adulto}
             caso={props.caso}
             seguimiento={props.seguimiento}

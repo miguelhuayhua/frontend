@@ -117,7 +117,7 @@ export let dataDatosGenerales = {
     beneficios: "Ninguno",
     ocupacion: "",
     id_adulto: "",
-    expedido: "LP",
+    expedido: "QR",
     complemento: ""
 };
 
@@ -141,6 +141,7 @@ export let departamentos = [
     { value: "PD", label: "Pando" },
     { value: "PT", label: "Potosí" },
     { value: "BN", label: "Beni" },
+    { value: "QR", label: "QR" }
 ]
 export let dataDatosDenunciado = {
     nombres: "",
@@ -149,7 +150,7 @@ export let dataDatosDenunciado = {
     materno: "",
     ci: "",
     complemento: "",
-    expedido: "LP",
+    expedido: "QR",
 }
 export let dataDatosDenuncia = {
     fecha_registro: dayjs(now()).format('YYYY-MM-DD'),

@@ -57,7 +57,7 @@ export let DatosDenunciado = {
     ult_modificacion: "",
     id_caso: "",
     id_denunciado: "",
-    expedido: "LP",
+    expedido: "QR",
     ci: 0,
     complemento: ""
 }

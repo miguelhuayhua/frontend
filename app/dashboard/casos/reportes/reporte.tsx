@@ -89,7 +89,7 @@ const ReporteCaso = (props: Props) => {
                         top: 8,
                         right: 20,
                         color: "gray",
-                        fontSize: 8,
+                        fontSize: 7,
                     }}
                 >
                     Generado por:

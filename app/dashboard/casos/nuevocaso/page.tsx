@@ -34,6 +34,7 @@ export default function NuevoCaso() {
       let { persona } = data?.user as {
         persona: Persona;
       };
+      
       if (persona.cargo == "3") {
         router.back();
       }

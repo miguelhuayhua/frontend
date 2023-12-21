@@ -27,7 +27,6 @@ import {
 } from "@ant-design/icons";
 
 import Meta from "antd/es/card/Meta";
-import locale from "antd/es/date-picker/locale/es_ES";
 import { Persona, cargos, dataPersona, dias, meses } from "./data";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -196,13 +195,12 @@ const AgregarPersonal = () => {
                         </Col>
                         <Col
                           span={24}
-                          lg={{ span: 16, offset: 4 }}
-                          xxl={{ span: 20, offset: 2 }}
                         >
                           <Space.Compact direction="horizontal" >
                             <Form.Item label="C.I. / Expedido:">
                               <InputNumber
                                 required
+                                maxLength={8}
                                 name="ci"
                                 className="w-100"
                                 onChange={(ev: any) => {
@@ -224,9 +222,9 @@ const AgregarPersonal = () => {
                             </Form.Item>
                             <Form.Item>
                               <Select
-                                aria-required
-                                className="w-100"
-                                defaultValue="LP"
+                                style={{ width: 200 }}
+                                value={persona.expedido}
+                                defaultValue={persona.expedido}
                                 onChange={(value) => {
                                   setPersona({ ...persona, expedido: value });
                                 }}
@@ -242,6 +240,7 @@ const AgregarPersonal = () => {
                         >
                           <Form.Item
                             label="Celular: "
+
                             rules={[
                               {
                                 required: true,
@@ -254,6 +253,7 @@ const AgregarPersonal = () => {
                             <InputNumber
                               name="celular"
                               className="w-100"
+                              maxLength={8}
                               onChange={(ev: any) => {
                                 setPersona({
                                   ...persona,
@@ -263,7 +263,7 @@ const AgregarPersonal = () => {
                             ></InputNumber>
                           </Form.Item>
                         </Col>
-                        <Col span={12} lg={{ span: 12 }} xxl={{ span: 10 }}>
+                        <Col span={24} lg={{ span: 12 }} xxl={{ span: 10 }}>
                           <Form.Item label={"Fecha de nacimiento"}>
                             <DatePicker
                               style={{ width: "100%" }}
@@ -436,7 +436,7 @@ const AgregarPersonal = () => {
                               <Col span={12}>
                                 <p>
                                   <span>Cargo: </span>
-                                  {cargos[Number.parseInt(persona.cargo)-1]}
+                                  {cargos[Number.parseInt(persona.cargo) - 1]}
                                 </p>
                               </Col>
                               <Col span={12}>

@@ -585,7 +585,7 @@ const CitacionOptions: NextPage<Props> = (props) => {
         }}
         open={open}
       >
-        <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
+        <PDFViewer showToolbar={false} style={{ width: "100%", height: 650 }}>
           <DataContext2.Provider
             value={{
               persona: props.persona,

@@ -122,7 +122,7 @@ const PdfDenunciado = () => {
               top: 5,
               left: 50,
               color: "gray",
-              fontSize: 8,
+              fontSize: 7,
             }}
           >
             Generado por:{" "}

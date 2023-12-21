@@ -1,11 +1,11 @@
 "use client";
-import { Breadcrumb, Col, Layout, MenuProps, Row } from "antd";
+import { Breadcrumb,Layout } from "antd";
 import "moment/locale/es";
-import { Content, Footer, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 //estilos
 import "./estilos.scss";
 //env
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined} from "@ant-design/icons";
 
 import React from "react";
 

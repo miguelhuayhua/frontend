@@ -5,11 +5,8 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
-  Svg,
-  Line,
+  Image
 } from "@react-pdf/renderer";
-import { DataContext } from "./detalles";
 import {
   AdultoMayor,
   DatosDenuncia,
@@ -31,7 +28,6 @@ const styles = StyleSheet.create({
   },
   page: {
     fontFamily: "Helvetica",
-    fontSize: 12,
     padding: 20,
     position: "relative",
     paddingBottom: 25,
@@ -96,135 +92,136 @@ const styles = StyleSheet.create({
   parraf: {
     lineHeight: 1.3,
     fontFamily: "Helvetica",
-    fontSize: 12,
-    marginTop: 12,
   },
   listItem: {
     marginLeft: 40,
   },
+  textBoldItalic: { fontSize: 9, fontFamily: "Helvetica-BoldOblique" },
+
 });
 
-// Create Document Component
-const MyDocument = () => {
+interface Props {
 
-  const data = useContext(DataContext);
-  let {
-    datosGenerales,
-    datosUbicacion,
-    descripcionHechos,
-    descripcionPeticion,
-    datosDenunciado,
-    accionRealizada,
-    datosDenuncia,
-  } = data as {
-    datosGenerales: AdultoMayor;
-    datosUbicacion: DatosUbicacion;
-    descripcionHechos: string;
-    descripcionPeticion: string;
-    datosDenunciado: DatosDenunciado;
-    accionRealizada: string;
-    datosDenuncia: DatosDenuncia;
-  };
+  datosUbicacion: DatosUbicacion;
+  descripcionHechos: string;
+  descripcionPeticion: string;
+  datosDenunciado: DatosDenunciado;
+  accionRealizada: string;
+  datosGenerales: AdultoMayor;
+  datosDenuncia: DatosDenuncia;
+  persona: Persona;
+}
+// Create Document Component
+const MyDocument = (props: Props) => {
+
   let descripcion: any[] = [];
   let peticion: any[] = [];
-  const parseToHtml = (text: string) => {
+
+  const parseHtml = (text: string) => {
     let list: any[] = [];
     HTMLReactParser(text, {
       transform(node, dom: any, index) {
-        if (dom.type == 'text' && dom.parent.name == 'p') {
-          list.push(<Text key={dom.type + '-' + index} style={styles.text}>{dom.data}</Text>);
-        }
-        else if (dom.type == 'text' && dom.parent.name != 'p' || dom.name == 'p') {
-          return null;
-        }
-        else {
-          if (dom.name == 'strong' && dom.parent != 'em') {
-            list.push(<Text key={dom.type + '-' + index} style={styles.textBold}>
-              {dom.children[0].data}
-            </Text>);
+        if (dom.type == 'tag') {
+          let listaP: any[] = [];
+          if (dom.name == 'p') {
+            dom.children.forEach((child: any) => {
+              if (child.type == 'text') {
+                listaP.push(<Text key={dom.type + index} style={styles.text} >{child.data}</Text>)
+              }
+              else {
+                if (child.name == 'strong') {
+                  listaP.push(<Text key={dom.type + index} style={styles.textBold} >{child.children[0].data}</Text>);
+                }
+                else if (child.name == 'em') {
+                  if (child.children[0].type == 'text') {
+                    listaP.push(<Text key={dom.type + index} style={styles.textItalic} >{child.children[0].data}</Text>)
+                  }
+                  else {
+                    listaP.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child.children[0].children[0].data}</Text>)
+                  }
+                }
+                else if (child.name == 'br') {
+                  listaP.push(<Text key={dom.type + index} style={styles.text} >{"\n"}</Text>)
+                }
+              }
+            });
+            list.push(<Text style={styles.parraf}>{listaP}</Text>);
           }
-          else if (dom.name == 'strong' && dom.parent == 'em') {
-            return null;
-          }
-          else {
-            if (dom.children[0].type == 'text') {
-              list.push(<Text key={dom.type + '-' + index} style={styles.textItalic}>
-                {dom.children[0].data}
-              </Text>);
-            }
-            else {
-              list.push(<Text key={dom.type + '-' + index} style={{ ...styles.textItalic, ...styles.textBold }}>
-                {dom.children[0].children[0].data}
-              </Text>);
-            }
+          else if (dom.name == 'ul') {
+            let listaLi: any[] = [];
+            dom.children.forEach((child: any) => {
+              if (child.type == 'tag') {
+                let elemLi: any[] = [];
+                elemLi.push(<Text key={dom.type + "---" + index}>{"\t• "}</Text>)
+                //ENTRA EN EL CASO DE SER li
+                child.children.forEach((child2: any) => {
+                  //revisamos los hijos de li
+                  if (child2.type == 'text') {
+                    elemLi.push(<Text key={dom.type + index} style={styles.text} >{child2.data}</Text>)
+                  }
+                  else {
+                    if (child2.name == 'strong') {
+                      elemLi.push(<Text key={dom.type + index} style={styles.textBold} >{child2.children[0].data}</Text>)
+                    }
+                    else if (child2.name == 'em') {
+                      if (child2.children[0].type == 'text') {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textItalic} >{child2.children[0].data}</Text>)
+                      }
+                      else {
+                        elemLi.push(<Text key={dom.type + index} style={styles.textBoldItalic} >{child2.children[0].children[0].data}</Text>)
+                      }
+                    }
+                  }
+                });
+                listaLi.push(<Text key={dom.type + "---" + index} style={styles.text}>{elemLi}</Text>)
+              }
+            });
+            list.push(<View key={dom.type + "----" + index} style={{ marginTop: 7.5, marginBottom: 5.5, marginLeft: 18 }}>{listaLi}</View>);
           }
         }
       }
-
     });
-    return list;
+    return list
   }
-  descripcion = parseToHtml(descripcionHechos);
-  peticion = parseToHtml(descripcionPeticion);
+  descripcion = parseHtml(props.descripcionHechos);
+  peticion = parseHtml(props.descripcionPeticion);
 
-  const accionesRealizadas = accionRealizada.split("/");
-  let { persona } = data as { persona: Persona };
+  const accionesRealizadas = props.accionRealizada.split("/");
+  let persona = props.persona;
   return (
     <Document>
       <Page style={styles.page}>
         <Text
+          fixed
           style={{
             position: "absolute",
             top: 8,
             right: 20,
             color: "gray",
-            fontSize: 8,
+            fontSize: 7,
           }}
         >
           Generado por:
           {`${persona.nombres} ${persona.paterno} ${persona.materno}`}
         </Text>
         <Image
+        
+          fixed
           style={{
-            width: 80,
-            height: 50,
+            width: 550,
+            height: 80,
             position: "absolute",
             top: 20,
-            right: 2,
+            left: 22,
           }}
-          src={"/assets/logo-gamea.png"}
-        ></Image>
-
-        <Image
-          style={{
-            width: 80,
-            height: 50,
-            position: "absolute",
-            top: 20,
-            left: 2,
-          }}
-          src={"/assets/logo-elalto.png"}
+          src={"/assets/cabecera-documentos.png"}
         ></Image>
         <Text
-          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
-        >
-          GOBIERNO AUTÓNOMO MUNICIPAL DE EL ALTO
-        </Text>
-        <Svg height="3" width="600">
-          <Line
-            x1="90"
-            y1="2"
-            x2="470"
-            y2="2"
-            strokeWidth={1}
-            stroke="rgb(0,0,0)"
-          />
-        </Svg>
-        <Text
-          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
+          style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10, marginTop: 60 }}
         >
           SECRETARÍA MUNICIPAL DE DESARROLLO HUMANO Y SOCIAL INTEGRAL
         </Text>
+
         <Text
           style={{ ...styles.textBold, ...styles.textCenter, fontSize: 10 }}
         >
@@ -238,15 +235,15 @@ const MyDocument = () => {
         <View style={{ ...styles.horizontal, marginTop: 9 }}>
           <Text style={styles.textInfo}>
             {"Fecha y hora de registro: " +
-              datosDenuncia.fecha_registro +
+              props.datosDenuncia.fecha_registro +
               " " +
-              datosDenuncia.hora_registro}
+              props.datosDenuncia.hora_registro}
           </Text>
           <Text style={styles.textInfo}>
-            {"Tipología: " + datosDenuncia.tipologia}
+            {"Tipología: " + props.datosDenuncia.tipologia}
           </Text>
           <Text style={styles.textInfo}>
-            {"N° de caso: " + datosDenuncia.nro_caso + "/" + dayjs().year()}
+            {"N° de caso: " + props.datosDenuncia.nro_caso }
           </Text>
         </View>
         <Text style={{ ...styles.textBold, marginTop: 15, marginBottom: 2.5 }}>
@@ -255,34 +252,34 @@ const MyDocument = () => {
         <View style={styles.container}>
           <Text style={styles.textBold}>NOMBRES Y APELLIDOS: </Text>
           <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-            {datosGenerales.nombre +
+            {props.datosGenerales.nombre +
               " " +
-              datosGenerales.paterno +
+              props.datosGenerales.paterno +
               " " +
-              datosGenerales.materno}
+              props.datosGenerales.materno}
           </Text>
           <View style={{ ...styles.horizontal, marginTop: 2 }}>
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={styles.textBold}>GÉNERO:</Text>
               <Text style={styles.text}>FEMENINO</Text>
               <Text style={styles.checker}>
-                {datosGenerales.genero == "Femenino" ? "X" : ""}
+                {props.datosGenerales.genero == "Femenino" ? "X" : ""}
               </Text>
               <Text style={styles.text}> MASCULINO</Text>
               <Text style={styles.checker}>
-                {datosGenerales.genero == "Masculino" ? "X" : ""}
+                {props.datosGenerales.genero == "Masculino" ? "X" : ""}
               </Text>
             </View>
             <View style={{ width: "25%", ...styles.horizontal }}>
               <Text style={styles.textBold}>EDAD: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosGenerales.edad}
+                {props.datosGenerales.edad}
               </Text>
             </View>
             <View style={{ width: "25%", ...styles.horizontal }}>
               <Text style={styles.textBold}>N° C.I.: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosGenerales.ci}
+                {props.datosGenerales.ci}
               </Text>
             </View>
           </View>
@@ -290,13 +287,13 @@ const MyDocument = () => {
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={styles.textBold}>FECHA DE NACIMIENTO: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosGenerales.f_nacimiento}
+                {props.datosGenerales.f_nacimiento}
               </Text>
             </View>
             <View style={{ width: "50%", ...styles.horizontal }}>
               <Text style={styles.textBold}>NRO. DE REFERENCIA: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosGenerales.nro_referencia}
+                {props.datosGenerales.nro_referencia}
               </Text>
             </View>
           </View>
@@ -304,33 +301,33 @@ const MyDocument = () => {
             <Text style={styles.textBold}>ESTADO CIVIL:</Text>
             <Text style={styles.text}>SOLTERO(A)</Text>
             <Text style={styles.checker}>
-              {datosGenerales.estado_civil == "Soltero(a)" ? "X" : ""}
+              {props.datosGenerales.estado_civil == "Soltero(a)" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> CASADO(A)</Text>
             <Text style={styles.checker}>
-              {datosGenerales.estado_civil == "Casado(a)" ? "X" : ""}
+              {props.datosGenerales.estado_civil == "Casado(a)" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> CONCUBINO(A)</Text>
             <Text style={styles.checker}>
-              {datosGenerales.estado_civil == "Concubino(a)" ? "X" : ""}
+              {props.datosGenerales.estado_civil == "Concubino(a)" ? "X" : ""}
             </Text>
             <Text style={styles.text}> DIVORCIADO(A)</Text>
             <Text style={styles.checker}>
-              {datosGenerales.estado_civil == "Divorciado(a)" ? "X" : ""}
+              {props.datosGenerales.estado_civil == "Divorciado(a)" ? "X" : ""}
             </Text>
             <Text style={styles.text}> VIUDO(A)</Text>
             <Text style={styles.checker}>
-              {datosGenerales.estado_civil == "Viudo(a)" ? "X" : ""}
+              {props.datosGenerales.estado_civil == "Viudo(a)" ? "X" : ""}
             </Text>
           </View>
           <View style={{ width: "50%", marginTop: 2, ...styles.horizontal }}>
             <Text style={styles.textBold}>N° Y NOMBRE DE HIJOS: </Text>
             <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-              {datosGenerales.hijos.length + " hijos(as). "}
-              {datosGenerales.hijos.map((hijo, i) => {
-                return i < datosGenerales.hijos.length
+              {props.datosGenerales.hijos.length + " hijos(as). "}
+              {props.datosGenerales.hijos.map((hijo, i) => {
+                return i < props.datosGenerales.hijos.length
                   ? hijo + ","
                   : hijo + ". ";
               })}
@@ -340,51 +337,51 @@ const MyDocument = () => {
             <Text style={styles.textBold}>GRADO DE INSTRUCCIÓN: </Text>
             <Text style={styles.text}>PRIMARIA</Text>
             <Text style={styles.checker}>
-              {datosGenerales.grado == "Primaria" ? "X" : ""}
+              {props.datosGenerales.grado == "Primaria" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> SECUNDARIA </Text>
             <Text style={styles.checker}>
-              {datosGenerales.grado == "Secundaria" ? "X" : ""}
+              {props.datosGenerales.grado == "Secundaria" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> TÉCNICO </Text>
             <Text style={styles.checker}>
-              {datosGenerales.grado == "Tecnico" ? "X" : ""}
+              {props.datosGenerales.grado == "Tecnico" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> UNIVERSITARIO </Text>
             <Text style={styles.checker}>
-              {datosGenerales.grado == "Universitario" ? "X" : ""}
+              {props.datosGenerales.grado == "Universitario" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> SIN INSTRUCCIÓN </Text>
             <Text style={styles.checker}>
-              {datosGenerales.grado == "S/Inst." ? "X" : ""}
+              {props.datosGenerales.grado == "S/Inst." ? "X" : ""}
             </Text>
           </View>
           <View style={{ ...styles.horizontal, marginTop: 0 }}>
             <View style={{ width: "30%", ...styles.horizontal }}>
               <Text style={styles.textBold}>OCUPACIÓN: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosGenerales.ocupacion}
+                {props.datosGenerales.ocupacion}
               </Text>
             </View>
             <View style={{ width: "70%", ...styles.horizontal }}>
               <Text style={styles.textBold}>BENEFICIOS: </Text>
               <Text style={styles.text}>RENTA DIGNIDAD</Text>
               <Text style={styles.checker}>
-                {datosGenerales.beneficios == "Renta Dignidad" ? "X" : ""}
+                {props.datosGenerales.beneficios == "Renta Dignidad" ? "X" : ""}
               </Text>
 
               <Text style={styles.text}> JUBILADO </Text>
               <Text style={styles.checker}>
-                {datosGenerales.beneficios == "Jubilado" ? "X" : ""}
+                {props.datosGenerales.beneficios == "Jubilado" ? "X" : ""}
               </Text>
 
               <Text style={styles.text}> NINGUNO </Text>
               <Text style={styles.checker}>
-                {datosGenerales.beneficios == "Ninguno" ? "X" : ""}
+                {props.datosGenerales.beneficios == "Ninguno" ? "X" : ""}
               </Text>
             </View>
           </View>
@@ -392,31 +389,31 @@ const MyDocument = () => {
             <Text style={styles.textBold}>DOMICILIO: </Text>
             <Text style={styles.text}> PROPIO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.tipo_domicilio == "Propio" ? "X" : ""}
+              {props.datosUbicacion.tipo_domicilio == "Propio" ? "X" : ""}
             </Text>
             <Text style={styles.text}> ALQUILADO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.tipo_domicilio == "Alquilado" ? "X" : ""}
+              {props.datosUbicacion.tipo_domicilio == "Alquilado" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> ANTICRÉTICO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.tipo_domicilio == "Anticretico" ? "X" : ""}
+              {props.datosUbicacion.tipo_domicilio == "Anticretico" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> CEDIDO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.tipo_domicilio == "Cedido" ? "X" : ""}
+              {props.datosUbicacion.tipo_domicilio == "Cedido" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> OTRO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.tipo_domicilio == "Otro" ? "X" : ""}
+              {props.datosUbicacion.tipo_domicilio == "Otro" ? "X" : ""}
             </Text>
 
-            {datosUbicacion.tipo_domicilio == "Otro" ? (
+            {props.datosUbicacion.tipo_domicilio == "Otro" ? (
               <Text style={{ ...styles.textContainer }}>
-                {datosUbicacion.otro_domicilio}
+                {props.datosUbicacion.otro_domicilio}
               </Text>
             ) : (
               <></>
@@ -426,43 +423,43 @@ const MyDocument = () => {
           <View style={{ ...styles.horizontal, marginTop: 0 }}>
             <Text style={styles.textBold}>DISTRITO: </Text>
             <Text style={{ ...styles.textContainer }}>
-              {datosUbicacion.distrito}
+              {props.datosUbicacion.distrito}
             </Text>
             <Text style={{ ...styles.textBold, marginLeft: 5 }}>ZONA: </Text>
             <Text style={{ ...styles.textContainer }}>
-              {datosUbicacion.zona}
+              {props.datosUbicacion.zona}
             </Text>
             <Text style={{ ...styles.textBold, marginLeft: 5 }}>
               CALLE O AV.:{" "}
             </Text>
             <Text style={{ ...styles.textContainer }}>
-              {datosUbicacion.calle_av}
+              {props.datosUbicacion.calle_av}
             </Text>
             <Text style={{ ...styles.textBold, marginLeft: 5 }}>N°: </Text>
             <Text style={{ ...styles.textContainer }}>
-              {datosUbicacion.nro_vivienda}
+              {props.datosUbicacion.nro_vivienda}
             </Text>
           </View>
           <View style={{ marginTop: 2, ...styles.horizontal }}>
             <Text style={styles.textBold}>AREA: </Text>
             <Text style={styles.text}>URBANO</Text>
             <Text style={styles.checker}>
-              {datosUbicacion.area == "Urbano" ? "X" : ""}
+              {props.datosUbicacion.area == "Urbano" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> RURAL </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.area == "Rural" ? "X" : ""}
+              {props.datosUbicacion.area == "Rural" ? "X" : ""}
             </Text>
 
             <Text style={styles.text}> OTRO </Text>
             <Text style={styles.checker}>
-              {datosUbicacion.area == "Otro" ? "X" : ""}
+              {props.datosUbicacion.area == "Otro" ? "X" : ""}
             </Text>
 
-            {datosUbicacion.area == "Otro" ? (
+            {props.datosUbicacion.area == "Otro" ? (
               <Text style={{ ...styles.textContainer }}>
-                {datosUbicacion.otra_area}
+                {props.datosUbicacion.otra_area}
               </Text>
             ) : (
               <></>
@@ -473,17 +470,15 @@ const MyDocument = () => {
           II. DESCRIPCIÓN DE LOS HECHOS
         </Text>
         <View style={styles.container}>
-          <Text style={styles.text}>
-            {descripcion}
-          </Text>
+          {descripcion}
         </View>
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
           III. PETICIÓN DE LA PERSONA ADULTA MAYOR
         </Text>
         <View style={styles.container}>
-          <Text style={styles.text}>
+          <View style={styles.text}>
             {peticion}
-          </Text>
+          </View>
         </View>
 
         <Text style={{ ...styles.textBold, marginTop: 5, marginBottom: 2 }}>
@@ -494,17 +489,17 @@ const MyDocument = () => {
             <View style={{ width: "100%", ...styles.horizontal }}>
               <Text style={styles.textBold}>NOMBRES Y APELLIDOS: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosDenunciado.nombres +
+                {props.datosDenunciado.nombres +
                   " " +
-                  datosDenunciado.paterno +
+                  props.datosDenunciado.paterno +
                   " " +
-                  datosDenunciado.materno}
+                  props.datosDenunciado.materno}
               </Text>
             </View>
             <View style={{ width: "100%", ...styles.horizontal }}>
               <Text style={styles.textBold}>PARENTEZCO: </Text>
               <Text style={{ ...styles.textContainer, fontSize: 9 }}>
-                {datosDenunciado.parentezco}
+                {props.datosDenunciado.parentezco}
               </Text>
             </View>
           </View>
@@ -520,27 +515,27 @@ const MyDocument = () => {
             </Text>
             <Text style={styles.text}>ORIENTACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada.includes("Orientacion") ? "X" : ""}
+              {props.accionRealizada.includes("Orientacion") ? "X" : ""}
             </Text>
             <Text style={styles.text}>CITACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada.includes("Citacion") ? "X" : ""}
+              {props.accionRealizada.includes("Citacion") ? "X" : ""}
             </Text>
             <Text style={styles.text}>DERIVACIÓN </Text>
             <Text style={styles.checker}>
-              {accionRealizada.includes("Derivacion") ? "X" : ""}
+              {props.accionRealizada.includes("Derivacion") ? "X" : ""}
             </Text>
           </View>
         </View>
         <View
           style={{
             ...styles.horizontal,
-            marginTop: 90,
-            marginLeft:50
+            marginTop: 120,
+            marginLeft: 50
           }}
         >
           <Text style={{ ...styles.text, ...styles.textCenter }}>
-            {`FIRMA O HUELLA DEL ADULTO(A) MAYOR \n ${datosGenerales.nombre} ${datosGenerales.paterno} ${datosGenerales.materno}`}
+            {`FIRMA O HUELLA DEL ADULTO(A) MAYOR \n ${props.datosGenerales.nombre} ${props.datosGenerales.paterno} ${props.datosGenerales.materno}`}
           </Text>
         </View>
 

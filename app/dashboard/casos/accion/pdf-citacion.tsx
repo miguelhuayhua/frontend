@@ -5,9 +5,7 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
-  Line,
-  Svg,
+  Image
 } from "@react-pdf/renderer";
 
 import { Persona } from "../../personal/agregar/data";
@@ -93,7 +91,7 @@ const FormularioSeguimiento = () => {
               top: -15,
               right: 20,
               color: "gray",
-              fontSize: 8,
+              fontSize: 7,
             }}
           >
             Generado por:

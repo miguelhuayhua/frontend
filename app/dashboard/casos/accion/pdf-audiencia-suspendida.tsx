@@ -6,8 +6,6 @@ import {
   StyleSheet,
   View,
   Image,
-  Line,
-  Svg,
 } from "@react-pdf/renderer";
 
 import { Caso, Citacion } from "../data";
@@ -94,7 +92,7 @@ const FormularioAudienciaSuspendida = (props: {
               top: -15,
               right: 20,
               color: "gray",
-              fontSize: 8,
+              fontSize: 7,
             }}
           >
             Generado por:

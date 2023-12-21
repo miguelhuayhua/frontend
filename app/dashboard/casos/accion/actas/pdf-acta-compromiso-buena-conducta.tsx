@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
     Document,
     Page,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
     textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" },
     parraf: {
-        lineHeight: 1.35,
+        lineHeight: 1.25,
         fontFamily: "Helvetica",
         fontSize: 10,
         marginTop: 7.5,
@@ -91,13 +91,8 @@ const parseHtml = (text: string) => {
                                     </Text>);
 
                                 }
-                                else if (child.children[0].data == 'under-F') {
-                                    listaP.push(<Text key={dom.type + index} style={styles.textBold} >
-                                        <Text style={{ textDecoration: 'underline' }}>TERCERO</Text>
-                                        {" (FUNDAMENTO LEGAL). - "}
-                                    </Text>);
 
-                                }
+
                                 else {
                                     listaP.push(<Text key={dom.type + index} style={styles.textBold} >{child.children[0].data}</Text>)
 
@@ -147,7 +142,8 @@ const parseHtml = (text: string) => {
                             listaLi.push(<Text key={dom.type + "---" + index} style={styles.text}>{elemLi}</Text>)
                         }
                     });
-                    list.push(<View key={dom.type + "----" + index} style={{ marginTop: 7.5, marginBottom:5.5, marginLeft: 18 }}>{listaLi}</View>);                }
+                    list.push(<View key={dom.type + "----" + index} style={{ marginTop: 7.5, marginBottom: 5.5, marginLeft: 18 }}>{listaLi}</View>);
+                }
             }
         }
     });

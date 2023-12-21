@@ -33,7 +33,7 @@ import { Hijo, dataHijo } from "../data";
 import HijoModal from "./hijo";
 import { Adulto, dataAdulto } from "../../adultos/data";
 import { AiOutlineReload } from "react-icons/ai";
-import { PDFViewer, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { Persona, dataPersona } from "../../personal/agregar/data";
 import { useSession } from "next-auth/react";
 import PdfHijos from "./pdf-listado";

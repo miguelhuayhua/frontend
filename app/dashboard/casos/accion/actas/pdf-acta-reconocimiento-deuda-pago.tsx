@@ -5,10 +5,7 @@ import {
     Text,
     StyleSheet,
     View,
-    Image,
-    Line,
-    Svg,
-    Font,
+    Image
 } from "@react-pdf/renderer";
 import HTMLReactParser from "html-react-parser";
 import { Caso } from "../../data";
@@ -27,7 +24,7 @@ const styles = StyleSheet.create({
     textItalic: { fontSize: 10, fontFamily: "Helvetica-Oblique" },
     textBoldItalic: { fontSize: 10, fontFamily: "Helvetica-BoldOblique" },
     parraf: {
-        lineHeight: 1.35,
+        lineHeight: 1.25,
         fontFamily: "Helvetica",
         fontSize: 10,
         marginTop: 7.5,

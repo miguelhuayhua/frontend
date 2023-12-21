@@ -39,7 +39,7 @@ import ActaReconomientoDeudaPago from "./actas/pdf-acta-reconocimiento-deuda-pag
 import ActaCumplimiento from "./actas/pdf-acta-cumplimiento";
 import ActaCompromisoCuidadoProteccion from "./actas/pdf-acta-compromiso-cuidado-proteccion";
 import axios from "axios";
-import  { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 interface Props {
     setOpen: any;
     open: boolean;
@@ -172,7 +172,8 @@ const ActaOptions: NextPage<Props> = (props) => {
                         </Row>
                     </Card>
                     <Button
-                        className="mt-3"
+                        className="mt-3 mx-2"
+                        type="primary"
                         onClick={() => {
                             let introduccion = stateToHTML(editorState1.getCurrentContent());
                             let conformidad = stateToHTML(editorState5.getCurrentContent());
@@ -348,7 +349,7 @@ const ActaOptions: NextPage<Props> = (props) => {
                 open={showDrawer}
                 onClose={() => setShowDrawer(false)}
             >
-                <PDFViewer showToolbar={false} style={{ width: "100%", height: 800 }}>
+                <PDFViewer showToolbar={false} style={{ width: "100%", height:650 }}>
                     {activo == 1 ? <ActaCompromiso
                         adulto={props.adulto}
                         introduccion={textos.introduccion}
